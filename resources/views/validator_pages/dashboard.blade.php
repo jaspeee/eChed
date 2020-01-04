@@ -57,7 +57,7 @@
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+              <i class="now-ui-icons loader_refresh spin"></i> Updated
             </div>
           </div>
         </div>
@@ -83,7 +83,7 @@
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+              <i class="now-ui-icons loader_refresh spin"></i> Updated
             </div>
           </div>
         </div>
@@ -102,7 +102,7 @@
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+              <i class="now-ui-icons loader_refresh spin"></i> Updated
             </div>
           </div>
         </div>
@@ -160,7 +160,7 @@
           <div class="card-footer ">
             <hr>
             <div class="stats">
-              <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+              <i class="now-ui-icons loader_refresh spin"></i> Updated
             </div>
           </div>
         </div>
@@ -196,7 +196,7 @@
           <div class="card-footer ">
             <hr>
             <div class="stats">
-              <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+              <i class="now-ui-icons loader_refresh spin"></i> Updated
             </div>
           </div>
         </div>

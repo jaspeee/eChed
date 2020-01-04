@@ -342,42 +342,54 @@ class VerifierController extends Controller
 
 
     public function Verify_approve($id)
-    {
-        //UPDATE STATUS IN VALIDATES TABLE
-        $status = '4';
-        DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
-      
-        //UPDATE THE VCOUNT IN COUNTS TABLE
-        $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
-        $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
-        $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
-        $count = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
-        $final_count = $count + 1;
-        DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
-        
-        //GET THE FILE NAME
+    {   
+         //GET THE FILE NAME
         $filename = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
         
-        //STORE DATA TO VERIFIES TABLE
-        $comp = new Complete();
-        $comp->user_id = auth()->id();
-        $comp->verifier_submission = $filename;
-        $comp->statuses_id = '3';
-        $comp->comment = '';
-        $comp->save();
+        $stat = DB::table('verifies')->where('verifies_id', $id)->first()->statuses_id;
 
-        //COPY FILE TO ANOTHER STORAGE FOLDER
-        if(Storage::copy('public/verify/'.$filename, 'public/complete/' .$filename))
+        if($stat == '5')
         {
             return back();
         }
-       
-        return 'wala';
+        else
+        {
+              //UPDATE STATUS IN VALIDATES TABLE
+            $status = '4';
+            DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
+        
+            //UPDATE THE VCOUNT IN COUNTS TABLE
+            $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
+            $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
+            $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
+            $count = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
+            $final_count = $count + 1;
+            DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
+            
+            
+            //STORE DATA TO VERIFIES TABLE
+            $comp = new Complete();
+            $comp->user_id = auth()->id();
+            $comp->verifier_submission = $filename;
+            $comp->institutions_id = $institution;
+            $comp->save();
 
+            //COPY FILE TO ANOTHER STORAGE FOLDER
+            if(Storage::copy('public/verify/'.$filename, 'public/complete/' .$filename))
+            {
+                return back();
+            }
+       
+        }
+
+
+      
+      
     }
 
     public function Verify_disapprove(Request $request,$id)
-    {
+    {   
+
          //UPDATE STATUS IN VERIFIES TABLE
          $status = '5';
          $comment = $request->textarea;
@@ -386,6 +398,24 @@ class VerifierController extends Controller
  
          //UPDATE THE COMMENT IN VALIDATES TABLE
          DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
+         
+         //GET THE FILE NAME
+         $filename = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
+         
+         //COPY FILE TO ANOTHER STORAGE FOLDER
+        if(Storage::delete('public/verify/'.$filename))
+        {
+               return back();
+        }
+        
+         //UPDATE THE VCOUNT IN COUNTS TABLE
+         $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
+         $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
+         $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
+         $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
+         $final_count = $count - 1;
+         DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
+
          return back();
     }
     

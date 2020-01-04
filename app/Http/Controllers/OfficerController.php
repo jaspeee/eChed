@@ -96,7 +96,8 @@ class OfficerController extends Controller
         ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
         ->select('completes.*','employee_profiles.first_name','employee_profiles.last_Name')
         ->where('employee_profiles.institutions_id', $ins_id)->get();
-  
+        
+        return $files;
          return view('officer_pages.final', compact('files','fname','lname'));
 
     }

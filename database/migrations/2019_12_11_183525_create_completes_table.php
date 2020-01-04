@@ -17,13 +17,11 @@ class CreateCompletesTable extends Migration
             $table->bigIncrements('completes_id');
             $table->unsignedBigInteger('user_id');
             $table->string('verifier_submission');
-            $table->unsignedBigInteger('statuses_id');
-            $table->mediumText('comment');
+            $table->unsignedBigInteger('institutions_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('statuses_id')->references('statuses_id')->on('statuses')->onDelete('cascade');
-
+            $table->foreign('institutions_id')->references('institutions_id')->on('institutions')->onDelete('cascade');
 
         });
     }

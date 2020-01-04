@@ -252,37 +252,44 @@ class ValidatorController extends Controller
     public function Validation_approve($id)
     {   
 
-        //UPDATE STATUS IN VALIDATES TABLE
-        $status = '4';
-        DB::update('update validates set statuses_id = ? where validates_id = ?', [$status,$id]);
-      
-        //UPDATE THE VCOUNT IN COUNTS TABLE
-        $user = DB::table('validates')->where('validates_id', $id)->first()->user_id;
-        $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
-        $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
-        $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
-        $final_count = $count + 1;
-        DB::update('update counts set vcount = ? where institutions_id = ?', [$final_count,$institution]);
-        
         //GET THE FILE NAME
         $filename = DB::table('validates')->where('validates_id', $id)->first()->encoder_submission;
         
-        //STORE DATA TO VERIFIES TABLE
-        $vfy = new Verify();
-        $vfy->user_id = auth()->id();
-        $vfy->validator_submission = $filename;
-        $vfy->statuses_id = '3';
-        $vfy->comment = '';
-        $vfy->save();
-
-        //MOVE FILE TO ANOTHER STORAGE FOLDER
-        if(Storage::copy('public/validate/'.$filename, 'public/verify/' .$filename))
+        $stat = DB::table('validates')->where('validates_id', $id)->first()->statuses_id;
+        
+        if($stat == '5')
         {
             return back();
         }
-       
-        return 'wala';
+        else
+        {   
+            //UPDATE STATUS IN VALIDATES TABLE
+            $status = '4';
+            DB::update('update validates set statuses_id = ? where validates_id = ?', [$status,$id]);
+        
+            //UPDATE THE VCOUNT IN COUNTS TABLE
+            $user = DB::table('validates')->where('validates_id', $id)->first()->user_id;
+            $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
+            $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
+            $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
+            $final_count = $count + 1;
+            DB::update('update counts set vcount = ? where institutions_id = ?', [$final_count,$institution]);
 
+             //STORE DATA TO VERIFIES TABLE
+            $vfy = new Verify();
+            $vfy->user_id = auth()->id();
+            $vfy->validator_submission = $filename;
+            $vfy->statuses_id = '3';
+            $vfy->comment = '';
+            $vfy->save();
+
+            //MOVE FILE TO ANOTHER STORAGE FOLDER
+            if(Storage::copy('public/validate/'.$filename, 'public/verify/' .$filename))
+            {
+                return back();
+            }
+        }
+    
     }
 
     public function Validation_disapproves(Request $request, $id)
@@ -295,6 +302,16 @@ class ValidatorController extends Controller
 
         //UPDATE THE COMMENT IN VALIDATES TABLE
         DB::update('update validates set statuses_id = ? where validates_id = ?', [$status,$id]);
+        
+        //GET THE FILE NAME
+        $filename = DB::table('validates')->where('validates_id', $id)->first()->encoder_submission;
+
+        //MOVE FILE TO ANOTHER STORAGE FOLDER
+        if(Storage::delete('public/validate/'.$filename))
+        {
+            return back();
+        }
+
         return back();
 
     }

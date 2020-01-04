@@ -63,12 +63,18 @@
                                   </td>
                                 @endif
 
-                                <td style="padding:0;">
-                                <a href="/storage/verify/{{$file->validator_submission}}" download>
-                                  <button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
-                                    <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
-                                  </button></a>
-                                </td>
+                                @if($file->status == 'Disapprove')
+                                <td></td>
+                                @else
+                                  <td style="padding:0;">
+                                  <a href="/storage/verify/{{$file->validator_submission}}" download>
+                                    <button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                      <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
+                                    </button></a>
+                                  </td>
+                                @endif
+
+                                
                                 
                                 <td style="padding:0;">
                                 <form method="POST" action="/verifier/verify/approve/{{$file->verifies_id}}">

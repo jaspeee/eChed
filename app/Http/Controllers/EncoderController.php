@@ -150,32 +150,38 @@ class EncoderController extends Controller
 
     public function Upload_file(Request $request)
     {
-        //return $request->all();
+        
+        $id = auth()->id();
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $abbrv = DB::table('institutions')->where('institutions_id', $institution)->first()->abbreviation;
+
 
         $this->validate($request, [
 
             'file' => 'required',
             'file.*' => 'mimes:xlsx'
 
-    ]);
+        ]);
     
         //UPLOAD THE FILE
         if($request->hasFile('file'))
         {
             foreach($request->file as $file)
-            {
-                $filename =$file->getClientOriginalName();
-                //print_r($filename);
-                $file->storeAs('public/validate',$filename);
+            {   
+                 $filenameWithExt = $file->getClientOriginalName();
+                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME).'_'.$abbrv;
+                 $extension = $file->getClientOriginalExtension();
+                 $fileNameToStore = $filename.'.'.$extension;
+                
+                 $file->storeAs('public/validate',$fileNameToStore);
 
                 $val = new Validate();
                 $val->user_id = auth()->id();
-                $val->encoder_submission = $filename;
+                $val->encoder_submission = $fileNameToStore;
                 $val->statuses_id = '3';
                 $val->comment = '';
                 $val->save();
-
-              
 
             }
 
