@@ -53,7 +53,7 @@
           </div>
           <div class="card-footer">
             <div class="stats">
-              <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+              <i class="now-ui-icons loader_refresh spin"></i> Updated 
             </div>
           </div>
         </div>
@@ -76,7 +76,50 @@
         </div>
         <div class="card-footer">
           <div class="stats">
-            <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+            <i class="now-ui-icons loader_refresh spin"></i> Updated 
+          </div>
+        </div>
+      </div>
+    </div>       
+
+    <div class="col-lg-6 col-md-6"> 
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> SUC Submission Status</h5>
+          
+        </div>
+        <div class="card-body">
+          <div class="chart-area" style="height:150px;">
+            {!! $StatSUC_charts->container() !!}
+          </div>
+          
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="now-ui-icons loader_refresh spin"></i> Updated 
+          </div>
+        </div>
+      </div>
+    </div>  
+
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 "> 
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i> Non-SUC Monthly Verified </h5>
+          
+        </div>
+        <div class="card-body">
+          <div class="chart-area" style="height:150px;">
+            {!! $charts->container() !!}
+          </div>
+          
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="now-ui-icons loader_refresh spin"></i> Updated 
           </div>
         </div>
       </div>
@@ -96,56 +139,12 @@
         </div>
         <div class="card-footer">
           <div class="stats">
-            <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+            <i class="now-ui-icons loader_refresh spin"></i> Updated 
           </div>
         </div>
       </div>
-    </div>       
+    </div>   
 
-
-  </div>
-
-  <div class="row">
-    <div class="col-lg-6 "> 
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i> Non-SUC Monthly Verified </h5>
-          
-        </div>
-        <div class="card-body">
-          <div class="chart-area" style="height:150px;">
-            {!! $charts->container() !!}
-          </div>
-          
-        </div>
-        <div class="card-footer">
-          <div class="stats">
-            <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
-          </div>
-        </div>
-      </div>
-    </div>       
-
-  <div class="col-lg-6 col-md-6"> 
-    <div class="card">
-      <div class="card-header">
-        <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> SUC Submission Status</h5>
-        
-      </div>
-      <div class="card-body">
-        <div class="chart-area" style="height:150px;">
-          {!! $StatSUC_charts->container() !!}
-        </div>
-        
-      </div>
-      <div class="card-footer">
-        <div class="stats">
-          <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
-        </div>
-      </div>
-    </div>
-  </div>  
-    
 </div>
 
 <div class="row">
@@ -181,7 +180,7 @@
       <div class="card-footer ">
         <hr>
         <div class="stats">
-          <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+          <i class="now-ui-icons loader_refresh spin"></i> Updated 
         </div>
       </div>
     </div>

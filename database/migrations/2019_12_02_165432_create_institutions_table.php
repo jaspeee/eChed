@@ -15,10 +15,9 @@ class CreateInstitutionsTable extends Migration
     {
         Schema::create('institutions', function (Blueprint $table) {
             $table->bigIncrements('institutions_id');
-            $table->integer('code');
+            $table->string('code');
             $table->string('institution_name');
             $table->string('abbreviation');
-            $table->mediumText('address');
             $table->unsignedBigInteger('institution_types_id');
             $table->unsignedBigInteger('statuses_id');
             $table->timestamps();

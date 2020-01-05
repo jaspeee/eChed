@@ -375,7 +375,7 @@ class VerifierController extends Controller
             $comp->save();
 
             //COPY FILE TO ANOTHER STORAGE FOLDER
-            if(Storage::copy('public/verify/'.$filename, 'public/complete/' .$filename))
+            if(Storage::move('public/verify/'.$filename, 'public/complete/' .$filename))
             {
                 return back();
             }
@@ -395,9 +395,10 @@ class VerifierController extends Controller
          $comment = $request->textarea;
          $sample = $id . ''. $comment;
          DB::update('update verifies set comment = ? where verifies_id = ?', [$comment,$id]);
- 
+        
          //UPDATE THE COMMENT IN VALIDATES TABLE
          DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
+         
          
          //GET THE FILE NAME
          $filename = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;

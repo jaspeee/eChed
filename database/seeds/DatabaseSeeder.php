@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             Institution_typesTblSeeder::class,
             StatusesTblSeeder::class,
             User_typesTblSeeder::class,
+            FormsTblSeeder::class,
         ]);
 
         // DB::statement('SET FOREIGN_KEY_CHECKS=1');

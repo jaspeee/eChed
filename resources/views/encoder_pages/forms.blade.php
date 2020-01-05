@@ -38,7 +38,7 @@
                    <ul class="list-group list-group-flush">
                    <a href="/storage/forms/{{$form->form}}" style="text-decoration-line: none;" download>
                       <li class="list-group-item list-group-item-action">
-                          <i class="now-ui-icons arrows-1_cloud-download-93"></i> &nbsp&nbsp {{$form->description}}
+                          <i class="now-ui-icons arrows-1_cloud-download-93"></i> &nbsp&nbsp {{$form->description}} <b>({{$form->form}})</b>
                       </li>
                       </a>
                      

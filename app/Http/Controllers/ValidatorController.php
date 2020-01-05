@@ -284,7 +284,7 @@ class ValidatorController extends Controller
             $vfy->save();
 
             //MOVE FILE TO ANOTHER STORAGE FOLDER
-            if(Storage::copy('public/validate/'.$filename, 'public/verify/' .$filename))
+            if(Storage::move('public/validate/'.$filename, 'public/verify/' .$filename))
             {
                 return back();
             }
