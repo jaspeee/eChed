@@ -16,6 +16,7 @@ use App\Charts\VerifiedChart;
 use App\Charts\SucVerifiedChart;
 use App\Charts\StatNonSucChart;
 use App\Charts\StatSucChart;
+use Illuminate\Support\Str;
 use Hash; 
 
 class VerifierController extends Controller
@@ -348,6 +349,25 @@ class VerifierController extends Controller
         
         $stat = DB::table('verifies')->where('verifies_id', $id)->first()->statuses_id;
 
+        //GET THE FORM ID
+        $forms = DB::table('forms')->select('form','forms_id')->get();
+
+        $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
+        $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
+        $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
+        $abbrv = DB::table('institutions')->where('institutions_id', $institution)->first()->abbreviation;  
+        
+        $filenames = Str::replaceLast('_'.$abbrv, '', $filename);
+        $form_id = '0';
+        foreach ($forms as $form ) 
+        {
+            if($form->form == $filenames)
+            {
+                $form_id = $form->forms_id;
+            }
+        }
+
+
         if($stat == '5')
         {
             return back();
@@ -371,6 +391,7 @@ class VerifierController extends Controller
             $comp = new Complete();
             $comp->user_id = auth()->id();
             $comp->verifier_submission = $filename;
+            $comp->forms_id = $form_id;
             $comp->institutions_id = $institution;
             $comp->save();
 

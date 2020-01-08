@@ -160,7 +160,7 @@ class EncoderController extends Controller
         $this->validate($request, [
 
             'file' => 'required',
-            'file.*' => 'mimes:xlsx'
+            'file.*' => 'mimes:xls'
 
         ]);
     
