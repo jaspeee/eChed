@@ -52,7 +52,7 @@ Route::patch('/verifier/changepass', 'VerifierController@Password_change');
 // OFFICER
 Route::get('/officer/dashboard', 'OfficerController@Page_dashboard');
 Route::get('/officer/finalization', 'OfficerController@Page_finalization');
-Route::get('/officer/reports', 'OfficerController@Page_reports');
+Route::get('/officer/reports', 'ReportsController@SUCimport');
 Route::get('/officer/deadline', 'OfficerController@Page_deadline');
 Route::get('/officer/final/{ins_id}', 'OfficerController@Page_final');
 Route::get('/officer/accounts', 'OfficerController@Page_account');
