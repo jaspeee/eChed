@@ -160,7 +160,7 @@ class EncoderController extends Controller
         $this->validate($request, [
 
             'file' => 'required',
-            'file.*' => 'mimes:xls'
+            'file.*' => 'mimes:xlsx'
 
         ]);
     
@@ -209,6 +209,24 @@ class EncoderController extends Controller
              return back();
          }
          return back();
+    }
+
+    public function Page_references()
+    {
+         //GET THE FORMS
+        $id = auth()->id();
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+
+        //GET THE FIRST AND LAST NAME OF THE USER 
+        $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+        $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+
+
+        //GET THE INSTITUTIONS
+        $institutions = DB::table('institutions') ->where('institution_name','!=','Commission on Higher Education')->get();
+        $discipline = DB::table('discipline_groups')->get();
+
+        return view('encoder_pages.references',compact('discipline','institutions','fname','lname'));
     }
 
 }

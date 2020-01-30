@@ -23,7 +23,7 @@
               <p style="font-size:18px;"><b>List of Institutions</b></p>
 
 
-              <table class="table">
+              <table class="table" id = "finaltbl">
                   <thead style="background-color: #003471; font-size: 10px;color:white;">
                     <tr>
                       <th><b>Code</b></th>
@@ -47,7 +47,7 @@
                               @endif
                             </td>
                             <td>
-                                <a href="/officer/final/{{$ins->institutions_id}}">
+                                <a href="/officer/final/{{$ins->institutions_id}}"> 
                                 <button type="submit" style="background-color: transparent;border: none;cursor:pointer;"><i class="fa fa-chevron-right " aria-hidden="true" style="color:gray;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Approve"></i></button>
                                 </a>
                               </td>
@@ -58,6 +58,7 @@
                    
 
                   </tbody>
+              </table>
 
           </div>
           </div> 
@@ -66,4 +67,17 @@
       
                  
   </div>
+@endsection
+
+@section('scripts')
+<script  type="text/javascript">
+  $(document).ready(function() {
+      $('#finaltbl').DataTable({
+        lengthChange: false
+       
+      });
+      
+  } );
+  </script>
+    
 @endsection

@@ -59,7 +59,7 @@
         </li> 
 
         <li class = " @if ($activePage == 'references') active @endif">
-          <a href="">
+          <a href="/verifier/references">
             <i class="now-ui-icons design_bullet-list-67"></i>
             <p>References</p>
           </a>

@@ -24,7 +24,7 @@ Route::get('/encoder/track', 'EncoderController@Page_track');
 Route::post('/encoder/upload', 'EncoderController@Upload_file');
 Route::get('/encoder/password', 'EncoderController@Page_password');
 Route::patch('/encoder/changepass', 'EncoderController@Password_change');
-
+Route::get('/encoder/references', 'EncoderController@Page_references');
 
 // VALIDATOR
 Route::get('/validator/dashboard', 'ValidatorController@Page_dashboard');
@@ -38,7 +38,7 @@ Route::patch('/validator/accounts/{status}/{id}', 'ValidatorController@Validatio
 Route::post('/validator/accounts/add', 'ValidatorController@Accounts_add');
 Route::get('/validator/password', 'ValidatorController@Page_password');
 Route::patch('/validator/changepass', 'ValidatorController@Password_change');
-
+Route::get('/validator/references', 'ValidatorController@Page_references');
 
 // VERIFIER
 Route::get('/verifier/dashboard', 'VerifierController@Page_dashboard');
@@ -48,11 +48,12 @@ Route::patch('/verifier/verify/approve/{form}', 'VerifierController@Verify_appro
 Route::patch('/verifier/verify/disapprove/{id}', 'VerifierController@Verify_disapprove');
 Route::get('/verifier/password', 'VerifierController@Page_password');
 Route::patch('/verifier/changepass', 'VerifierController@Password_change');
+Route::get('/verifier/references', 'VerifierController@Page_references');
 
-// OFFICER
+// OFFICER 
 Route::get('/officer/dashboard', 'OfficerController@Page_dashboard');
 Route::get('/officer/finalization', 'OfficerController@Page_finalization');
-Route::get('/officer/reports', 'ReportsController@SUCimport');
+Route::get('/officer/reports', 'OfficerController@Page_reports'); 
 Route::get('/officer/deadline', 'OfficerController@Page_deadline');
 Route::get('/officer/final/{ins_id}', 'OfficerController@Page_final');
 Route::get('/officer/accounts', 'OfficerController@Page_account');
@@ -63,7 +64,15 @@ Route::post('/officer/accounts/add', 'OfficerController@Account_verifier_add');
 Route::post('/officer/accounts/validator/add', 'OfficerController@Account_validator_add');
 Route::get('/officer/password', 'OfficerController@Page_password');
 Route::patch('/officer/changepass', 'OfficerController@Password_change');
-Route::post('/officer/deadline/add', 'OfficerController@Deadline_add');
+Route::post('/officer/deadline/add', 'OfficerController@Deadline_add'); 
+Route::get('/officer/collation', 'OfficerController@Page_collation');
+Route::get('/officer/analytics', 'OfficerController@Page_analytics');
+Route::get('/officer/references', 'OfficerController@Page_references');
+
+
+//REPORTS
+Route::get('/officer/collate', 'ReportsController@import'); 
+Route::get('/officer/exports', 'ReportsController@exports');
 
 Auth::routes();
 

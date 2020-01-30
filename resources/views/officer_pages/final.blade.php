@@ -32,18 +32,18 @@
                         
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody> 
                           @foreach($files as $file)
                           <tr>
                              <td>{{$file->first_name}} &nbsp {{$file->last_Name}}</td>
-                              <td>{{$file->validator_submission}}</td>
+                              <td>{{$file->verifier_submission}}</td>
                               <td>{{$file->created_at}}</td>
                              
                               <td style="padding:0;">
-                              <a href="/storage/verify/{{$file->validator_submission}}" download><button type="submit" style="background-color: transparent;border: none;cursor:pointer;"><i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i></button></a>
+                              <a href="/storage/complete/{{$file->verifier_submission}}" download><button type="submit" style="background-color: transparent;border: none;cursor:pointer;"><i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i></button></a>
                               </td>
                             
-                            </td>
+                            </td> 
                           </tr>
                           @endforeach
                      

@@ -303,7 +303,8 @@ class VerifierController extends Controller
          $institutions = DB::table('institutions')
          ->join('counts', 'institutions.institutions_id', '=','counts.institutions_id')
          ->join('institution_types', 'institutions.institution_types_id', '=','institution_types.institution_types_id')
-         ->select('institutions.*','counts.vcount','counts.fcount','institution_types.type')->get();
+         ->select('institutions.*','counts.vcount','counts.fcount','institution_types.type')
+         ->where('institution_name','!=','Commission on Higher Education')->get();
 
         return view('verifier_pages.verification', compact('institutions','fname','lname'));
     }
@@ -374,7 +375,7 @@ class VerifierController extends Controller
         }
         else
         {
-              //UPDATE STATUS IN VALIDATES TABLE
+            //UPDATE STATUS IN VALIDATES TABLE
             $status = '4';
             DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
         
@@ -460,6 +461,26 @@ class VerifierController extends Controller
              return back();
          }
          return back();
+    }
+
+    public function Page_references()
+    {
+        
+            //GET THE FORMS
+           $id = auth()->id();
+           $employee = DB::table('users')->find($id)->employee_profiles_id;
+   
+           //GET THE FIRST AND LAST NAME OF THE USER 
+           $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+           $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+   
+   
+           //GET THE INSTITUTIONS
+           $institutions = DB::table('institutions') ->where('institution_name','!=','Commission on Higher Education')->get();
+           $discipline = DB::table('discipline_groups')->get();
+   
+           return view('verifier_pages.references',compact('discipline','institutions','fname','lname'));
+       
     }
 
 }

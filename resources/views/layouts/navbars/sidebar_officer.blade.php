@@ -58,11 +58,33 @@
           </a>
         </li>
 
-        <li class = " @if ($activePage == 'reports') active @endif">
-          <a href="/officer/reports">
+        <li>
+          <a data-toggle="collapse" href="#reports">
             <i class="now-ui-icons business_chart-bar-32"></i>
-            <p>Reports</p>
+            <p>
+              Reports
+              <b class="caret"></b>
+            </p>
           </a>
+          <div class="collapse show" id="reports">
+            <ul class="nav">
+              <li class="@if ($activePage == 'reports') active @endif">
+                <a href="/officer/reports">
+                  <p style="padding-left:45px;">Approved Forms</p>
+                </a>
+              </li>
+              <li class="@if ($activePage == 'collation') active @endif">
+                <a href="/officer/collation">
+                  <p style="padding-left:45px;">Collation</p>
+                </a>
+              </li>
+              <li class="@if ($activePage == 'analytics') active @endif">
+                <a href="/officer/analytics">
+                  <p style="padding-left:45px;">Analytics</p>
+                </a>
+              </li>
+            </ul>
+          </div>
         </li>
 
         <li class = " @if ($activePage == 'deadline') active @endif">
@@ -99,7 +121,7 @@
         </li>
 
         <li class = " @if ($activePage == 'references') active @endif">
-          <a href="">
+          <a href="/officer/references">
             <i class="now-ui-icons design_bullet-list-67"></i>
             <p>References</p> 
           </a>

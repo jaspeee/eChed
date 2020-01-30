@@ -11,6 +11,13 @@ use App\Count;
 use App\Verify;
 use App\Employee_profile;
 use App\Deadline;
+use App\Charts\TotalEGChar;
+use App\Charts\TotalMFChar;
+use App\Charts\TotalGradMFChart;
+use App\Charts\TotalNonSucEGChart;
+use App\Charts\TotalNonSucMFChart;
+use App\Charts\TotalNonSucGradMFChart;
+use Illuminate\Support\Str;
 use Hash;
 
 
@@ -54,7 +61,8 @@ class OfficerController extends Controller
         $institutions = DB::table('institutions')
         ->join('counts', 'institutions.institutions_id', '=','counts.institutions_id')
         ->join('institution_types', 'institutions.institution_types_id', '=','institution_types.institution_types_id')
-        ->select('institutions.*','counts.vcount','counts.fcount','institution_types.type')->get();
+        ->select('institutions.*','counts.vcount','counts.fcount','institution_types.type')
+        ->where('institution_name','!=','Commission on Higher Education')->get();
 
 
         return view('officer_pages.finalization', compact('institutions','fname','lname'));
@@ -67,8 +75,15 @@ class OfficerController extends Controller
          $employee = DB::table('users')->find($id)->employee_profiles_id;
          $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
          $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
- 
-        return view('officer_pages.reports', compact('fname','lname'));
+        
+
+         //GET THE COMPLETED FILES
+         $files = DB::table('completes')
+        ->join('institutions', 'completes.institutions_id', '=', 'institutions.institutions_id')
+        ->select('completes.*','institutions.institution_name')->get();
+        
+
+        return view('officer_pages.reports', compact('fname','lname','files'));
     }
     
     public function Page_deadline()
@@ -95,9 +110,9 @@ class OfficerController extends Controller
         ->join('users', 'completes.user_id', '=', 'users.id')
         ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
         ->select('completes.*','employee_profiles.first_name','employee_profiles.last_Name')
-        ->where('employee_profiles.institutions_id', $ins_id)->get();
+        ->where('completes.institutions_id', $ins_id)->get();
         
-        return $files;
+        //return $files;
          return view('officer_pages.final', compact('files','fname','lname'));
 
     }
@@ -296,4 +311,254 @@ class OfficerController extends Controller
         
         return back();
     }
+
+    public function Page_collation()
+    {
+         //GET THE FIRST AND LAST NAME OF THE USER 
+         $id = auth()->id();
+         $employee = DB::table('users')->find($id)->employee_profiles_id;
+         $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+         $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+        
+        //GET THE DEADLINE
+        $SUCenrollments = DB::table('collation_enrollments')->where('institution_types_id','1')->get();
+        $SUCgraduates = DB::table('collation_graduates')->where('institution_types_id','1')->get();
+        
+        $NONSUCenrollments = DB::table('collation_enrollments')->where('institution_types_id','2')->get();
+        $NONSUCgraduates = DB::table('collation_graduates')->where('institution_types_id','2')->get();
+    
+        return view('officer_pages.collation', compact('NONSUCenrollments','NONSUCgraduates','SUCenrollments','SUCgraduates','fname','lname'));
+    }
+
+    public function Page_analytics()
+    {
+         //GET THE FIRST AND LAST NAME OF THE USER 
+         $id = auth()->id();
+         $employee = DB::table('users')->find($id)->employee_profiles_id;
+         $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+         $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+        
+         //SUC
+         $totalEnrollment = DB::table('collation_enrollments')->where('institution_types_id','1')->SUM('total_enrollment');
+         $AVGEnrollment = DB::table('collation_enrollments')->where('institution_types_id','1')->AVG('total_enrollment');
+
+         $totalEnrollmentMale = DB::table('collation_enrollments')->where('institution_types_id','1')->SUM('total_male');
+         $AVGEnrollmentMale = DB::table('collation_enrollments')->where('institution_types_id','1')->AVG('total_male');
+        
+         $totalEnrollmentFemale = DB::table('collation_enrollments')->where('institution_types_id','1')->SUM('total_female');
+         $AVGEnrollmentFemale = DB::table('collation_enrollments')->where('institution_types_id','1')->AVG('total_female');
+         
+   
+         $totalGraduate = DB::table('collation_graduates')->where('institution_types_id','1')->SUM('total_graduate');
+         $AVGGraduate = DB::table('collation_graduates')->where('institution_types_id','1')->AVG('total_graduate');
+         
+         $totalGraduateMale = DB::table('collation_graduates')->where('institution_types_id','1')->SUM('total_male');
+         $AVGGraduateMale = DB::table('collation_graduates')->where('institution_types_id','1')->AVG('total_male');
+         
+         $totalGraduateFemale = DB::table('collation_graduates')->where('institution_types_id','1')->SUM('total_female');
+         $AVGGraduateFemale = DB::table('collation_graduates')->where('institution_types_id','1')->AVG('total_female');
+        
+
+        if($totalEnrollmentMale == null && $totalEnrollmentFemale == null)
+        {
+            $percentageMaleEnroll = null;
+            $percentageFemaleEnroll = null;
+        }
+        else
+        {
+            //MALE
+            $percentageMaleEnroll = $totalEnrollmentMale / $totalEnrollment;
+            $percentageMaleEnroll =  $percentageMaleEnroll * 100;
+            $percentageMaleEnroll =  Str::limit($percentageMaleEnroll, 5);
+
+            //FEMALE
+            $percentageFemaleEnroll = $totalEnrollmentFemale / $totalEnrollment;
+            $percentageFemaleEnroll =  $percentageFemaleEnroll * 100;
+            $percentageFemaleEnroll =  Str::limit($percentageFemaleEnroll, 5);
+        }
+        
+
+
+        if($totalGraduateMale == null &&  $totalGraduateFemale == null)
+        {
+            $percentageMaleGrad = null;
+            $percentageFemaleGrad = null;
+        }
+        else
+        {
+            //MALE
+            $percentageMaleGrad = $totalGraduateMale / $totalGraduate;
+            $percentageMaleGrad =  $percentageMaleGrad * 100;
+            $percentageMaleGrad = Str::limit($percentageMaleGrad, 5);
+
+            //FEMALE
+            $percentageFemaleGrad = $totalGraduateFemale / $totalGraduate;
+            $percentageFemaleGrad =  $percentageFemaleGrad * 100;
+            $percentageFemaleGrad = Str::limit($percentageFemaleGrad, 5);
+        }
+
+       
+         //CHART
+         $borderColors = [
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(22,160,133, 1.0)",
+            "rgba(255, 99, 132, 1.0)"
+        ];
+        $fillColors = [
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(22,160,133, 0.2)",
+            "rgba(255, 99, 132, 0.2)"
+        ];
+
+
+        $chart = new TotalEGChar;
+        $chart->labels(['Total Enrollment', 'Total Graduates']);
+        $chart->dataset('SUC', 'pie', [$totalEnrollment,  $totalGraduate])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
+        
+        //$chart->displayLegend(false);
+
+        $TotalMF = new TotalMFChar;
+        $TotalMF->labels(['Total Male', 'Total Female']);
+        $TotalMF->dataset('SUC', 'bar', [$totalEnrollmentMale,  $totalEnrollmentFemale])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
+        
+        $TotalMF->displayLegend(false);
+        
+        $TotalGradMF = new TotalGradMFChart;
+        $TotalGradMF->labels(['Total Male', 'Total Female']);
+        $TotalGradMF->dataset('SUC', 'bar', [$totalGraduateMale,  $totalGraduateFemale])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
+        
+        $TotalGradMF->displayLegend(false);
+
+
+
+        //NON SUC
+        //ENROLLMENT
+        $NONSUCtotalEnrollment = DB::table('collation_enrollments')->where('institution_types_id','2')->SUM('total_enrollment');
+        $NONSUCAVGEnrollment = DB::table('collation_enrollments')->where('institution_types_id','2')->AVG('total_enrollment');
+
+        $NONSUCtotalEnrollmentMale = DB::table('collation_enrollments')->where('institution_types_id','2')->SUM('total_male');
+        $NONSUCAVGEnrollmentMale = DB::table('collation_enrollments')->where('institution_types_id','2')->AVG('total_male');
+
+        $NONSUCtotalEnrollmentFemale = DB::table('collation_enrollments')->where('institution_types_id','2')->SUM('total_female');
+        $NONSUCAVGEnrollmentFemale = DB::table('collation_enrollments')->where('institution_types_id','2')->AVG('total_female');
+
+        //GRADUATES
+        $NONSUCtotalGraduate = DB::table('collation_graduates')->where('institution_types_id','2')->SUM('total_graduate');
+        $NONSUCAVGGraduate = DB::table('collation_graduates')->where('institution_types_id','2')->AVG('total_graduate');
+        
+        $NONSUCtotalGraduateMale = DB::table('collation_graduates')->where('institution_types_id','2')->SUM('total_male');
+        $NONSUCAVGGraduateMale = DB::table('collation_graduates')->where('institution_types_id','2')->AVG('total_male');
+        
+        $NONSUCtotalGraduateFemale = DB::table('collation_graduates')->where('institution_types_id','2')->SUM('total_female');
+        $NONSUCAVGGraduateFemale = DB::table('collation_graduates')->where('institution_types_id','2')->AVG('total_female');
+
+        
+        if($NONSUCtotalEnrollmentMale == null && $NONSUCtotalEnrollmentFemale == null)
+        {
+            $percentageNonSucMaleEnroll = null;
+            $percentageNonSucFemaleEnroll = null;
+        }
+        else{
+            //MALE
+            $percentageNonSucMaleEnroll = $NONSUCtotalEnrollmentMale / $NONSUCtotalEnrollment;
+            $percentageNonSucMaleEnroll =  $percentageNonSucMaleEnroll * 100;
+            $percentageNonSucMaleEnroll = Str::limit($percentageNonSucMaleEnroll, 5);
+
+            //FEMALE
+            $percentageNonSucFemaleEnroll = $NONSUCtotalEnrollmentFemale / $NONSUCtotalEnrollment;
+            $percentageNonSucFemaleEnroll =  $percentageNonSucFemaleEnroll * 100;
+            $percentageNonSucFemaleEnroll = Str::limit($percentageNonSucFemaleEnroll, 5);
+
+        }
+
+        if($NONSUCtotalGraduateMale == null &&  $NONSUCtotalGraduateFemale == null)
+        {
+            
+            $percentageNonSucMaleGrad = null;
+            $percentageNonSucFemaleGrad = null;
+
+        }
+        else
+        {
+            //MALE
+            $percentageNonSucMaleGrad = $NONSUCtotalGraduateMale / $NONSUCtotalGraduate;
+            $percentageNonSucMaleGrad =  $percentageNonSucMaleGrad * 100;
+            $percentageNonSucMaleGrad = Str::limit($percentageNonSucMaleGrad, 5);
+
+            //FEMALE
+            $percentageNonSucFemaleGrad = $NONSUCtotalGraduateFemale / $NONSUCtotalGraduate;
+            $percentageNonSucFemaleGrad =  $percentageNonSucFemaleGrad * 100;
+            $percentageNonSucFemaleGrad = Str::limit($percentageNonSucFemaleGrad, 5);
+        }
+
+       
+
+        $TotalNonSucEG = new TotalNonSucEGChart;
+        $TotalNonSucEG->labels(['Enrollment', 'Graduates']);
+        $TotalNonSucEG->dataset('SUC', 'pie', [$NONSUCtotalEnrollment,  $NONSUCtotalGraduate])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
+        
+        $TotalNonSucEG->displayLegend(false);
+
+
+        $TotalNonSucMF = new TotalNonSucMFChart;
+        $TotalNonSucMF->labels(['Total Male', 'Total Female']);
+        $TotalNonSucMF->dataset('SUC', 'bar', [$NONSUCtotalEnrollmentMale,  $NONSUCtotalEnrollmentFemale])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
+        
+        $TotalNonSucMF->displayLegend(false);
+
+
+        $TotalNonSucGradMF = new TotalNonSucGradMFChart;
+        $TotalNonSucGradMF->labels(['Total Male', 'Total Female']);
+        $TotalNonSucGradMF->dataset('SUC', 'bar', [$NONSUCtotalGraduateMale,  $NONSUCtotalGraduateFemale])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
+        
+        $TotalNonSucGradMF->displayLegend(false);
+        
+
+         return view('officer_pages.analytics', compact('totalGraduateFemale','totalGraduateMale','percentageFemaleGrad',
+         'percentageMaleGrad','AVGGraduateFemale','AVGGraduateMale','TotalGradMF',
+         'totalEnrollmentFemale','totalEnrollmentMale','percentageMaleEnroll',
+         'percentageFemaleEnroll','AVGEnrollmentFemale','AVGEnrollmentMale',
+         'TotalMF','chart','fname','lname',
+        'TotalNonSucEG','TotalNonSucMF','TotalNonSucGradMF',
+        'NONSUCAVGEnrollmentMale', 'NONSUCAVGEnrollmentFemale','percentageNonSucMaleEnroll', 'percentageNonSucFemaleEnroll'
+        , 'NONSUCtotalEnrollmentMale', 'NONSUCtotalEnrollmentFemale',
+        'NONSUCAVGGraduateMale', 'NONSUCAVGGraduateFemale', 'percentageNonSucMaleGrad', 'percentageNonSucFemaleGrad'
+        ,'NONSUCtotalGraduateMale', 'NONSUCtotalGraduateFemale'
+
+        ));
+    }
+
+    public function Page_references()
+    {
+        
+            //GET THE FORMS
+           $id = auth()->id();
+           $employee = DB::table('users')->find($id)->employee_profiles_id;
+   
+           //GET THE FIRST AND LAST NAME OF THE USER 
+           $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+           $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+   
+   
+           //GET THE INSTITUTIONS
+           $institutions = DB::table('institutions') ->where('institution_name','!=','Commission on Higher Education')->get();
+           $discipline = DB::table('discipline_groups')->get();
+   
+           return view('officer_pages.references',compact('discipline','institutions','fname','lname'));
+       
+    }
+
+
 }
