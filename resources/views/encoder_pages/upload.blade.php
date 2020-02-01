@@ -13,6 +13,32 @@
   </div>
   <div class="content"> 
     
+    @if (count($errors) > 0)
+    <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
+      <p>There were some problems with your File input.</p>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    @endif
+
+      @if(session('success'))
+      <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('success') }}
+      </div> 
+
+      @elseif(session('danger'))
+      <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('danger') }}
+      </div> 
+      @endif
+      
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -24,25 +50,19 @@
             
 
             <div class="container" style="padding:40px;"> 
-            
-                @if (count($errors) > 0)
-              <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
-                <p>There were some problems with your File input.</p>
-              </div>
-              @endif
-        
-                @if(session('success'))
-                <div class="alert alert-success">
-                  {{ session('success') }}
-                </div> 
-                @endif
-
                 <p style="font-size:18px;"><b>Upload Forms to Validate</b></p>
                 <p style="font-size:13px;">Upload Form : Click on " Choose Files " to choose file to upload and click the button Upload</p>
-            <form method="post" action="" class="form-horizontal" enctype="multipart/form-data">
+            
+                <form method="post" action="" class="form-horizontal" enctype="multipart/form-data">
               @csrf 
-                <input type="file" name="file[]" multiple>
+                <input type="file" name="file[]" id="file" multiple>
+                
+                
+                <div id="selectedFiles" style="padding-top:2%;padding-bottom:%"></div>
+
                 <input type="submit" class="btn btn-info" value="Upload">
+
+                
             </form> 
 
 
@@ -64,7 +84,36 @@
 // });
 
 
+
+
+var selDiv = "";
+		
+	document.addEventListener("DOMContentLoaded", init, false);
+	
+	function init() {
+		document.querySelector('#file').addEventListener('change', handleFileSelect, false);
+		selDiv = document.querySelector("#selectedFiles");
+	}
+		
+	function handleFileSelect(e) {
+		
+		if(!e.target.files) return;
+		
+		selDiv.innerHTML = "";
+		
+		var files = e.target.files;
+		for(var i=0; i<files.length; i++) {
+			var f = files[i];
+			
+			selDiv.innerHTML += f.name + "<br/>";
+
+		}
+		
+	}
+  
+
 $(document).ready(function() {
+
 
 $(".btn-success").click(function(){ 
     var html = $(".clone").html();
@@ -76,6 +125,8 @@ $("body").on("click",".btn-danger",function(){
 });
 
 });
+
+
 
 
 </script>

@@ -11,6 +11,34 @@
   <div class="panel-header panel-header-sm">
   </div>
   <div class="content"> 
+
+    @if (count($errors) > 0)
+    <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
+      <p>There were some problems with your File input.</p>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    @endif
+
+      @if(session('success'))
+      <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('success') }}
+      </div> 
+
+      @elseif(session('danger'))
+      <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('danger') }}
+      </div> 
+      @endif
+
+
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -20,19 +48,34 @@
           <div class="card-body">
             <div class="container" style="padding:40px;">
 
-                <p style="font-size:18px;"><b>List of Encoder Accounts</b>
-
+                <p style="font-size:18px;"><b>List of Encoder Accounts</b></p>
+                  <p style="font-size:13px;">Add Accounts : Please click this button to prompt the adding of accounts 
                   
                     <button type="button" data-toggle="modal" data-target="#encoderModal" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
-                      <i class="now-ui-icons loader_gear" data-toggle="tooltip" data-placement="top" title="Add Encoder"></i>
+                      <i class="now-ui-icons ui-2_settings-90" data-toggle="tooltip" data-placement="top" title="Add Encoder"></i>
                     </button>
+                  </p>
                   
+                   
+                  <hr>
 
                   {{-- <button type="button" style="background-color: transparent;border: none;cursor:pointer;"
                   data-toggle="modal" data-target="#encoderModal" >               
                     <i class="fa fa-plus-circle" aria-hidden="true" style="color:green;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Add Encoder"></i></button> --}}
-                </p>
+               
+                
+                <br>
+                <form class="form-inline " >
+                    <div class="form-group">
+                      <label >
+                        <i class="now-ui-icons ui-1_zoom-bold" style="font-size: 18px;"></i> &nbsp;
+                      </label>
+                        <input type="text" class="form-control" id="tracksearchbar" placeholder= "Search" > 
+                    </div>
+                  </form>
   
+                  <br> 
+
                 <table class="table" id="example">
                     <thead style="background-color: #003471; font-size: 10px;color:white;">
                       <tr>
@@ -62,9 +105,9 @@
                                 {{method_field('patch')}}
                                 @csrf
                                     @if($acc->status == 'Active')
-                                    <td><button type="submit" class="btn btn-danger" >Inactive</button></a></td>
+                                    <td><button onclick="return confirmation();" type="submit" class="btn btn-danger" >Inactive</button></a></td>
                                     @else
-                                    <td><button type="submit"  class="btn btn-success">Active</button></a></td>
+                                    <td><button onclick="return confirmation();" type="submit"  class="btn btn-success">Active</button></a></td>
                                     @endif
                             </form>
                           </tr>
@@ -130,11 +173,21 @@
 @section('scripts')
 <script  type="text/javascript">
 $(document).ready(function() {
-    $('#example').DataTable({
-      lengthChange: false
-    });
-    
+    // $('#subtbl').DataTable({
+    //   lengthChange: false
+     
+    // });
+    oTable = $('#example').DataTable({
+  sDom: 'lrtip',lengthChange: false
+  
+
+}); 
 } );
+
+$('#tracksearchbar').keyup(function(){
+      oTable.search($(this).val()).draw() ;
+})
+
 
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
@@ -145,6 +198,14 @@ $('#encoderModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget) 
   var modal = $(this)
 })
+
+function confirmation(){
+    if(confirm('Are you sure you want to take this action?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
 
 </script>
 @endsection

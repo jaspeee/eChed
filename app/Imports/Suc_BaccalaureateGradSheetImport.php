@@ -16,22 +16,32 @@ class Suc_BaccalaureateGradSheetImport implements ToModel,  WithStartRow, WithCa
         return 13;
     }
 
+    public function getID()
+    {
+        return DB::table('institution_ids')
+        ->orderby('institution_ids_id','desc')->limit(1)->first()->institution;
+    }
 
     public function model(array $row)
     {    
     
-        return new Collation_graduate([
-        
-            'program_name' => $row[1], 
-            'major_name' => $row[3],
-            'total_male' => $row[39],
-            'total_female' => $row[40],
-            'total_graduate' => $row[41],
-            'institution_types_id' => '1',
-        ]);
-
-
-
+        if($row[1] == null)
+        {
+            return null;
+        }
+        else
+        {
+            return new Collation_graduate([
+                'institutions_id' => $this->getID(), 
+                'program_name' => $row[1], 
+                'major_name' => $row[3],
+                'total_male' => $row[39],
+                'total_female' => $row[40],
+                'total_graduate' => $row[41],
+                'institution_types_id' => '1',
+            ]);
+    
+        }
     }
 
     

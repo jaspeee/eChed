@@ -10,16 +10,15 @@ use App\Imports\SucEnrollmentImport;
 use App\Imports\SucGraduateImport;
 use App\Imports\NonSucEnrollmentImport;
 use App\Imports\NonSucGraduateImport;
-use App\Imports\Suc_DoctoralSheetImport;
+use App\Imports\NonSuc_Doctoral;
 use App\Exports\EnrollmentExport;
+use App\InstitutionId;
 
 
 
 class ReportsController extends Controller 
 {   
     
-  public $institutions; 
-
 
     public function import() 
     {   
@@ -30,13 +29,11 @@ class ReportsController extends Controller
            if (Storage::exists('public/complete/'.$files->verifier_submission)) 
            {    
 
-                $data = new Suc_DoctoralSheetImport;
-                $data-> institutionsID = $files->institutions_id;
-                
-
-
-                //return  $data-> institutionsID;
-                //return  $this->institutions;
+               
+                //STORE DATA 
+                $ins = new InstitutionId();
+                $ins->institution = $files->institutions_id;
+                $ins->save();
 
                //$path = Storage::get('public/complete/'.$files->verifier_submission);
                $path = storage_path('app/public/complete/'.$files->verifier_submission);
@@ -51,22 +48,28 @@ class ReportsController extends Controller
         }
 
 
-
         $NonSucfile = DB::table('completes')->where('forms_id','9')->get();
-        //return $file;
+        //return $file; 
 
         foreach($NonSucfile as $files)
         {
            if (Storage::exists('public/complete/'.$files->verifier_submission)) 
-           {
+           {    
+            
+    
+                //STORE DATA 
+                $ins = new InstitutionId();
+                $ins->institution = $files->institutions_id;
+                $ins->save();
+
                //$path = Storage::get('public/complete/'.$files->verifier_submission);
                $path = storage_path('app/public/complete/'.$files->verifier_submission);
                Excel::import(new NonSucEnrollmentImport,  $path);
-               Excel::import(new NonSucGraduateImport,  $path);
-              
-               return 'success'; 
+               //Excel::import(new NonSucGraduateImport,  $path);
+                
+               return back(); 
            }
-           else{
+           else{ 
               return 'wala';
            }
 
@@ -74,6 +77,7 @@ class ReportsController extends Controller
 
         
     }
+
 
     public function exports()
     {

@@ -17,17 +17,30 @@ class NonSuc_BasicGradSheetImport implements ToModel,  WithStartRow, WithCalcula
     }
 
 
+    public function getID()
+    {
+        return DB::table('institution_ids')
+        ->orderby('institution_ids_id','desc')->limit(1)->first()->institution;
+    }
+
     public function model(array $row)
     {    
-        return new Collation_graduate([
-
-            'program_name' => $row[0], 
-            'major_name' => $row[2],
-            'total_male' => $row[36],
-            'total_female' => $row[37],
-            'total_graduate' => $row[38],
-            'institution_types_id' => '2',
-        ]);
+        if($row[0] == null)
+        {
+            return null;
+        }
+        else
+        {
+            return new Collation_graduate([
+                'institutions_id' => $this->getID(), 
+                'program_name' => $row[0], 
+                'major_name' => $row[2],
+                'total_male' => $row[36],
+                'total_female' => $row[37],
+                'total_graduate' => $row[38],
+                'institution_types_id' => '2',
+            ]);
+        }
 
     }
 

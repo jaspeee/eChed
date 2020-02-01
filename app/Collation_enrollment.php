@@ -7,7 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 class Collation_enrollment extends Model
 {
     protected $fillable = [
-        'program_name','major_name', 'total_male', 'total_female', 'total_enrollment', 'institution_types_id'
+        'institutions_id','program_name','major_name', 
+        '0M',
+        '0F',
+        '1M',
+        '1F',
+        '2M',
+        '2F',
+        '3M',
+        '3F',
+        '4M',
+        '4F',
+        '5M',
+        '5F',
+        '6M',
+        '6F',
+        '7M',
+        '7F',
+        'total_male', 'total_female', 'total_enrollment', 'institution_types_id'
      ];
 }
 

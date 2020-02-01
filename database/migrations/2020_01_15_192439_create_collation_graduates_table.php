@@ -15,6 +15,7 @@ class CreateCollationGraduatesTable extends Migration
     {
         Schema::create('collation_graduates', function (Blueprint $table) {
             $table->bigIncrements('collation_graduates_id');
+             $table->unsignedBigInteger('institutions_id')->nullable()->unsigned();
             $table->string('program_name')->nullable();
             $table->string('major_name')->nullable();
             $table->integer('total_male')->nullable()->unsigned();
@@ -24,7 +25,7 @@ class CreateCollationGraduatesTable extends Migration
             $table->timestamps();
 
             $table->foreign('institution_types_id')->references('institution_types_id')->on('institution_types')->onDelete('cascade');
-        
+            $table->foreign('institutions_id')->references('institutions_id')->on('institutions')->onDelete('cascade');
             
         });
     }

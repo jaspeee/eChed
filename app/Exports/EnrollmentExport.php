@@ -16,6 +16,7 @@ class EnrollmentExport implements FromCollection,  ShouldAutoSize, WithHeadings
     public function headings(): array
     {
         return [
+            'Institutional Name',
             'Program Name',
             'Major Name',
             '0M',
@@ -44,8 +45,26 @@ class EnrollmentExport implements FromCollection,  ShouldAutoSize, WithHeadings
     public function collection()
     {
         return DB::table('collation_enrollments')
+        ->join('institutions','institutions.institutions_id', '=', 'collation_enrollments.institutions_id')
         ->join('institution_types', 'institution_types.institution_types_id', '=', 'collation_enrollments.institution_types_id')
-        ->select('collation_enrollments.program_name', 'collation_enrollments.major_name',
+        ->select('institutions.institution_name',
+            'collation_enrollments.program_name', 'collation_enrollments.major_name',
+            'collation_enrollments.0M',
+            'collation_enrollments.0F',
+            'collation_enrollments.1M',
+            'collation_enrollments.1F',
+            'collation_enrollments.2M',
+            'collation_enrollments.2F',
+            'collation_enrollments.3M',
+            'collation_enrollments.3F',
+            'collation_enrollments.4M',
+            'collation_enrollments.4F',
+            'collation_enrollments.5M',
+            'collation_enrollments.5F',
+            'collation_enrollments.6M',
+            'collation_enrollments.6F',
+            'collation_enrollments.7M',
+            'collation_enrollments.7F',
         'collation_enrollments.total_male','collation_enrollments.total_female','collation_enrollments.total_enrollment',
         'institution_types.type')->get();
 

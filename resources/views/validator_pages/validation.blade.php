@@ -11,6 +11,33 @@
   <div class="panel-header panel-header-sm">
   </div>
   <div class="content"> 
+
+    @if (count($errors) > 0)
+    <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
+      <p>There were some problems with your File input.</p>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    @endif
+
+      @if(session('success'))
+      <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('success') }}
+      </div> 
+
+      @elseif(session('danger'))
+      <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('danger') }}
+      </div> 
+      @endif
+
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -19,11 +46,22 @@
           </div>
           <div class="card-body">
 
-
+ 
               <div class="container" style="padding:40px;">
 
                   <p style="font-size:18px;"><b>Tracking of the Submitted Forms</b></p>
   
+                <br>  
+                  <form class="form-inline " >
+                    <div class="form-group">
+                      <label >
+                        <i class="now-ui-icons ui-1_zoom-bold" style="font-size: 18px;"></i> &nbsp;
+                      </label>
+                        <input type="text" class="form-control" id="tracksearchbar" placeholder= "Search" > 
+                    </div>
+                  </form>
+  
+                  <br> 
 
                 <table class="table" id="example">
                   <thead style="background-color: #003471; font-size: 10px;color:white;">
@@ -68,14 +106,51 @@
                             
         
                             @if($sub->status == 'Disapprove')
-                              <td></td>
-                            @elseif($sub->status == 'Approve')
                               <td style="padding:0;">
-                                <a href="/storage/verify/{{$sub->encoder_submission}}" download><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
-                                  <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
+                                <button type="submit" style="background-color: transparent;border: none;cursor:pointer;" disabled>
+                                  <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" ></i>
                                   {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
                                 </button></a>
                               </td>
+                              <td style="padding:0;">
+                                
+                                <button disabled type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                  <i class="now-ui-icons ui-1_check" style="font-size: 15px;color: green"  ></i>
+                                  {{-- <i class="fa fa-check-circle" aria-hidden="true" style="color:green;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Approve"></i> --}}
+                                </button>
+                               
+                              </td >
+                              <td style="padding:0;">
+                                <button type="button" disabled data-toggle="modal" data-target="#disapproveModal" data-form="{{$sub->encoder_submission}}" data-id="{{$sub->validates_id}}" data-fname=" {{$sub->first_name}}" data-lname="{{$sub->last_Name}}" style="background-color: transparent;border: none;cursor:pointer;">
+                                  <i class="now-ui-icons ui-1_simple-remove" style="font-size: 15px;color: red" ></i>
+                                  {{-- <i class="fa fa-times-circle" aria-hidden="true" style="color:red;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Disapprove"></i> --}}
+                                </button>
+                              </td>
+
+
+                            @elseif($sub->status == 'Approve')
+
+                                <td style="padding:0;">
+                                  <a href="/storage/verify/{{$sub->encoder_submission}}" download><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                    <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
+                                    {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
+                                  </button></a>
+                                </td>
+                                <td style="padding:0;">
+                                
+                                <button  disabled type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                  <i class="now-ui-icons ui-1_check" style="font-size: 15px;color: green" ></i>
+                                  {{-- <i class="fa fa-check-circle" aria-hidden="true" style="color:green;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Approve"></i> --}}
+                                </button>
+                                
+                                </td >
+                                <td style="padding:0;">
+                                  <button type="button" disabled data-toggle="modal" data-target="#disapproveModal" data-form="{{$sub->encoder_submission}}" data-id="{{$sub->validates_id}}" data-fname=" {{$sub->first_name}}" data-lname="{{$sub->last_Name}}" style="background-color: transparent;border: none;cursor:pointer;">
+                                    <i class="now-ui-icons ui-1_simple-remove" style="font-size: 15px;color: red" ></i>
+                                    {{-- <i class="fa fa-times-circle" aria-hidden="true" style="color:red;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Disapprove"></i> --}}
+                                  </button>
+                                </td>
+
                             @else
                               <td style="padding:0;">
                                 <a href="/storage/validate/{{$sub->encoder_submission}}" download><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
@@ -83,27 +158,27 @@
                                   {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
                                 </button></a>
                               </td>
+                              <td style="padding:0;">
+                                <form method="POST"  action="/validator/validation/approve/{{$sub->validates_id}}">
+                                  {{method_field('patch')}}
+                                  @csrf
+                                <button  onclick="return confirmation();" type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                  <i class="now-ui-icons ui-1_check" style="font-size: 15px;color: green" data-toggle="tooltip" data-placement="top" title="Approve" ></i>
+                                  {{-- <i class="fa fa-check-circle" aria-hidden="true" style="color:green;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Approve"></i> --}}
+                                </button>
+                                </form>
+                              </td >
+                              <td style="padding:0;">
+                                <button type="button" data-toggle="modal" data-target="#disapproveModal" data-form="{{$sub->encoder_submission}}" data-id="{{$sub->validates_id}}" data-fname=" {{$sub->first_name}}" data-lname="{{$sub->last_Name}}" style="background-color: transparent;border: none;cursor:pointer;">
+                                  <i class="now-ui-icons ui-1_simple-remove" style="font-size: 15px;color: red" data-toggle="tooltip" data-placement="top" title="Disapprove"></i>
+                                  {{-- <i class="fa fa-times-circle" aria-hidden="true" style="color:red;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Disapprove"></i> --}}
+                                </button>
+                              </td>
                             @endif
                             
                            
-                            
-                            <td style="padding:0;">
-                            <form method="POST" action="/validator/validation/approve/{{$sub->validates_id}}">
-                              {{method_field('patch')}}
-                              @csrf
-                            <button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
-                              <i class="now-ui-icons ui-1_check" style="font-size: 15px;color: green" data-toggle="tooltip" data-placement="top" title="Approve" ></i>
-                              {{-- <i class="fa fa-check-circle" aria-hidden="true" style="color:green;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Approve"></i> --}}
-                            </button>
-                            </form>
-                          </td >
 
-                          <td style="padding:0;">
-                          <button type="button" data-toggle="modal" data-target="#disapproveModal" data-form="{{$sub->encoder_submission}}" data-id="{{$sub->validates_id}}" data-fname=" {{$sub->first_name}}" data-lname="{{$sub->last_Name}}" style="background-color: transparent;border: none;cursor:pointer;">
-                            <i class="now-ui-icons ui-1_simple-remove" style="font-size: 15px;color: red" data-toggle="tooltip" data-placement="top" title="Disapprove"></i>
-                            {{-- <i class="fa fa-times-circle" aria-hidden="true" style="color:red;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Disapprove"></i> --}}
-                          </button>
-                          </td>
+                         
                           
                             
                         </tr>
@@ -183,18 +258,12 @@
 
 @section('scripts')
 <script  type="text/javascript">
-$(document).ready(function() {
-    $('#example').DataTable({
-      lengthChange: false
-    });
-    
-} );
+
 
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
   
 });
-
 
 
 
@@ -240,7 +309,29 @@ $('#commentModal').on('show.bs.modal', function(event) {
 
 });
 
+$(document).ready(function() {
+    // $('#subtbl').DataTable({
+    //   lengthChange: false
+     
+    // });
+    oTable = $('#example').DataTable({
+  sDom: 'lrtip',lengthChange: false
+  
+
+}); 
+} );
 
 
+$('#tracksearchbar').keyup(function(){
+      oTable.search($(this).val()).draw() ;
+})
+
+function confirmation(){
+    if(confirm('Are you sure that you want to approve this form?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
 </script>
 @endsection

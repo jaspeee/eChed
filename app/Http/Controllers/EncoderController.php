@@ -8,6 +8,8 @@ use App\Form;
 use App\Validate;
 use App\Charts\StatusChart;
 use Hash;
+Use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class EncoderController extends Controller
 {   
@@ -20,6 +22,9 @@ class EncoderController extends Controller
     
     public function Page_dashboard()
     {   
+
+        
+        
         //GET THE FIRST AND LAST NAME OF THE USER 
         $id = auth()->id();
         $employee = DB::table('users')->find($id)->employee_profiles_id;
@@ -35,6 +40,11 @@ class EncoderController extends Controller
         ->select('validates.*','employee_profiles.first_name','employee_profiles.last_Name','statuses.status')
         ->where('employee_profiles.institutions_id', $institution)->orderby('validates_id','desc')->limit(3)->get();
  
+
+        //GET THE INSTITUTION
+        $school = DB::table('institutions')->where('institutions_id',$institution)->first()->institution_name;
+
+
         //CHART
         $borderColors = [
             "rgba(255, 205, 86, 1.0)",
@@ -77,8 +87,11 @@ class EncoderController extends Controller
         ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
         ->select('deadlines.*', 'employee_profiles.first_name', 'employee_profiles.last_Name')->paginate(1);
 
+        $date = Carbon::now();
+        $dates = $date->toFormattedDateString();         
 
-        return view('encoder_pages.dashboard', compact('deadline','chart','submissions','fname','lname'));
+        return view('encoder_pages.dashboard', compact('dates','school',
+            'deadline','chart','submissions','fname','lname'));
     }
 
     public function Page_form()
@@ -169,23 +182,31 @@ class EncoderController extends Controller
         {
             foreach($request->file as $file)
             {   
+                
                  $filenameWithExt = $file->getClientOriginalName();
                  $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME).'_'.$abbrv;
                  $extension = $file->getClientOriginalExtension();
                  $fileNameToStore = $filename.'.'.$extension;
                 
-                 $file->storeAs('public/validate',$fileNameToStore);
+                 if (Storage::exists('public/validate/'.$fileNameToStore)) 
+                {    
+                    return back()->with('danger', 'Files are already submitted to validator');
+                }
+                else
+                {
+                    $file->storeAs('public/validate',$fileNameToStore);
 
-                $val = new Validate();
-                $val->user_id = auth()->id();
-                $val->encoder_submission = $fileNameToStore;
-                $val->statuses_id = '3';
-                $val->comment = '';
-                $val->save();
+                    $val = new Validate();
+                    $val->user_id = auth()->id();
+                    $val->encoder_submission = $fileNameToStore;
+                    $val->statuses_id = '3';
+                    $val->comment = '';
+                    $val->save();
+                }
 
-            }
+            } 
 
-            return back()->with('success', 'Your files has been successfully added');
+            return back()->with('success', 'Files has been successfully submitted to validator');
         }
 
     }
@@ -206,9 +227,9 @@ class EncoderController extends Controller
             
          }
          else{ 
-             return back();
+            return back()->with('danger', 'Current password was incorrect');
          }
-         return back();
+         return back()->with('success', 'Change password successfully');
     }
 
     public function Page_references()
@@ -223,7 +244,8 @@ class EncoderController extends Controller
 
 
         //GET THE INSTITUTIONS
-        $institutions = DB::table('institutions') ->where('institution_name','!=','Commission on Higher Education')->get();
+        $insID = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $institutions = DB::table('institutions') ->where('institutions_id', $insID)->get();
         $discipline = DB::table('discipline_groups')->get();
 
         return view('encoder_pages.references',compact('discipline','institutions','fname','lname'));

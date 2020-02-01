@@ -10,20 +10,41 @@
 @section('content') 
   <div class="panel-header panel-header-sm">
   </div>
+
+ 
+
   <div class="content"> 
-    {{-- <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-         
-          </div>
-          <div class="card-body">
-              dashboard here
+    
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+              <div class="card-header">
+                <h5 class="card-category">Encoder Account</h5>
+                <h5 class="card-title">
+                  <i class="now-ui-icons business_bank" ></i>
+                  Welcome to E - CHED,<br>
+                </h5>
+              </div>
+              <div class="card-body">
+                <div class="container" style="padding:10px;">
+                 
+                  <p style="font-size: 30px;text-align: center;"><i> " {{$school}} " </i></p>
+                 
+                </div>
+              </div>
+              <div class="card-footer ">
+                <hr>
+                <div class="stats">
+                
+                  Date Today : {{$dates}}
+                  
+                </div>
+              </div>
           </div>
         </div>
-      </div> --}}
-      <div class="row">
-        <div class="col-lg-6">
+
+        <div class="col-md-6">
           <div class="card">
             <div class="card-header">
               <h5 class="card-title">
@@ -32,18 +53,25 @@
               </h5>
             </div>
             <div class="card-body" style="padding: 5%;">
+
+
+
               @foreach($deadline as $dd)
-             <h6 style="font-weight: normal;">Date : {{$dd->deadline_date}}</h6>
-             <p>Note &nbsp;: {{$dd->message}} </p>
-             <hr>
-                <p style="font-size: small;color: gray;text-align: right;"><i class="now-ui-icons ui-2_setting-90"></i> Posted By: {{$dd->first_name}} {{$dd->last_Name}}</p>
+
+            
+              <h6 style="font-weight: normal;">Date : {{$dd->deadline_date}}</h6>
+              <p>Note &nbsp;: {{$dd->message}} </p>
+              <hr>
+              <p style="font-size: small;color: gray;text-align: right;"><i class="now-ui-icons ui-2_setting-90"></i> Posted By: {{$dd->first_name}} {{$dd->last_Name}}</p>
+              
+         
              @endforeach
              {{ $deadline->links("pagination::bootstrap-4")}}
+
             </div>
-            
           
-  
           </div>
+         
         </div> 
         
                    
@@ -109,7 +137,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-header">
-            <h5 class="card-category">Encoder List</h5>
+            <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i>  Encoder </h5>
             <h4 class="card-title"> Submission Status</h4>
           </div>
           <div class="card-body">

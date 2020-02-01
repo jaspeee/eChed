@@ -30,6 +30,17 @@
                     </div>
                   </div>
                 </div> --}}
+                <br>
+                <form class="form-inline " >
+                  <div class="form-group">
+                    <label >
+                      <i class="now-ui-icons ui-1_zoom-bold" style="font-size: 18px;"></i> &nbsp;
+                    </label>
+                      <input type="text" class="form-control" id="tracksearchbar" placeholder= "Search" > 
+                  </div>
+                </form>
+
+                <br> 
 
                 <table class="table" id="subtbl">
                     <thead style="background-color: #003471; font-size: 10px;color:white;">
@@ -115,7 +126,7 @@
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
-
+ 
 
 
 $('#commentModal').on('show.bs.modal', function(event) {
@@ -137,11 +148,20 @@ $('#commentModal').on('show.bs.modal', function(event) {
 
 });
 $(document).ready(function() {
-    $('#subtbl').DataTable({
-      lengthChange: false
+    // $('#subtbl').DataTable({
+    //   lengthChange: false
      
-    });
-    
+    // });
+    oTable = $('#subtbl').DataTable({
+  sDom: 'lrtip',lengthChange: false
+  
+
+}); 
 } );
+
+$('#tracksearchbar').keyup(function(){
+      oTable.search($(this).val()).draw() ;
+})
+
 </script>
 @endsection

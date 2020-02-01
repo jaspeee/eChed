@@ -11,6 +11,32 @@
   <div class="panel-header panel-header-sm">
   </div>
   <div class="content">
+    @if (count($errors) > 0)
+    <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
+      <p>There were some problems with your File input.</p>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    @endif
+
+      @if(session('success'))
+      <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('success') }}
+      </div> 
+
+      @elseif(session('danger'))
+      <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{ session('danger') }}
+      </div> 
+      @endif
+      
     <div class="row">
       <div class="col-md-8">
         <div class="card">
@@ -68,20 +94,21 @@
  
               <p class="description" style="font-size: 18px;">
                   <b>{{$fname}} &nbsp; {{$lname}}</b>
+                  <br>
+                  Encoder
               </p>
               <hr>
               <br>
               <p class="description" style="text-align:left;"><i class="fa fa-info-circle" style="text-align:left;font-size:13px;"></i>
-                &nbsp; {{$pos}}
+                &nbsp;  
+                {{$div}}
               </p>
               <p class="description" style="text-align:left;"><i class="fa fa-info-circle" style="text-align:left;font-size:13px;"></i>
-                &nbsp; {{$div}}
+                &nbsp; {{$pos}}
               </p>
             </div>
           </div>
         
-      
-         
         </div>
       </div>
     </div>

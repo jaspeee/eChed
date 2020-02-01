@@ -259,7 +259,11 @@ class ValidatorController extends Controller
         
         if($stat == '5')
         {
-            return back();
+            return back()->with('danger', 'You cannot approve this file. Contact your encoder for resubmission');
+        }
+        else if($stat == '4')
+        {
+            return back()->with('danger', 'You already approve this file');
         }
         else
         {   
@@ -286,7 +290,7 @@ class ValidatorController extends Controller
             //MOVE FILE TO ANOTHER STORAGE FOLDER
             if(Storage::move('public/validate/'.$filename, 'public/verify/' .$filename))
             {
-                return back();
+                return  back()->with('success', 'Approves the file successfully');
             }
         }
     
@@ -294,26 +298,39 @@ class ValidatorController extends Controller
 
     public function Validation_disapproves(Request $request, $id)
     {   
-        //UPDATE STATUS IN VALIDATES TABLE
-        $status = '5';
-        $comment = $request->textarea;
-        $sample = $id . ''. $comment;
-        DB::update('update validates set comment = ? where validates_id = ?', [$comment,$id]);
 
-        //UPDATE THE COMMENT IN VALIDATES TABLE
-        DB::update('update validates set statuses_id = ? where validates_id = ?', [$status,$id]);
-        
-        //GET THE FILE NAME
-        $filename = DB::table('validates')->where('validates_id', $id)->first()->encoder_submission;
+        $stat = DB::table('validates')->where('validates_id', $id)->first()->statuses_id;
 
-        //MOVE FILE TO ANOTHER STORAGE FOLDER
-        if(Storage::delete('public/validate/'.$filename))
+        if($stat == '4')
         {
-            return back();
+            return back()->with('danger', 'You cannot disapprove this file. Contact Ched Verifier for cancelling the form');
         }
+        else if($stat == '5')
+        {
+            return back()->with('danger', 'You already disapprove this file');
+        }
+        else
+        {   
+            //UPDATE STATUS IN VALIDATES TABLE
+            $status = '5';
+            $comment = $request->textarea;
+            $sample = $id . ''. $comment; 
+            DB::update('update validates set comment = ? where validates_id = ?', [$comment,$id]);
 
-        return back();
+            //UPDATE THE COMMENT IN VALIDATES TABLE
+            DB::update('update validates set statuses_id = ? where validates_id = ?', [$status,$id]);
+            
+            //GET THE FILE NAME
+            $filename = DB::table('validates')->where('validates_id', $id)->first()->encoder_submission;
 
+            //MOVE FILE TO ANOTHER STORAGE FOLDER
+            if(Storage::delete('public/validate/'.$filename))
+            {
+                return back()->with('success', 'Disapproves the file successfully');
+            }
+        } 
+
+        
     }
 
     public function Validation_accstat($status, $id)
@@ -326,12 +343,12 @@ class ValidatorController extends Controller
             $user ->statuses_id = '2';
             $user ->save();
             
-            return back();
+            return back()->with('success', 'Deactivate the account successfully');
         }else{
             $user = User::find($id);
             $user ->statuses_id = '1';
             $user ->save();
-            return back();
+            return back()->with('success', 'Activate the account successfully');
         }
  
     }
@@ -369,7 +386,7 @@ class ValidatorController extends Controller
         $user->save();       
 
 
-        return back();
+        return back()->with('success', 'Added new account successfully');
     }
 
     public function Password_change(Request $request)
@@ -387,10 +404,10 @@ class ValidatorController extends Controller
              
             
          }
-         else{
-             return back();
+         else{ 
+             return back()->with('danger', 'Current password was incorrect');
          }
-         return back();
+         return back()->with('success', 'Change password successfully');
     }
 
 
@@ -400,14 +417,15 @@ class ValidatorController extends Controller
             //GET THE FORMS
            $id = auth()->id();
            $employee = DB::table('users')->find($id)->employee_profiles_id;
-   
+    
            //GET THE FIRST AND LAST NAME OF THE USER 
            $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
            $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
    
    
            //GET THE INSTITUTIONS
-           $institutions = DB::table('institutions') ->where('institution_name','!=','Commission on Higher Education')->get();
+           $insID = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+           $institutions = DB::table('institutions') ->where('institutions_id', $insID)->get();
            $discipline = DB::table('discipline_groups')->get();
    
            return view('validator_pages.references',compact('discipline','institutions','fname','lname'));
