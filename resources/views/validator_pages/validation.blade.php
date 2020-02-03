@@ -50,7 +50,11 @@
               <div class="container" style="padding:40px;">
 
                   <p style="font-size:18px;"><b>Tracking of the Submitted Forms</b></p>
-  
+                  <p style="font-size:13px;">
+                    Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming
+                
+                  </p>
+                  <hr>
                 <br>  
                   <form class="form-inline " >
                     <div class="form-group">
@@ -219,7 +223,7 @@
                             
                           </form>
                           {{-- <h5 id="sample"></h5> --}}
-                          
+                           
                         </div>
                       
                       </div>

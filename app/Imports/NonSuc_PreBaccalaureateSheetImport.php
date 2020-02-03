@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Collation_enrollment;
+use App\Collation;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -30,11 +30,13 @@ class NonSuc_PreBaccalaureateSheetImport implements ToModel,  WithStartRow, With
             return null;
         }
         else
-        {
-            return new Collation_enrollment([
+        { 
+            return new Collation([
                 'institutions_id' => $this->getID(), 
                 'program_name' => $row[0], 
                 'major_name' => $row[2],
+                'discipline_groups_id' => 1,
+                'tuition' => $row[15],
                 '0M' => $row[17],
                 '0F' => $row[18],
                 '1M' => $row[19],
@@ -51,13 +53,15 @@ class NonSuc_PreBaccalaureateSheetImport implements ToModel,  WithStartRow, With
                 '6F' => $row[30],
                 '7M' => $row[31],
                 '7F' => $row[32],
-                'total_male' => $row[33],
-                'total_female' => $row[34],
-                'total_enrollment' => $row[35],
+                'TME' => $row[33],
+                'TFE' => $row[34],
+                'TE' => $row[35],
+                'TMG' => $row[36],
+                'TFG' => $row[37],
+                'TG' => $row[38],
                 'institution_types_id' => '2',
             ]);
         }
-
     }
 
     

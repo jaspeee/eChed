@@ -21,8 +21,22 @@
               <div class="container" style="padding:40px;">
 
                   <p style="font-size:18px;"><b>List of Institutions</b></p>
-
-
+                  <p style="font-size:13px;">
+                    Notice : To expand a specific institution, click the arrow on the right-most part of the row
+                  </p>
+                  <hr>
+                  <br>
+                  <form class="form-inline " >
+                      <div class="form-group">
+                        <label >
+                          <i class="now-ui-icons ui-1_zoom-bold" style="font-size: 18px;"></i> &nbsp;
+                        </label>
+                          <input type="text" class="form-control" id="tracksearchbar" placeholder= "Search" > 
+                      </div>
+                    </form>
+    
+                    <br> 
+ 
                   <table class="table" id="institutionstbl">
                       <thead style="background-color: #003471; font-size: 10px;color:white;">
                         <tr>
@@ -78,13 +92,25 @@
 
 @section('scripts')
 <script  type="text/javascript">
+
+
   $(document).ready(function() {
-      $('#institutionstbl').DataTable({
-        lengthChange: false
-       
-      });
-      
-  } );
-  </script>
+    // $('#subtbl').DataTable({
+    //   lengthChange: false
+     
+    // });
+    oTable = $('#institutionstbl').DataTable({
+  sDom: 'lrtip',lengthChange: false
+  
+
+}); 
+} );
+
+$('#tracksearchbar').keyup(function(){
+      oTable.search($(this).val()).draw() ;
+})
+
+  </script> 
+    
     
 @endsection

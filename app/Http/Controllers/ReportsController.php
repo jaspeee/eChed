@@ -6,14 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\SucEnrollmentImport;
-use App\Imports\SucGraduateImport;
-use App\Imports\NonSucEnrollmentImport;
-use App\Imports\NonSucGraduateImport;
-use App\Imports\NonSuc_Doctoral;
+use App\Imports\Suc_CollationImport;
+use App\Imports\NonSuc_CollationImport;
 use App\Exports\EnrollmentExport;
 use App\InstitutionId;
-
+Use Carbon\Carbon;
 
 
 class ReportsController extends Controller 
@@ -37,8 +34,8 @@ class ReportsController extends Controller
 
                //$path = Storage::get('public/complete/'.$files->verifier_submission);
                $path = storage_path('app/public/complete/'.$files->verifier_submission);
-               Excel::import(new SucEnrollmentImport,  $path);
-               Excel::import(new SucGraduateImport,  $path);
+               Excel::import(new Suc_CollationImport,  $path);
+               
                
            }
            else{
@@ -64,24 +61,55 @@ class ReportsController extends Controller
 
                //$path = Storage::get('public/complete/'.$files->verifier_submission);
                $path = storage_path('app/public/complete/'.$files->verifier_submission);
-               Excel::import(new NonSucEnrollmentImport,  $path);
-               //Excel::import(new NonSucGraduateImport,  $path);
+               Excel::import(new NonSuc_CollationImport,  $path);
                 
-               return back(); 
-           }
+              
+           } 
            else{ 
               return 'wala';
-           }
+           } 
 
         }
 
-        
+        // $data = DB::table('collations')->get();
+        // $prog = DB::table('programs')->get();
+
+        // $prog_name='';
+        // $discpline_id='';
+        // $idd = '';
+        // foreach($data as $d)
+        // {   
+        //     $prog_name = $d->program_name;
+        //     $idd = $d->collations_id;
+            
+        //     foreach($prog as $p)
+        //     {
+        //         if( $prog_name == $p->program_name)
+        //         {
+        //             $discpline_id = $p->discipline_groups_id;
+        //         }
+        //         else
+        //         {
+        //             $discpline_id = '1';
+        //         }
+        //     }
+
+        //     DB::update('update collations set discipline_groups_id = ? where collations_id = ?', [$discpline_id,$idd]);
+
+        // }
+
+        return back();
+
     }
 
 
     public function exports()
-    {
-        return Excel::download(new EnrollmentExport, 'EnrollmentCollation.xlsx');
+    {   
+        $date = Carbon::now();
+        $dates = $date->toDateString();             
+
+        $name = 'Collation_'. $dates.'.xlsx';
+        return Excel::download(new EnrollmentExport, $name);
     }
 
   

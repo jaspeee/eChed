@@ -18,7 +18,9 @@ class EnrollmentExport implements FromCollection,  ShouldAutoSize, WithHeadings
         return [
             'Institutional Name',
             'Program Name',
+            'Discipline',
             'Major Name',
+            'Tuition',
             '0M',
             '0F',
             '1M',
@@ -35,38 +37,50 @@ class EnrollmentExport implements FromCollection,  ShouldAutoSize, WithHeadings
             '6F',
             '7M',
             '7F',
-            'Total Male',
-            'Total Female',
-            'Total Enrollment',
+            'TME',
+            'TFE',
+            'TE',
+            'TMG',
+            'TFG',
+            'TG',
             'Institution Type',
         ];
     }
 
     public function collection()
     {
-        return DB::table('collation_enrollments')
-        ->join('institutions','institutions.institutions_id', '=', 'collation_enrollments.institutions_id')
-        ->join('institution_types', 'institution_types.institution_types_id', '=', 'collation_enrollments.institution_types_id')
+        return DB::table('collations')
+        ->join('institutions','institutions.institutions_id', '=', 'collations.institutions_id')
+        ->join('institution_types', 'institution_types.institution_types_id', '=', 'collations.institution_types_id')
+        ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=', 'collations.discipline_groups_id')
         ->select('institutions.institution_name',
-            'collation_enrollments.program_name', 'collation_enrollments.major_name',
-            'collation_enrollments.0M',
-            'collation_enrollments.0F',
-            'collation_enrollments.1M',
-            'collation_enrollments.1F',
-            'collation_enrollments.2M',
-            'collation_enrollments.2F',
-            'collation_enrollments.3M',
-            'collation_enrollments.3F',
-            'collation_enrollments.4M',
-            'collation_enrollments.4F',
-            'collation_enrollments.5M',
-            'collation_enrollments.5F',
-            'collation_enrollments.6M',
-            'collation_enrollments.6F',
-            'collation_enrollments.7M',
-            'collation_enrollments.7F',
-        'collation_enrollments.total_male','collation_enrollments.total_female','collation_enrollments.total_enrollment',
-        'institution_types.type')->get();
+            'collations.program_name', 
+            'discipline_groups.major_discipline', 
+            'collations.major_name',
+            'collations.tuition',
+            'collations.0M',
+            'collations.0F',
+            'collations.1M',
+            'collations.1F',
+            'collations.2M',
+            'collations.2F',
+            'collations.3M',
+            'collations.3F',
+            'collations.4M',
+            'collations.4F',
+            'collations.5M',
+            'collations.5F',
+            'collations.6M',
+            'collations.6F',
+            'collations.7M',
+            'collations.7F',
+            'collations.TME',
+            'collations.TFE',
+            'collations.TE',
+            'collations.TMG',
+            'collations.TFG',
+            'collations.TG',
+            'institution_types.type')->get();
 
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCollationEnrollmentsTable extends Migration
+class CreateCollationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateCollationEnrollmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('collation_enrollments', function (Blueprint $table) {
-            $table->bigIncrements('collation_enrollments_id');
+        Schema::create('collations', function (Blueprint $table) {
+            $table->bigIncrements('collations_id');
             $table->unsignedBigInteger('institutions_id')->nullable()->unsigned();
             $table->string('program_name')->nullable();
             $table->string('major_name')->nullable();
+            $table->unsignedBigInteger('discipline_groups_id')->nullable()->unsigned();
+            $table->integer('tuition')->nullable()->unsigned();
             $table->integer('0M')->nullable()->unsigned();
             $table->integer('0F')->nullable()->unsigned();
             $table->integer('1M')->nullable()->unsigned();
@@ -34,14 +36,18 @@ class CreateCollationEnrollmentsTable extends Migration
             $table->integer('6F')->nullable()->unsigned();
             $table->integer('7M')->nullable()->unsigned();
             $table->integer('7F')->nullable()->unsigned();
-            $table->integer('total_male')->nullable()->unsigned();
-            $table->integer('total_female')->nullable()->unsigned();
-            $table->integer('total_enrollment')->nullable()->unsigned();
+            $table->integer('TME')->nullable()->unsigned();
+            $table->integer('TFE')->nullable()->unsigned();
+            $table->integer('TE')->nullable()->unsigned();
+            $table->integer('TMG')->nullable()->unsigned();
+            $table->integer('TFG')->nullable()->unsigned();
+            $table->integer('TG')->nullable()->unsigned();
             $table->unsignedBigInteger('institution_types_id');
             $table->timestamps();
-            
+             
             $table->foreign('institution_types_id')->references('institution_types_id')->on('institution_types')->onDelete('cascade');
             $table->foreign('institutions_id')->references('institutions_id')->on('institutions')->onDelete('cascade');
+            $table->foreign('discipline_groups_id')->references('discipline_groups_id')->on('discipline_groups')->onDelete('cascade');
         
         });
     }
@@ -53,6 +59,6 @@ class CreateCollationEnrollmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('collation_enrollments');
+        Schema::dropIfExists('collations');
     }
 }

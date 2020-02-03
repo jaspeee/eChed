@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Collation_enrollment;
+use App\Collation;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -25,21 +25,22 @@ class Suc_MasteralSheetImport implements ToModel,  WithStartRow, WithCalculatedF
 
     public function model(array $row)
     {    
-        
         if($row[1] == null)
         {
             return null;
         }
         else
         {
-            return new Collation_enrollment([
+            return new Collation([
             
                 'institutions_id' => $this->getID(), 
                 'program_name' => $row[1], 
                 'major_name' => $row[3],
+                'discipline_groups_id' => 1,
+                'tuition' => $row[1],
                 '0M' => $row[17],
                 '0F' => $row[18],
-                '1M' => $row[19],
+                '1M' => $row[19], 
                 '1F' => $row[20],
                 '2M' => $row[21],
                 '2F' => $row[22],
@@ -53,9 +54,12 @@ class Suc_MasteralSheetImport implements ToModel,  WithStartRow, WithCalculatedF
                 '6F' => $row[30],
                 '7M' => $row[31],
                 '7F' => $row[32],
-                'total_male' => $row[33],
-                'total_female' => $row[34],
-                'total_enrollment' => $row[35],
+                'TME' => $row[33],
+                'TFE' => $row[34],
+                'TE' => $row[35],
+                'TMG' => $row[39],
+                'TFG' => $row[40],
+                'TG' => $row[41],
                 'institution_types_id' => '1',
             ]);
         }   

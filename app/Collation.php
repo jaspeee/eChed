@@ -4,10 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Collation_enrollment extends Model
+class Collation extends Model
 {
     protected $fillable = [
-        'institutions_id','program_name','major_name', 
+      
+        'institutions_id',
+        'program_name',
+        'major_name',
+        'discipline_groups_id',
+        'tuition',
         '0M',
         '0F',
         '1M',
@@ -24,7 +29,13 @@ class Collation_enrollment extends Model
         '6F',
         '7M',
         '7F',
-        'total_male', 'total_female', 'total_enrollment', 'institution_types_id'
+        'TME',
+        'TFE',
+        'TE',
+        'TMG',
+        'TFG',
+        'TG',
+        'institution_types_id',
+
      ];
 }
-

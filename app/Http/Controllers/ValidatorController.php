@@ -14,7 +14,7 @@ use App\Charts\StatusChart;
 use App\Charts\ValidatorStatusChart;
 use App\Charts\AccountStatusChart;
 use Hash;
-
+Use Carbon\Carbon;
 
 class ValidatorController extends Controller
 {   
@@ -153,8 +153,15 @@ class ValidatorController extends Controller
          ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
          ->select('deadlines.*', 'employee_profiles.first_name', 'employee_profiles.last_Name')->paginate(1);
  
- 
-        return view('validator_pages.dashboard', compact('deadline','chartss','charts','chart','submissionss','submissions','fname','lname'));
+        
+          //GET THE INSTITUTION
+        $school = DB::table('institutions')->where('institutions_id',$institution)->first()->institution_name;
+        $date = Carbon::now();
+        $dates = $date->toFormattedDateString();         
+
+
+
+        return view('validator_pages.dashboard', compact('school','dates','deadline','chartss','charts','chart','submissionss','submissions','fname','lname'));
     }
 
     public function Page_validation()
@@ -251,7 +258,7 @@ class ValidatorController extends Controller
 
     public function Validation_approve($id)
     {   
-
+ 
         //GET THE FILE NAME
         $filename = DB::table('validates')->where('validates_id', $id)->first()->encoder_submission;
         
@@ -413,7 +420,7 @@ class ValidatorController extends Controller
 
     public function Page_references()
     {
-        
+         
             //GET THE FORMS
            $id = auth()->id();
            $employee = DB::table('users')->find($id)->employee_profiles_id;

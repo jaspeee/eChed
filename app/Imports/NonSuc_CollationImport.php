@@ -5,7 +5,7 @@ namespace App\Imports;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 
-class NonSucEnrollmentImport implements WithMultipleSheets
+class NonSuc_CollationImport implements WithMultipleSheets
 {   
 
     

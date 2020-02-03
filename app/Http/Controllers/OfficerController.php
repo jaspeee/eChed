@@ -312,7 +312,7 @@ class OfficerController extends Controller
         return back();
     }
 
-    public function Page_collation()
+    public function Page_collation() 
     {
          //GET THE FIRST AND LAST NAME OF THE USER 
          $id = auth()->id();
@@ -321,13 +321,10 @@ class OfficerController extends Controller
          $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
         
         //GET THE DEADLINE
-        $SUCenrollments = DB::table('collation_enrollments')->where('institution_types_id','1')->get();
-        $SUCgraduates = DB::table('collation_graduates')->where('institution_types_id','1')->get();
-        
-        $NONSUCenrollments = DB::table('collation_enrollments')->where('institution_types_id','2')->get();
-        $NONSUCgraduates = DB::table('collation_graduates')->where('institution_types_id','2')->get();
-    
-        return view('officer_pages.collation', compact('NONSUCenrollments','NONSUCgraduates','SUCenrollments','SUCgraduates','fname','lname'));
+        $SUC = DB::table('collations')->where('institution_types_id','1')->get();
+        $NONSUC= DB::table('collations')->where('institution_types_id','2')->get();
+      
+        return view('officer_pages.collation', compact('SUC','NONSUC','fname','lname'));
     }
 
     public function Page_analytics()

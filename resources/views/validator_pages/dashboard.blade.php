@@ -13,14 +13,41 @@
   <div class="content"> 
 
     <div class="row">
-      <div class="col-lg-6">
+      <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+              <h5 class="card-category">Validator Account</h5>
+              <h5 class="card-title">
+                <i class="now-ui-icons business_bank" ></i>
+                Welcome to E - CHED,<br>
+              </h5>
+            </div>
+            <div class="card-body">
+              <div class="container" style="padding:10px;">
+               
+                <p style="font-size: 30px;text-align: center;"> {{$school}}</i></p>
+               
+              </div>
+            </div>
+            <div class="card-footer ">
+              <hr>
+              <div class="stats">
+              
+                Date Today : {{$dates}}
+                
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
         <div class="card">
           <div class="card-header">
             <h5 class="card-title">
               <i class="now-ui-icons ui-1_calendar-60" ></i>
                Deadline for the Submission
             </h5>
-          </div>
+          </div> 
           <div class="card-body" style="padding: 5%;">
             @foreach($deadline as $dd)
            <h6 style="font-weight: normal;">Date : {{$dd->deadline_date}}</h6>
