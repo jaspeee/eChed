@@ -26,10 +26,10 @@
                 <!-- Nav tabs -->
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Institutions</a>
+                <a class="nav-link active" style="color:gray;" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Institutions</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Disciplines</a>
+                <a class="nav-link" style="color:gray;" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Disciplines</a>
                 </li>
                 
             </ul>
@@ -39,6 +39,20 @@
                 <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     
                     <br><br>
+
+                     
+                    <form class="form-inline " >
+                        <div class="form-group">
+                          <label >
+                            <i class="now-ui-icons ui-1_zoom-bold" style="font-size: 18px;"></i> &nbsp;
+                          </label>
+                            <input type="text" class="form-control" id="tracksearchbar" placeholder= "Search" > 
+                        </div>
+                      </form>
+      
+                      <br> 
+
+                      
                     <table class="table" id="reftbl">
                         <thead style="background-color: #003471; font-size: 10px;color:white;">
                           <tr>
@@ -65,6 +79,20 @@
                         
                         
                         <br><br>
+
+                        <br>     
+                        <form class="form-inline " >
+                            <div class="form-group">
+                              <label >
+                                <i class="now-ui-icons ui-1_zoom-bold" style="font-size: 18px;"></i> &nbsp;
+                              </label>
+                                <input type="text" class="form-control" id="tracksearchbar1" placeholder= "Search" > 
+                            </div>
+                          </form>
+          
+                          <br> 
+
+                          
                     <table class="table" id="distbl">
                         <thead style="background-color: #003471; font-size: 10px;color:white;">
                           <tr>
@@ -108,20 +136,41 @@
 @section('scripts')
 <script  type="text/javascript">
 
+
+
 $(document).ready(function() {
-    $('#reftbl').DataTable({
-      lengthChange: false
+    // $('#subtbl').DataTable({
+    //   lengthChange: false
      
-    });
-    
+    // });
+    oTable1 = $('#reftbl').DataTable({
+  sDom: 'lrtip',lengthChange: false
+  
+
+}); 
 } );
 
 $(document).ready(function() {
-    $('#distbl').DataTable({
-      lengthChange: false
+    // $('#subtbl').DataTable({
+    //   lengthChange: false
      
-    });
-    
+    // });
+    oTable = $('#distbl').DataTable({
+  sDom: 'lrtip',lengthChange: false
+  
+
+}); 
 } );
+
+$('#tracksearchbar').keyup(function(){
+      oTable1.search($(this).val()).draw() ;
+})
+
+$('#tracksearchbar1').keyup(function(){
+      oTable.search($(this).val()).draw() ;
+})
+
+
+
 </script>
 @endsection

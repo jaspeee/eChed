@@ -14,7 +14,7 @@
       <a href="http://www.creative-tim.com" class="simple-text logo-normal">
         {{ __('Creative Tim') }}
       </a>
-    </div> --}}
+    </div> --}} 
     
     <div class="sidebar-wrapper" id="sidebar-wrapper">
       <ul class="nav">
@@ -55,7 +55,7 @@
         <li class="@if ($activePage == 'forms') active @endif">
           <a href="/encoder/forms">
             <i class="now-ui-icons files_single-copy-04"></i>
-            <p>Forms</p>
+            <p>Forms</p> 
           </a>
         </li>
 

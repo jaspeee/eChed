@@ -19,6 +19,10 @@ use App\Charts\StatSucChart;
 use Illuminate\Support\Str;
 Use Carbon\Carbon;
 use Hash; 
+use App\Jobs\VerifierApprove;
+use App\Jobs\VerifierDisapprove;
+use App\Jobs\VerifierChangePass;
+use App\Charts\StatusChart;
 
 class VerifierController extends Controller
 {   
@@ -39,9 +43,9 @@ class VerifierController extends Controller
         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
         ->where('institution_types.type', 'NON-SUC')
         ->where('statuses.status', 'approve')->orderby('verifies.created_at','asc')->pluck('verifies.created_at');
-
+ 
         $SUC_dates = json_decode($SUC_dates);
-        
+         
         if( ! empty($SUC_dates) )
         {
             foreach($SUC_dates as $unformatted_date)
@@ -163,9 +167,9 @@ class VerifierController extends Controller
        
         $chart = new InstitutionChart;
         $chart->labels(['SUC', 'NON-SUC']);
-        $chart->dataset('Institutions', 'horizontalBar', [$SUC,  $NONSUC])
-            ->color($borderColors)
-            ->backgroundcolor($fillColors);
+        $chart->dataset('Institutions', 'horizontalBar', [$SUC,  $NONSUC]);
+            // ->color($borderColors)
+            // ->backgroundcolor($fillColors);
         
         $chart->displayLegend(false);
         
@@ -211,7 +215,7 @@ class VerifierController extends Controller
         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
         ->where('institution_types.type', 'NON-SUC')
         ->where('statuses.status', 'disapprove')->count();
-
+ 
         $StatNonSUC_charts = new StatNonSucChart;
         $StatNonSUC_charts->labels(['Approve','Disapprove']);
         $StatNonSUC_charts->dataset('Non-SUC', 'doughnut', [$NonSUC_Approve,$NonSUC_Disapprove])
@@ -292,9 +296,33 @@ class VerifierController extends Controller
         $date = Carbon::now();
         $dates = $date->toFormattedDateString();   
         
+
+
+        $institutionID =  DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $HEI =  DB::table('institutions')->where('institutions_id',$institutionID)->first()->institution_name;
+        
+
+        //STATUS CHART
+        $Approve = DB::table('verifies')
+        ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
+        ->where('statuses.status', 'approve')->count();
+
+        $Disapprove = DB::table('verifies')
+        ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
+        ->where('statuses.status', 'disapprove')->count();
+ 
+        $stat_chart = new StatusChart;
+        $stat_chart->labels(['Approve','Disapprove']);
+        $stat_chart->dataset('Status', 'doughnut', [$Approve,$Disapprove]);
+           //  ->color($borderColors)
+           //  ->backgroundcolor($fillColors);
+
+        $stat_chart->displayAxes(false);
+
+
         return view('verifier_pages.dashboard', compact('dates','deadline','submissions',
         'StatSUC_charts','StatNonSUC_charts','SUC_chart','charts',
-        'total','chart','fname','lname'));
+        'total','chart','fname','lname','HEI','stat_chart'));
     }
     
     public function Page_verification()
@@ -329,9 +357,11 @@ class VerifierController extends Controller
         ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
         ->join('statuses', 'verifies.statuses_id', '=', 'statuses.statuses_id')
         ->select('verifies.*','employee_profiles.first_name','employee_profiles.last_Name','statuses.status')
-        ->where('employee_profiles.institutions_id', $ins_id)->get();
+        ->where('employee_profiles.institutions_id', $ins_id)->get(); 
 
-       return view('verifier_pages.verify', compact('files','fname','lname'));
+        $institution = DB::table('institutions')->where('institutions_id',$ins_id)->first()->institution_name;
+
+       return view('verifier_pages.verify', compact('files','fname','lname','institution'));
     }
     
     public function Page_password()
@@ -356,7 +386,7 @@ class VerifierController extends Controller
         
         $stat = DB::table('verifies')->where('verifies_id', $id)->first()->statuses_id;
 
-        //GET THE FORM ID
+        //GET THE FORM ID 
         $forms = DB::table('forms')->select('form','forms_id')->get();
 
         $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
@@ -368,12 +398,12 @@ class VerifierController extends Controller
         $form_id = '0';
         foreach ($forms as $form ) 
         {
-            if($form->form == $filenames)
+            if($form->form == $filenames) 
             {
                 $form_id = $form->forms_id;
             }
         }
-
+ 
         if($stat == '5')
         {
             return back()->with('danger', 'You cannot approve this file. Contact the specific validator for resubmission');
@@ -384,43 +414,48 @@ class VerifierController extends Controller
         }
         else
         {   
-            
+
+            $id1 = auth()->id();
+            VerifierApprove::dispatch($id, $id1, $filename, $form_id);
+ 
             //UPDATE STATUS IN VALIDATES TABLE
             $status = '4';
             DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
         
-            //UPDATE THE VCOUNT IN COUNTS TABLE
-            $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
-            $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
-            $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
-            $count = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
-            $final_count = $count + 1;
-            DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
+            // //UPDATE THE VCOUNT IN COUNTS TABLE
+            // $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
+            // $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
+            // $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
+            // $count = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
+            // $final_count = $count + 1;
+            // DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
             
-            
-            //STORE DATA TO VERIFIES TABLE
-            $comp = new Complete();
-            $comp->user_id = auth()->id();
-            $comp->verifier_submission = $filename;
-            $comp->forms_id = $form_id;
-            $comp->institutions_id = $institution;
-            $comp->save();
+             
+            // //STORE DATA TO VERIFIES TABLE
+            // $comp = new Complete();
+            // $comp->user_id = auth()->id();
+            // $comp->verifier_submission = $filename;
+            // $comp->forms_id = $form_id;
+            // $comp->institutions_id = $institution;
+            // $comp->save();
 
-            //COPY FILE TO ANOTHER STORAGE FOLDER
-            if(Storage::move('public/verify/'.$filename, 'public/complete/' .$filename))
-            {
-                return back()->with('success', 'Approves the file successfully');
-            }
+            //COPY FILE TO ANOTHER STORAGE FOLDER 
+            // if(Storage::move('public/verify/'.$filename, 'public/complete/' .$filename))
+            // {
+            //     return back()->with('success', 'Approves the file successfully');
+            // }
+
+            return back()->with('success', 'Approves the file successfully');
+
         }
      
-
-      
       
     }
 
     public function Verify_disapprove(Request $request,$id)
     {    
-        
+        $stat = DB::table('verifies')->where('verifies_id', $id)->first()->statuses_id;
+
         if($stat == '4')
         {
             return back()->with('danger', 'You cannot disapprove this file. Contact Ched Officer for cancelling the form');
@@ -428,39 +463,40 @@ class VerifierController extends Controller
         else if($stat == '5')
         {
             return back()->with('danger', 'You already disapprove this file');
-        }
+        } 
         else
         {   
+            $comment = $request->textarea;
+
+            VerifierDisapprove::dispatch($id, $comment);
+ 
              //UPDATE STATUS IN VERIFIES TABLE
             $status = '5';
-            $comment = $request->textarea;
-            $sample = $id . ''. $comment;
-            DB::update('update verifies set comment = ? where verifies_id = ?', [$comment,$id]);
-            
-            //UPDATE THE COMMENT IN VALIDATES TABLE
             DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
+
+            // //UPDATE THE COMMENT IN VALIDATES TABLE
+            // DB::update('update verifies set comment = ? where verifies_id = ?', [$comment,$id]);
             
+            // //GET THE FILE NAME
+            // $filename = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
             
-            //GET THE FILE NAME
-            $filename = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
-            
-              //UPDATE THE VCOUNT IN COUNTS TABLE
-              $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
-              $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
-              $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
-              $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
-              $final_count = $count - 1;
-              DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
+            //   //UPDATE THE VCOUNT IN COUNTS TABLE
+            //   $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
+            //   $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
+            //   $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
+            //   $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
+            //   $final_count = $count - 1;
+            //   DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
   
-           
-              
-            //COPY FILE TO ANOTHER STORAGE FOLDER
-            if(Storage::delete('public/verify/'.$filename))
-            {
-                return back()->with('success', 'Disapproves the file successfully');
-            }
+
+            // //COPY FILE TO ANOTHER STORAGE FOLDER
+            // if(Storage::delete('public/verify/'.$filename))
+            // {
+            //     return back()->with('success', 'Disapproves the file successfully');
+            // } 
             
-          
+            return back()->with('success', 'Disapproves the file successfully');
+
         }
 
         
@@ -469,15 +505,17 @@ class VerifierController extends Controller
     public function Password_change(Request $request)
     {
         
-        $id = auth()->id();
+         $id = auth()->id();
          $current_password = User::find($id)->password;
          
          if(Hash::check($request['old_password'], $current_password))
          {   
-            
-             $user = User::find($id);
-             $user->password = Hash::make($request['password']);
-             $user->save(); 
+
+            VerifierChangePass::dispatch($id, $request['password']);
+
+            //  $user = User::find($id);
+            //  $user->password = Hash::make($request['password']);
+            //  $user->save();  
              
              
          }

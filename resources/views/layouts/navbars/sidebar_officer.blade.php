@@ -113,7 +113,12 @@
               </li>
               <li class="@if ($activePage == 'validator') active @endif">
                 <a href="/officer/accounts/validator">
-                  <p style="padding-left:45px;">validator</p>
+                  <p style="padding-left:45px;">Validator</p>
+                </a>
+              </li>
+              <li class="@if ($activePage == 'officer') active @endif">
+                <a href="/officer/accounts/officer">
+                  <p style="padding-left:45px;">Officer</p>
                 </a>
               </li>
             </ul>

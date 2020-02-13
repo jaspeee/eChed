@@ -46,13 +46,11 @@
           </div>
           <div class="card-body">
 
- 
               <div class="container" style="padding:40px;">
 
-                  <p style="font-size:18px;"><b>Tracking of the Submitted Forms</b></p>
+                  <p style="font-size:18px;"><b>Submitted Forms by the Encoders</b></p>
                   <p style="font-size:13px;">
                     Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming
-                
                   </p>
                   <hr>
                 <br>  
@@ -161,10 +159,10 @@
                                   <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
                                   {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
                                 </button></a>
-                              </td>
+                              </td> 
                               <td style="padding:0;">
                                 <form method="POST"  action="/validator/validation/approve/{{$sub->validates_id}}">
-                                  {{method_field('patch')}}
+                                  {{method_field('patch')}} 
                                   @csrf
                                 <button  onclick="return confirmation();" type="submit" style="background-color: transparent;border: none;cursor:pointer;">
                                   <i class="now-ui-icons ui-1_check" style="font-size: 15px;color: green" data-toggle="tooltip" data-placement="top" title="Approve" ></i>
@@ -179,12 +177,7 @@
                                 </button>
                               </td>
                             @endif
-                            
-                           
-
-                         
-                          
-                            
+                      
                         </tr>
                         @endforeach
                   

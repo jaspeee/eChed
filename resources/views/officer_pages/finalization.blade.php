@@ -22,8 +22,24 @@
 
               <p style="font-size:18px;"><b>List of Institutions</b></p>
 
+              <p style="font-size:13px;">
+                Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming
+              </p>
+              <hr>
+              
+              <br>
+              <form class="form-inline " >
+                <div class="form-group">
+                  <label >
+                    <i class="now-ui-icons ui-1_zoom-bold" style="font-size: 18px;"></i> &nbsp;
+                  </label>
+                    <input type="text" class="form-control" id="tracksearchbar" placeholder= "Search" > 
+                </div>
+              </form>
 
-              <table class="table" id = "finaltbl">
+              <br> 
+
+              <table class="table" id = "finaltbl" > 
                   <thead style="background-color: #003471; font-size: 10px;color:white;">
                     <tr>
                       <th><b>Code</b></th>
@@ -71,13 +87,28 @@
 
 @section('scripts')
 <script  type="text/javascript">
+ 
   $(document).ready(function() {
-      $('#finaltbl').DataTable({
-        lengthChange: false
+      // $('#subtbl').DataTable({
+      //   lengthChange: false
        
-      });
-      
+      // });
+      oTable = $('#finaltbl').DataTable({
+        "pagingType": "full_numbers",
+     sDom: 'lrtip',lengthChange: false
+    
+  
+  }); 
   } );
+
+  
+
+  
+  $('#tracksearchbar').keyup(function(){
+        oTable.search($(this).val()).draw() ;
+  })
   </script>
     
+
+ 
 @endsection

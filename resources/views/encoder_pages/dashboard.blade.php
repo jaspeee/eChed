@@ -20,27 +20,26 @@
         <div class="col-md-6">
           <div class="card">
               <div class="card-header">
-                <h5 class="card-category">Encoder Account</h5>
                 <h5 class="card-title">
                   <i class="now-ui-icons business_bank" ></i>
-                  Welcome to E - CHED,<br>
+                  Welcome to E - CHED<br>
                 </h5>
+                <p style="font-size:13px;text-align: justify;color:gray;">
+                  This page is design to give you some updates. 
+                  Navigate below and see diffirent areas of data for your needs.
+                  If you have any trouble contact the administration for support.
+                </p>
               </div>
               <div class="card-body">
                 <div class="container" style="padding:10px;">
-                 
-                  <p style="font-size: 30px;text-align: center;"><i> " {{$school}} " </i></p>
-                 
+                  <center>
+                    <h5>Encoder Account</h5>
+                    <hr>
+                    <h6 style="font-weight: inherit">{{$school}}</h6>
+                  </center>
                 </div>
               </div>
-              <div class="card-footer ">
-                <hr>
-                <div class="stats">
-                
-                  Date Today : {{$dates}}
-                  
-                </div>
-              </div>
+              
           </div>
         </div>
 
@@ -127,7 +126,7 @@
 
           </div>
           <div class="card-footer ">
-            <hr>
+            <hr> 
             <div class="stats">
               <i class="now-ui-icons loader_refresh spin"></i> Updated 
             </div>

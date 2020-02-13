@@ -10,6 +10,8 @@ use App\Charts\StatusChart;
 use Hash;
 Use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\EncoderUpload;
+use App\Jobs\EncoderChangePass;
 
 class EncoderController extends Controller
 {   
@@ -123,7 +125,8 @@ class EncoderController extends Controller
 
 
         return view('encoder_pages.upload', compact('fname','lname'));
-    }
+        
+    } 
 
     public function Page_track()
     {   
@@ -193,15 +196,19 @@ class EncoderController extends Controller
                     return back()->with('danger', 'Files are already submitted to validator');
                 }
                 else
-                {
-                    $file->storeAs('public/validate',$fileNameToStore);
+                {   
 
-                    $val = new Validate();
-                    $val->user_id = auth()->id();
-                    $val->encoder_submission = $fileNameToStore;
-                    $val->statuses_id = '3';
-                    $val->comment = '';
-                    $val->save();
+
+                    EncoderUpload::dispatch($fileNameToStore,$id);
+                     
+                    $file->storeAs('public/validate',$fileNameToStore);
+                     
+                    // $val = new Validate();
+                    // $val->user_id = auth()->id();
+                    // $val->encoder_submission = $fileNameToStore;
+                    // $val->statuses_id = '3';
+                    // $val->comment = '';
+                    // $val->save(); 
                 }
 
             } 
@@ -220,12 +227,15 @@ class EncoderController extends Controller
          if(Hash::check($request['old_password'], $current_password))
          {   
             
-             $user = User::find($id);
-             $user->password = Hash::make($request['password']);
-             $user->save(); 
+            //  $user = User::find($id);
+            //  $user->password = Hash::make($request['password']);
+            //  $user->save(); 
              
             
-         }
+            EncoderChangePass::dispatch($id,$request['password']);
+
+            
+         } 
          else{ 
             return back()->with('danger', 'Current password was incorrect');
          }

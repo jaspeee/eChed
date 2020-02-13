@@ -15,6 +15,11 @@ use App\Charts\ValidatorStatusChart;
 use App\Charts\AccountStatusChart;
 use Hash;
 Use Carbon\Carbon;
+use App\Jobs\ValidatorApprove;
+use App\Jobs\ValidatorDisapprove;
+use App\Jobs\ValidatorAddAcc;
+use App\Jobs\ValidatorAccStatus;
+use App\Jobs\ValidatorChangePass;
 
 class ValidatorController extends Controller
 {   
@@ -44,7 +49,7 @@ class ValidatorController extends Controller
 
         //GET THE LIST OF SUBMISSIONS VALIDATOR
         $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
-        $submissionss = DB::table('validates')
+        $submissionss = DB::table('validates') 
         ->join('users', 'validates.user_id', '=','users.id')
         ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
         ->join('statuses','validates.statuses_id', '=','statuses.statuses_id')
@@ -96,9 +101,9 @@ class ValidatorController extends Controller
 
         $chart = new StatusChart;
         $chart->labels(['Pending', 'Approve', 'Disapprove']);
-        $chart->dataset('Dataset', 'bar', [$pending,  $approve, $disapprove])
-            ->color($borderColors)
-            ->backgroundcolor($fillColors);
+        $chart->dataset('Dataset', 'bar', [$pending,  $approve, $disapprove]);
+            // ->color($borderColors)
+            // ->backgroundcolor($fillColors);
            
         $chart->displayLegend(false);
      
@@ -118,9 +123,9 @@ class ValidatorController extends Controller
 
         $charts = new ValidatorStatusChart;
         $charts->labels(['Pending', 'Approve', 'Disapprove']);
-        $charts->dataset('Dataset', 'bar', [$pending1,  $approve1, $disapprove1])
-                ->color($borderColors)
-                ->backgroundcolor($fillColors);
+        $charts->dataset('Dataset', 'bar', [$pending1,  $approve1, $disapprove1]);
+                // ->color($borderColors)
+                // ->backgroundcolor($fillColors);
         
          $charts->displayLegend(false);
 
@@ -141,9 +146,9 @@ class ValidatorController extends Controller
     
         $chartss = new AccountStatusChart;
         $chartss->labels(['Active', 'Inactive']);
-        $chartss->dataset('Dataset', 'doughnut', [$active,  $inactive])
-                ->color($borderColors1)
-                ->backgroundcolor($fillColors1);
+        $chartss->dataset('Dataset', 'doughnut', [$active,  $inactive]);
+                // ->color($borderColors1)
+                // ->backgroundcolor($fillColors1);
     
         $chartss->displayAxes(false);
        
@@ -264,7 +269,7 @@ class ValidatorController extends Controller
         
         $stat = DB::table('validates')->where('validates_id', $id)->first()->statuses_id;
         
-        if($stat == '5')
+        if($stat == '5') 
         {
             return back()->with('danger', 'You cannot approve this file. Contact your encoder for resubmission');
         }
@@ -274,33 +279,39 @@ class ValidatorController extends Controller
         }
         else
         {   
+
+            $id1 = auth()->id();
+            ValidatorApprove::dispatch($id,$filename,$id1);
+  
             //UPDATE STATUS IN VALIDATES TABLE
             $status = '4';
             DB::update('update validates set statuses_id = ? where validates_id = ?', [$status,$id]);
-        
-            //UPDATE THE VCOUNT IN COUNTS TABLE
-            $user = DB::table('validates')->where('validates_id', $id)->first()->user_id;
-            $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
-            $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
-            $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
-            $final_count = $count + 1;
-            DB::update('update counts set vcount = ? where institutions_id = ?', [$final_count,$institution]);
-
-             //STORE DATA TO VERIFIES TABLE
-            $vfy = new Verify();
-            $vfy->user_id = auth()->id();
-            $vfy->validator_submission = $filename;
-            $vfy->statuses_id = '3';
-            $vfy->comment = '';
-            $vfy->save();
+         
+            // //UPDATE THE VCOUNT IN COUNTS TABLE
+            // $user = DB::table('validates')->where('validates_id', $id)->first()->user_id;
+            // $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
+            // $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
+            // $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
+            // $final_count = $count + 1;
+            // DB::update('update counts set vcount = ? where institutions_id = ?', [$final_count,$institution]);
+ 
+            //  //STORE DATA TO VERIFIES TABLE
+            // $vfy = new Verify();
+            // $vfy->user_id = auth()->id();
+            // $vfy->validator_submission = $filename;
+            // $vfy->statuses_id = '3';
+            // $vfy->comment = '';
+            // $vfy->save(); 
 
             //MOVE FILE TO ANOTHER STORAGE FOLDER
-            if(Storage::move('public/validate/'.$filename, 'public/verify/' .$filename))
-            {
-                return  back()->with('success', 'Approves the file successfully');
-            }
+            // if(Storage::move('public/validate/'.$filename, 'public/verify/' .$filename))
+            // {
+            //     
+            // }
+            return  back()->with('success', 'Approves the file successfully');
         }
-    
+        
+       
     }
 
     public function Validation_disapproves(Request $request, $id)
@@ -318,23 +329,32 @@ class ValidatorController extends Controller
         }
         else
         {   
+            $comment = $request->textarea;
+
+            ValidatorDisapprove::dispatch($id,$comment);
+
             //UPDATE STATUS IN VALIDATES TABLE
             $status = '5';
-            $comment = $request->textarea;
-            $sample = $id . ''. $comment; 
-            DB::update('update validates set comment = ? where validates_id = ?', [$comment,$id]);
-
-            //UPDATE THE COMMENT IN VALIDATES TABLE
             DB::update('update validates set statuses_id = ? where validates_id = ?', [$status,$id]);
             
-            //GET THE FILE NAME
-            $filename = DB::table('validates')->where('validates_id', $id)->first()->encoder_submission;
+            // $sample = $id . ''. $comment; 
+            // DB::update('update validates set comment = ? where validates_id = ?', [$comment,$id]);
+
+            // //UPDATE THE COMMENT IN VALIDATES TABLE
+            
+            
+            // //GET THE FILE NAME 
+            // $filename = DB::table('validates')->where('validates_id', $id)->first()->encoder_submission;
 
             //MOVE FILE TO ANOTHER STORAGE FOLDER
-            if(Storage::delete('public/validate/'.$filename))
-            {
-                return back()->with('success', 'Disapproves the file successfully');
-            }
+
+            // if(Storage::delete('public/validate/'.$filename))
+            // {
+            //     return back()->with('success', 'Disapproves the file successfully');
+            // }
+
+            return back()->with('success', 'Disapproves the file successfully');
+
         } 
 
         
@@ -343,54 +363,65 @@ class ValidatorController extends Controller
     public function Validation_accstat($status, $id)
     {   
         //UPDATE STATUS IN USER TABLE
-    
+        
+        ValidatorAccStatus::dispatch($status,$id);
+
         if($status == 'Active')
         {   
-            $user = User::find($id);
-            $user ->statuses_id = '2';
-            $user ->save();
+            // $user = User::find($id);
+            // $user ->statuses_id = '2'; 
+            // $user ->save(); 
             
             return back()->with('success', 'Deactivate the account successfully');
         }else{
-            $user = User::find($id);
-            $user ->statuses_id = '1';
-            $user ->save();
+            // $user = User::find($id);
+            // $user ->statuses_id = '1';
+            // $user ->save(); 
             return back()->with('success', 'Activate the account successfully');
         }
  
     }
 
     public function Accounts_add(Request $request)
-    {
+    {   
+
         //GET THE INSTITUTION ID
         $id = auth()->id();
-        $employee = DB::table('users')->find($id)->employee_profiles_id;
-        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $fname = request('fname');
+        $lname = request('lname');
+        $email = request('email');
+        $position = request('position');
+        $division = request('division');
+       
+        ValidatorAddAcc::dispatch($id,$fname,$lname,$email,$position,$division);
+
+        // $employee = DB::table('users')->find($id)->employee_profiles_id;
+        // $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
      
-        //ADD EMPLOYEE
-        $emp = new Employee_profile();
-        $emp->first_name = request('fname');
-        $emp->last_Name = request('lname');
-        $emp->position = request('position');
-        $emp->division = request('division');
-        $emp->institutions_id = $institution;
-        $emp->save();
+        // //ADD EMPLOYEE 
+        // $emp = new Employee_profile();
+        // $emp->first_name = request('fname');
+        // $emp->last_Name = request('lname'); 
+        // $emp->position = request('position');
+        // $emp->division = request('division');
+        // $emp->institutions_id = $institution;
+        // $emp->save();
         
-        //ADD USER
-        $users = $request->fname . '' . $request->lname . '123';
-        $pass = 'encoder12345678';
+        // //ADD USER 
+        // $users = $request->fname . '' . $request->lname . '123';
+        // $pass = 'encoder123';
 
-        $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
-        $hashpass = Hash::make($pass);
+        // $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
+        // $hashpass = Hash::make($pass);
 
-        $user = new User();
-        $user->username = $users;
-        $user->email = $request->email;
-        $user->password = $hashpass;
-        $user->employee_profiles_id = $emp_id;
-        $user->user_types_id = '1';
-        $user->statuses_id = '1';
-        $user->save();       
+        // $user = new User();
+        // $user->username = $users;
+        // $user->email = $request->email;
+        // $user->password = $hashpass;
+        // $user->employee_profiles_id = $emp_id;
+        // $user->user_types_id = '1';
+        // $user->statuses_id = '1';
+        // $user->save();       
 
 
         return back()->with('success', 'Added new account successfully');
@@ -400,14 +431,16 @@ class ValidatorController extends Controller
     {
         
         $id = auth()->id();
-         $current_password = User::find($id)->password;
+        $current_password = User::find($id)->password;
          
          if(Hash::check($request['old_password'], $current_password))
          {   
             
-             $user = User::find($id);
-             $user->password = Hash::make($request['password']);
-             $user->save(); 
+            ValidatorChangePass::dispatch($id,$request['password']);
+
+            //  $user = User::find($id);
+            //  $user->password = Hash::make($request['password']);
+            //  $user->save();  
              
             
          }

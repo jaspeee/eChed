@@ -19,7 +19,22 @@ use App\Charts\TotalNonSucMFChart;
 use App\Charts\TotalNonSucGradMFChart;
 use Illuminate\Support\Str;
 use Hash;
-
+use App\Charts\DG;
+use App\Charts\CollegeE;
+use App\Charts\Courses;
+use App\Charts\CollegeG;
+use App\Charts\Programs;
+use App\Charts\Gender;
+use App\Charts\Male;
+use App\Charts\Female;
+use App\Jobs\OfficerAddAccVerifier;
+use App\Jobs\OfficerAccStatusVerifier;
+use App\Jobs\OfficerAddAccValidator;
+use App\Jobs\OfficerAccStatusValidator;
+use App\Jobs\OfficerAddAccOfficer;
+Use Carbon\Carbon;
+use App\Charts\InstitutionChart;
+use App\Charts\StatusChart;
 
 class OfficerController extends Controller
 {   
@@ -44,10 +59,61 @@ class OfficerController extends Controller
         ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
         ->select('deadlines.*', 'employee_profiles.first_name', 'employee_profiles.last_Name')->paginate(1);
 
+        $date = Carbon::now();
+        $dates = $date->toFormattedDateString();  
+        $institutionID =  DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $HEI =  DB::table('institutions')->where('institutions_id',$institutionID)->first()->institution_name;
+        
+        //GET THE VERIFIER SUBMISSIONS
+        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $submissions = DB::table('completes')
+        ->join('users', 'completes.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->select('completes.*','employee_profiles.first_name','employee_profiles.last_Name')
+        ->orderby('completes_id','desc')->limit(4)->get();
 
-        return view('officer_pages.dashboard', compact('deadline','fname','lname'));
 
-    }
+        //INSTITUTION CHART
+        $SUC = DB::table('institutions')
+        ->join('institution_types','institutions.institution_types_id', '=','institution_types.institution_types_id')
+        ->where('institution_types.type', 'SUC')->count();
+
+        $NONSUC = DB::table('institutions')
+        ->join('institution_types','institutions.institution_types_id', '=','institution_types.institution_types_id')
+        ->where('institution_types.type', 'NON-SUC')->count();
+
+        $total = $SUC + $NONSUC; 
+
+        $ins_chart = new InstitutionChart;
+        $ins_chart->labels(['SUC', 'NON-SUC']);
+        $ins_chart->dataset('Institutions', 'horizontalBar', [$SUC,  $NONSUC]);
+            // ->color($borderColors)
+            // ->backgroundcolor($fillColors);
+        
+        $ins_chart->displayLegend(false);
+
+        //STATUS CHART
+         $Approve = DB::table('verifies')
+         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
+         ->where('statuses.status', 'approve')->count();
+ 
+         $Disapprove = DB::table('verifies')
+         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
+         ->where('statuses.status', 'disapprove')->count();
+  
+         $stat_chart = new StatusChart;
+         $stat_chart->labels(['Approve','Disapprove']);
+         $stat_chart->dataset('Status', 'doughnut', [$Approve,$Disapprove]);
+            //  ->color($borderColors)
+            //  ->backgroundcolor($fillColors);
+ 
+         $stat_chart->displayAxes(false);
+        
+
+        return view('officer_pages.dashboard', compact('deadline','fname','lname','dates','HEI',
+        'submissions','ins_chart','total','stat_chart'));
+
+    } 
 
     public function Page_finalization()
     {   
@@ -111,9 +177,11 @@ class OfficerController extends Controller
         ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
         ->select('completes.*','employee_profiles.first_name','employee_profiles.last_Name')
         ->where('completes.institutions_id', $ins_id)->get();
-        
+         
+        $institution = DB::table('institutions')->where('institutions_id',$ins_id)->first()->institution_name;
+
         //return $files;
-         return view('officer_pages.final', compact('files','fname','lname'));
+         return view('officer_pages.final', compact('files','fname','lname','institution'));
 
     }
 
@@ -131,7 +199,7 @@ class OfficerController extends Controller
     public function Page_account_verifier()
     {
         //GET THE FIRST AND LAST NAME OF THE USER 
-        $id = auth()->id();
+        $id = auth()->id(); 
         $employee = DB::table('users')->find($id)->employee_profiles_id;
         $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
         $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
@@ -187,94 +255,118 @@ class OfficerController extends Controller
 
 
     public function Account_verifier_status($status, $id)
-    {
+    {   
+
+        OfficerAccStatusVerifier::dispatch($id,$status);
+ 
         if($status == 'Active')
         {   
-            $user = User::find($id);
-            $user ->statuses_id = '2';
-            $user ->save();
-            
-            return back();
-        }else{
-            $user = User::find($id);
-            $user ->statuses_id = '1';
-            $user ->save();
-            return back();
+            // $user = User::find($id);
+            // $user ->statuses_id = '2';
+            // $user ->save(); 
+             
+            return back()->with('success', 'Deactivate the account successfully');
+        }else{ 
+
+            // $user = User::find($id);
+            // $user ->statuses_id = '1';
+            // $user ->save(); 
+
+            return back()->with('success', 'Activate the account successfully');
         }
  
     }
 
     public function Account_verifier_add(Request $request)
-    {
-        //GET THE INSTITUTION ID
+    {  
+
         $id = auth()->id();
-        $employee = DB::table('users')->find($id)->employee_profiles_id;
-        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $fname = request('fname');
+        $lname = request('lname');
+        $email = request('email');
+        $position = request('position');
+        $division = request('division');
+
+        OfficerAddAccVerifier::dispatch($id,$fname,$lname,$email,$position,$division);
+
+        // //GET THE INSTITUTION ID
+        // $employee = DB::table('users')->find($id)->employee_profiles_id;
+        // $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
      
-        //ADD EMPLOYEE
-        $emp = new Employee_profile();
-        $emp->first_name = request('fname');
-        $emp->last_Name = request('lname');
-        $emp->position = request('position');
-        $emp->division = request('division');
-        $emp->institutions_id = $institution;
-        $emp->save();
+        // //ADD EMPLOYEE
+        // $emp = new Employee_profile();
+        // $emp->first_name = request('fname');
+        // $emp->last_Name = request('lname');
+        // $emp->position = request('position');
+        // $emp->division = request('division');
+        // $emp->institutions_id = $institution;
+        // $emp->save();
         
-        //ADD USER
-        $users = $request->fname . '' . $request->lname . '123';
-        $pass = 'verifier12345678';
+        // //ADD USER
+        // $users = $request->fname . '' . $request->lname . '123'; 
+        // $pass = 'verifier123';
 
-        $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
-        $hashpass = Hash::make($pass);
+        // $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
+        // $hashpass = Hash::make($pass);
 
-        $user = new User();
-        $user->username = $users;
-        $user->email = $request->email;
-        $user->password = $hashpass;
-        $user->employee_profiles_id = $emp_id;
-        $user->user_types_id = '3';
-        $user->statuses_id = '1';
-        $user->save();       
+        // $user = new User();
+        // $user->username = $users;
+        // $user->email = $request->email;
+        // $user->password = $hashpass;
+        // $user->employee_profiles_id = $emp_id;
+        // $user->user_types_id = '3';
+        // $user->statuses_id = '1';
+        // $user->save();        
 
 
-        return back();
+        return  back()->with('success', 'Added a new account successfully');
  
     }
 
     public function Account_validator_add(Request $request)
-    {
-        //GET THE INSTITUTION ID
+    {    
+
         $id = auth()->id();
-        $employee = DB::table('users')->find($id)->employee_profiles_id;
-        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $fname = request('fname');
+        $lname = request('lname');
+        $email = request('email');
+        $position = request('position');
+        $division = request('division');
+        $institution1 = $request->institution;
+
+        OfficerAddAccValidator::dispatch($id,$fname,$lname,$email,$position,$division,$institution1);
+
+        // //GET THE INSTITUTION ID
+        // $employee = DB::table('users')->find($id)->employee_profiles_id;
+        // $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
      
-        //ADD EMPLOYEE
-        $emp = new Employee_profile();
-        $emp->first_name = request('fname');
-        $emp->last_Name = request('lname');
-        $emp->position = request('position');
-        $emp->division = request('division');
-        $emp->institutions_id = $request->institution;
-        $emp->save();
+        // //ADD EMPLOYEE
+        // $emp = new Employee_profile();
+        // $emp->first_name = request('fname');
+        // $emp->last_Name = request('lname');
+        // $emp->position = request('position');
+        // $emp->division = request('division');
+        // $emp->institutions_id = $request->institution;
+        // $emp->save();
         
-        //ADD USER
-        $users = $request->fname . '' . $request->lname . '123';
-        $pass = 'validator12345678';
+        // //ADD USER
+        // $users = $request->fname . '' . $request->lname . '123';
+        // $pass = 'validator12345678';
 
-        $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
-        $hashpass = Hash::make($pass);
+        // $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
+        // $hashpass = Hash::make($pass);
 
-        $user = new User();
-        $user->username = $users;
-        $user->email = $request->email;
-        $user->password = $hashpass;
-        $user->employee_profiles_id = $emp_id;
-        $user->user_types_id = '2';
-        $user->statuses_id = '1';
-        $user->save();     
+        // $user = new User();
+        // $user->username = $users;
+        // $user->email = $request->email;
+        // $user->password = $hashpass;
+        // $user->employee_profiles_id = $emp_id;
+        // $user->user_types_id = '2';
+        // $user->statuses_id = '1';
+        // $user->save();      
         
 
-        return back();
+        return  back()->with('success', 'Added a new account successfully');
     }
 
     public function Password_change(Request $request)
@@ -335,204 +427,519 @@ class OfficerController extends Controller
          $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
          $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
         
-         //SUC
-         $totalEnrollment = DB::table('collation_enrollments')->where('institution_types_id','1')->SUM('total_enrollment');
-         $AVGEnrollment = DB::table('collation_enrollments')->where('institution_types_id','1')->AVG('total_enrollment');
-
-         $totalEnrollmentMale = DB::table('collation_enrollments')->where('institution_types_id','1')->SUM('total_male');
-         $AVGEnrollmentMale = DB::table('collation_enrollments')->where('institution_types_id','1')->AVG('total_male');
-        
-         $totalEnrollmentFemale = DB::table('collation_enrollments')->where('institution_types_id','1')->SUM('total_female');
-         $AVGEnrollmentFemale = DB::table('collation_enrollments')->where('institution_types_id','1')->AVG('total_female');
          
-   
-         $totalGraduate = DB::table('collation_graduates')->where('institution_types_id','1')->SUM('total_graduate');
-         $AVGGraduate = DB::table('collation_graduates')->where('institution_types_id','1')->AVG('total_graduate');
-         
-         $totalGraduateMale = DB::table('collation_graduates')->where('institution_types_id','1')->SUM('total_male');
-         $AVGGraduateMale = DB::table('collation_graduates')->where('institution_types_id','1')->AVG('total_male');
-         
-         $totalGraduateFemale = DB::table('collation_graduates')->where('institution_types_id','1')->SUM('total_female');
-         $AVGGraduateFemale = DB::table('collation_graduates')->where('institution_types_id','1')->AVG('total_female');
-        
-
-        if($totalEnrollmentMale == null && $totalEnrollmentFemale == null)
-        {
-            $percentageMaleEnroll = null;
-            $percentageFemaleEnroll = null;
-        }
-        else
-        {
-            //MALE
-            $percentageMaleEnroll = $totalEnrollmentMale / $totalEnrollment;
-            $percentageMaleEnroll =  $percentageMaleEnroll * 100;
-            $percentageMaleEnroll =  Str::limit($percentageMaleEnroll, 5);
-
-            //FEMALE
-            $percentageFemaleEnroll = $totalEnrollmentFemale / $totalEnrollment;
-            $percentageFemaleEnroll =  $percentageFemaleEnroll * 100;
-            $percentageFemaleEnroll =  Str::limit($percentageFemaleEnroll, 5);
-        }
-        
-
-
-        if($totalGraduateMale == null &&  $totalGraduateFemale == null)
-        {
-            $percentageMaleGrad = null;
-            $percentageFemaleGrad = null;
-        }
-        else
-        {
-            //MALE
-            $percentageMaleGrad = $totalGraduateMale / $totalGraduate;
-            $percentageMaleGrad =  $percentageMaleGrad * 100;
-            $percentageMaleGrad = Str::limit($percentageMaleGrad, 5);
-
-            //FEMALE
-            $percentageFemaleGrad = $totalGraduateFemale / $totalGraduate;
-            $percentageFemaleGrad =  $percentageFemaleGrad * 100;
-            $percentageFemaleGrad = Str::limit($percentageFemaleGrad, 5);
-        }
-
-       
+      
          //CHART
          $borderColors = [
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(22,160,133, 1.0)",
-            "rgba(255, 99, 132, 1.0)"
+        
+            "rgba(177, 48, 40)"
         ];
         $fillColors = [
+            
+            "rgba(250, 161, 155)"
+        ];
+
+        $LinedgColor1 = [
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            
+        ];
+        $FilldgColor1 = [
             "rgba(255, 205, 86, 0.2)",
-            "rgba(22,160,133, 0.2)",
-            "rgba(255, 99, 132, 0.2)"
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            
+        ];
+
+        $LineprogColor1 = [
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+            "rgba(255, 205, 86, 1.0)",
+           
+        ];
+
+        $FillprogColor1 = [
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+           
+        ];
+
+        $LinemColor1 = [
+            "rgba(0, 80, 115, 0.9)",
+            "rgba(0, 80, 115, 0.9)",
+         
+           
+        ];
+      
+        $FillmColor1 = [
+            "rgba(2, 106, 167, 0.6)",
+            "rgba(2, 106, 167, 0.6)",
+        
+        ];
+
+        $LinemfColor1 = [
+            
+            "rgba(0, 80, 115, 0.9)",
+            "rgba(177, 48, 40, 0.8)",
+         
+           
+        ];
+
+        $FillmfColor1 = [
+            "rgba(2, 106, 167, 0.6)",
+            "rgba(250, 161, 155, 0.6)",
+        ];
+
+        $LinefColor1 = [
+            "rgba(177, 48, 40, 0.8)",
+            "rgba(177, 48, 40, 0.8)",
+        ];
+
+        $FillfColor1 = [
+            "rgba(250, 161, 155, 0.6)",
+            "rgba(250, 161, 155, 0.6)",
         ];
 
 
-        $chart = new TotalEGChar;
-        $chart->labels(['Total Enrollment', 'Total Graduates']);
-        $chart->dataset('SUC', 'pie', [$totalEnrollment,  $totalGraduate])
-            ->color($borderColors)
-            ->backgroundcolor($fillColors);
+        //TOP 5 DISCIPLINE GROUP
+        $DG1 = DB::table('collations')
+        ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        ->select(DB::raw("SUM(TE+TG) as Total"))
+        ->groupBy('discipline_groups.major_discipline')
+         //->where('institution_types_id','2')
+        ->orderby('Total','desc')->first()->Total;
+
+        $DG2 = DB::table('collations')
+        ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        ->select(DB::raw("SUM(TE+TG) as Total"))
+        ->groupBy('discipline_groups.major_discipline')
+        ->orderby('Total','desc')->skip(1)->first()->Total;
         
-        //$chart->displayLegend(false);
+        $DG3 = DB::table('collations')
+        ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        ->select(DB::raw("SUM(TE+TG) as Total"))
+        ->groupBy('discipline_groups.major_discipline')
+        ->orderby('Total','desc')->skip(2)->first()->Total;
 
-        $TotalMF = new TotalMFChar;
-        $TotalMF->labels(['Total Male', 'Total Female']);
-        $TotalMF->dataset('SUC', 'bar', [$totalEnrollmentMale,  $totalEnrollmentFemale])
-            ->color($borderColors)
-            ->backgroundcolor($fillColors);
-        
-        $TotalMF->displayLegend(false);
-        
-        $TotalGradMF = new TotalGradMFChart;
-        $TotalGradMF->labels(['Total Male', 'Total Female']);
-        $TotalGradMF->dataset('SUC', 'bar', [$totalGraduateMale,  $totalGraduateFemale])
-            ->color($borderColors)
-            ->backgroundcolor($fillColors);
-        
-        $TotalGradMF->displayLegend(false);
+        // $DG4 = DB::table('collations')
+        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        // ->select(DB::raw("SUM(TE+TG) as Total"))
+        // ->groupBy('discipline_groups.major_discipline')
+        // ->orderby('Total','desc')->skip(3)->first()->Total;
 
+        // $DG5 = DB::table('collations')
+        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        // ->select(DB::raw("SUM(TE+TG) as Total"))
+        // ->groupBy('discipline_groups.major_discipline')
+        // ->orderby('Total','desc')->skip(4)->first()->Total;
 
+        $DG = DB::table('collations')
+        ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        ->select(DB::raw("SUM(TE+TG) as Total"),'discipline_groups.major_discipline')
+        ->groupBy('discipline_groups.major_discipline')
+        ->orderby('Total','desc')
+        ->limit(5)->get();
+      
 
-        //NON SUC
-        //ENROLLMENT
-        $NONSUCtotalEnrollment = DB::table('collation_enrollments')->where('institution_types_id','2')->SUM('total_enrollment');
-        $NONSUCAVGEnrollment = DB::table('collation_enrollments')->where('institution_types_id','2')->AVG('total_enrollment');
+        $Discipline = new DG;
+        $Discipline->labels(['Top 1', 
+        'Top 2',
+        'Top 3',
+        'Top 4',
+        'Top 5',
+        ]);
 
-        $NONSUCtotalEnrollmentMale = DB::table('collation_enrollments')->where('institution_types_id','2')->SUM('total_male');
-        $NONSUCAVGEnrollmentMale = DB::table('collation_enrollments')->where('institution_types_id','2')->AVG('total_male');
+        $Discipline->dataset('NON SUC', 'horizontalBar', 
+            [$DG1,
+            $DG2,  
+            $DG3, 
+            // $DG4, 
+            // $DG5,
+            ])
 
-        $NONSUCtotalEnrollmentFemale = DB::table('collation_enrollments')->where('institution_types_id','2')->SUM('total_female');
-        $NONSUCAVGEnrollmentFemale = DB::table('collation_enrollments')->where('institution_types_id','2')->AVG('total_female');
-
-        //GRADUATES
-        $NONSUCtotalGraduate = DB::table('collation_graduates')->where('institution_types_id','2')->SUM('total_graduate');
-        $NONSUCAVGGraduate = DB::table('collation_graduates')->where('institution_types_id','2')->AVG('total_graduate');
-        
-        $NONSUCtotalGraduateMale = DB::table('collation_graduates')->where('institution_types_id','2')->SUM('total_male');
-        $NONSUCAVGGraduateMale = DB::table('collation_graduates')->where('institution_types_id','2')->AVG('total_male');
-        
-        $NONSUCtotalGraduateFemale = DB::table('collation_graduates')->where('institution_types_id','2')->SUM('total_female');
-        $NONSUCAVGGraduateFemale = DB::table('collation_graduates')->where('institution_types_id','2')->AVG('total_female');
-
-        
-        if($NONSUCtotalEnrollmentMale == null && $NONSUCtotalEnrollmentFemale == null)
-        {
-            $percentageNonSucMaleEnroll = null;
-            $percentageNonSucFemaleEnroll = null;
-        }
-        else{
-            //MALE
-            $percentageNonSucMaleEnroll = $NONSUCtotalEnrollmentMale / $NONSUCtotalEnrollment;
-            $percentageNonSucMaleEnroll =  $percentageNonSucMaleEnroll * 100;
-            $percentageNonSucMaleEnroll = Str::limit($percentageNonSucMaleEnroll, 5);
-
-            //FEMALE
-            $percentageNonSucFemaleEnroll = $NONSUCtotalEnrollmentFemale / $NONSUCtotalEnrollment;
-            $percentageNonSucFemaleEnroll =  $percentageNonSucFemaleEnroll * 100;
-            $percentageNonSucFemaleEnroll = Str::limit($percentageNonSucFemaleEnroll, 5);
-
-        }
-
-        if($NONSUCtotalGraduateMale == null &&  $NONSUCtotalGraduateFemale == null)
-        {
             
-            $percentageNonSucMaleGrad = null;
-            $percentageNonSucFemaleGrad = null;
+            ->color($LinedgColor1)
+            ->backgroundcolor($FilldgColor1);
 
-        }
-        else
-        {
-            //MALE
-            $percentageNonSucMaleGrad = $NONSUCtotalGraduateMale / $NONSUCtotalGraduate;
-            $percentageNonSucMaleGrad =  $percentageNonSucMaleGrad * 100;
-            $percentageNonSucMaleGrad = Str::limit($percentageNonSucMaleGrad, 5);
+        $Discipline->displayLegend(false);
 
-            //FEMALE
-            $percentageNonSucFemaleGrad = $NONSUCtotalGraduateFemale / $NONSUCtotalGraduate;
-            $percentageNonSucFemaleGrad =  $percentageNonSucFemaleGrad * 100;
-            $percentageNonSucFemaleGrad = Str::limit($percentageNonSucFemaleGrad, 5);
-        }
+            //return  $SUC_DG;
+
+
+
+         //TOP 10 COLLEGE ENROLLMENTS
+         $College_E1 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->first()->Total;
+
+        //  $College_E2 = DB::table('collations')
+        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+        //  ->groupBy('institutions.institution_name')
+        //  ->orderby('Total','desc')->skip(1)->first()->Total;
+
+        //  $College_E3 = DB::table('collations')
+        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+        //  ->groupBy('institutions.institution_name')
+        //  ->orderby('Total','desc')->skip(2)->first()->Total;
+
+        //  $College_E4 = DB::table('collations')
+        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+        //  ->groupBy('institutions.institution_name')
+        //  ->orderby('Total','desc')->skip(3)->first()->Total;
+
+        //  $College_E5 = DB::table('collations')
+        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+        //  ->groupBy('institutions.institution_name')
+        //  ->orderby('Total','desc')->skip(4)->first()->Total;
+
+        //  $College_E6 = DB::table('collations')
+        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+        //  ->groupBy('institutions.institution_name')
+        //  ->orderby('Total','desc')->skip(5)->first()->Total;
+
+        //  $College_E7 = DB::table('collations')
+        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+        //  ->groupBy('institutions.institution_name')
+        //  ->orderby('Total','desc')->skip(6)->first()->Total;
+
+        //  $College_E8 = DB::table('collations')
+        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+        //  ->groupBy('institutions.institution_name')
+        //  ->orderby('Total','desc')->skip(7)->first()->Total;
+
+        //  $College_E9 = DB::table('collations')
+        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+        //  ->groupBy('institutions.institution_name')
+        //  ->orderby('Total','desc')->skip(8)->first()->Total;
+
+        //  $College_E10 = DB::table('collations')
+        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+        //  ->groupBy('institutions.institution_name')
+        //  ->orderby('Total','desc')->skip(9)->first()->Total;
 
        
+        $College_E = DB::table('collations')
+        ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->limit(10)->get();
 
-        $TotalNonSucEG = new TotalNonSucEGChart;
-        $TotalNonSucEG->labels(['Enrollment', 'Graduates']);
-        $TotalNonSucEG->dataset('SUC', 'pie', [$NONSUCtotalEnrollment,  $NONSUCtotalGraduate])
-            ->color($borderColors)
-            ->backgroundcolor($fillColors);
+         $ce = new CollegeE;
+         $ce->labels(['Top 1',
+            'Top 2',
+            'Top 3',
+            'Top 4',
+            'Top 5',
+            'Top 6', 
+            'Top 7',
+            'Top 8',
+            'Top 9',
+            'Top 10',
+        ]);
+ 
+         $ce->dataset('NON SUC', 'bar', 
+             [$College_E1,
+                //$College_E2,
+                // $College_E3,
+                // $College_E4,
+                // $College_E5,
+                // $College_E6,
+                // $College_E7,
+                // $College_E8,
+                // $College_E9,
+                // $College_E10,
+             ])
+ 
+             ->color($borderColors)
+             ->backgroundcolor($fillColors);
+ 
+         $ce->displayLegend(false);
+
+ 
+        //TOP 5 COURSES ENROLLEES
+
+
+        $Courses_E = DB::table('collations')
+        ->select(DB::raw("SUM(TE) as Total"),'program_name')
+         ->groupBy('program_name')
+         ->orderby('Total','desc')->limit(5)->get();
         
-        $TotalNonSucEG->displayLegend(false);
+
+         $Courses_E1 = DB::table('collations')
+         ->select(DB::raw("SUM(TE) as Total"))
+         ->groupBy('program_name')
+         ->orderby('Total','desc')->first()->Total;
+         
+         $Courses_E2 = DB::table('collations')
+         ->select(DB::raw("SUM(TE) as Total"))
+         ->groupBy('program_name')
+         ->orderby('Total','desc')->skip(1)->first()->Total;
+
+         $Courses_E3 = DB::table('collations')
+         ->select(DB::raw("SUM(TE) as Total"))
+         ->groupBy('program_name')
+         ->orderby('Total','desc')->skip(2)->first()->Total;
+
+         $Courses_E4 = DB::table('collations')
+         ->select(DB::raw("SUM(TE) as Total"))
+         ->groupBy('program_name')
+         ->orderby('Total','desc')->skip(3)->first()->Total;
+
+         $Courses_E5 = DB::table('collations')
+         ->select(DB::raw("SUM(TE) as Total"))
+         ->groupBy('program_name')
+         ->orderby('Total','desc')->skip(4)->first()->Total;
 
 
-        $TotalNonSucMF = new TotalNonSucMFChart;
-        $TotalNonSucMF->labels(['Total Male', 'Total Female']);
-        $TotalNonSucMF->dataset('SUC', 'bar', [$NONSUCtotalEnrollmentMale,  $NONSUCtotalEnrollmentFemale])
-            ->color($borderColors)
-            ->backgroundcolor($fillColors);
+         $courses = new Courses;
+         $courses->labels(['Top 1', 
+         'Top 2',
+         'Top 3',
+         'Top 4',
+         'Top 5',
+           
+       
+        ]);
+ 
+         $courses->dataset('NON SUC', 'bar', 
+             [$Courses_E1,
+              $Courses_E2,
+              $Courses_E3,
+              $Courses_E4,
+              $Courses_E5,
+
+             ])
+ 
+             ->color($borderColors)
+             ->backgroundcolor($fillColors);
+ 
+         $courses->displayLegend(false);
+
+
+
+        //TOP 5 HIGHEST NUMBER OF GRADUATES
+
+        $College_G = DB::table('collations')
+        ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->limit(5)->get();
+
+         $College_G1 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+          ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+          ->groupBy('institutions.institution_name')
+          ->orderby('Total','desc')->first()->Total;
+
+        //   $College_G2 = DB::table('collations')
+        //   ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //   ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+        //   ->groupBy('institutions.institution_name')
+        //   ->orderby('Total','desc')->skip(1)->first()->Total;
+
+        //   $College_G3 = DB::table('collations')
+        //   ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //   ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+        //   ->groupBy('institutions.institution_name')
+        //   ->orderby('Total','desc')->skip(2)->first()->Total;
+
+        //   $College_G4 = DB::table('collations')
+        //   ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //   ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+        //   ->groupBy('institutions.institution_name')
+        //   ->orderby('Total','desc')->skip(3)->first()->Total;
+
+        //   $College_G5 = DB::table('collations')
+        //   ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+        //   ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+        //   ->groupBy('institutions.institution_name')
+        //   ->orderby('Total','desc')->skip(4)->first()->Total;
+
         
-        $TotalNonSucMF->displayLegend(false);
+         $college = new CollegeG;
+         $college->labels(['Top 1', 
+         'Top 2',
+         'Top 3',
+         'Top 4',
+         'Top 5',
+           
+       
+        ]);
+ 
+         $college->dataset('NON SUC', 'bar', 
+             [
+                $College_G1,
+                // $College_G2,
+                // $College_G3,
+                // $College_G4,
+                // $College_G5,
 
+             ])
+ 
+             ->color($borderColors)
+             ->backgroundcolor($fillColors);
+ 
+         $college->displayLegend(false);
+         
 
-        $TotalNonSucGradMF = new TotalNonSucGradMFChart;
-        $TotalNonSucGradMF->labels(['Total Male', 'Total Female']);
-        $TotalNonSucGradMF->dataset('SUC', 'bar', [$NONSUCtotalGraduateMale,  $NONSUCtotalGraduateFemale])
-            ->color($borderColors)
-            ->backgroundcolor($fillColors);
         
-        $TotalNonSucGradMF->displayLegend(false);
-        
+          //TOP 5 POPULAR PROGRAMS
 
-         return view('officer_pages.analytics', compact('totalGraduateFemale','totalGraduateMale','percentageFemaleGrad',
-         'percentageMaleGrad','AVGGraduateFemale','AVGGraduateMale','TotalGradMF',
-         'totalEnrollmentFemale','totalEnrollmentMale','percentageMaleEnroll',
-         'percentageFemaleEnroll','AVGEnrollmentFemale','AVGEnrollmentMale',
-         'TotalMF','chart','fname','lname',
-        'TotalNonSucEG','TotalNonSucMF','TotalNonSucGradMF',
-        'NONSUCAVGEnrollmentMale', 'NONSUCAVGEnrollmentFemale','percentageNonSucMaleEnroll', 'percentageNonSucFemaleEnroll'
-        , 'NONSUCtotalEnrollmentMale', 'NONSUCtotalEnrollmentFemale',
-        'NONSUCAVGGraduateMale', 'NONSUCAVGGraduateFemale', 'percentageNonSucMaleGrad', 'percentageNonSucFemaleGrad'
-        ,'NONSUCtotalGraduateMale', 'NONSUCtotalGraduateFemale'
+          $Programs = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')->limit(5)->get();
+
+          $Programs1 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')->first()->Total;
+
+          $Programs2 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')->skip(1)->first()->Total;
+
+          $Programs3 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')->skip(2)->first()->Total;
+
+          $Programs4 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')->skip(3)->first()->Total;
+
+          $Programs5 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')->skip(4)->first()->Total;
+
+
+          $program = new Programs;
+          $program->labels(['Top 1', 
+          'Top 2',
+          'Top 3',
+          'Top 4',
+          'Top 5',
+            
+        
+         ]);
+  
+          $program->dataset('NON SUC', 'horizontalBar', 
+              [
+                 $Programs1,
+                 $Programs2,
+                 $Programs3,
+                 $Programs4,
+                 $Programs5,
+               
+              ])
+                
+              ->fill(false)
+              ->color($LineprogColor1)
+              ->backgroundcolor($FillprogColor1);
+  
+          $program->displayLegend(false);
+          
+
+
+        
+          $TotalEnrollment = DB::table('collations')
+          ->select(DB::raw("SUM(TE) as Total"))
+          ->first()->Total;
+
+          $TotalGraduates = DB::table('collations')
+          ->select(DB::raw("SUM(TG) as Total"))
+          ->first()->Total;
+
+          $TotalMale = DB::table('collations')
+          ->select(DB::raw("SUM(TME+TMG) as Total"))
+          ->first()->Total;
+
+          $TotalFemale = DB::table('collations')
+          ->select(DB::raw("SUM(TFE+TFG) as Total"))
+          ->first()->Total;
+
+          $gender = new Gender;
+          $gender->labels(['Male', 'Female',]);
+          $gender->dataset('Total', 'doughnut', [ $TotalMale,$TotalFemale])
+                 ->color($LinemfColor1)
+                 ->backgroundcolor($FillmfColor1);
+          $gender->displayLegend(false);
+
+        
+          $SUCMale = DB::table('collations')
+          ->select(DB::raw("SUM(TME+TMG) as Total"))
+          ->where('institution_types_id','1')
+          ->first()->Total;
+
+          $NONSUCMale = DB::table('collations')
+          ->select(DB::raw("SUM(TME+TMG) as Total"))
+          ->where('institution_types_id','2')
+          ->first()->Total;
+
+          $male = new Male;
+          $male->labels(['SUC', 'NON-SUC',]);
+          $male->dataset('Total', 'bar', [ $SUCMale,$NONSUCMale])
+                 ->color($LinemColor1)
+                 ->backgroundcolor($FillmColor1);
+          $male->displayLegend(false);
+
+          $SUCFemale = DB::table('collations')
+          ->select(DB::raw("SUM(TFE+TFG) as Total"))
+          ->where('institution_types_id','1')
+          ->first()->Total;
+
+          $NONSUCFemale = DB::table('collations')
+          ->select(DB::raw("SUM(TFE+TFG) as Total"))
+          ->where('institution_types_id','2')
+          ->first()->Total;
+
+          $female = new Female;
+          $female->labels(['SUC', 'NON-SUC',]);
+          $female->dataset('Total', 'bar', [ $SUCFemale,$NONSUCFemale])
+                 ->color($LinefColor1)
+                 ->backgroundcolor($FillfColor1);
+          $female->displayLegend(false);
+
+          $TotalStudents = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"))
+          ->first()->Total;
+
+          $SUCPercentage = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"))
+          ->first()->Total;
+
+
+         return view('officer_pages.analytics', compact(
+             'TotalStudents',
+        'Discipline','DG','ce','College_E', 'courses', 'Courses_E','college', 'College_G',
+        'Programs', 'program', 'male', 'female',
+    
+        'fname','lname','TotalEnrollment','TotalGraduates', 'gender'
+      
 
         ));
     }
@@ -555,6 +962,75 @@ class OfficerController extends Controller
    
            return view('officer_pages.references',compact('discipline','institutions','fname','lname'));
        
+    }
+
+    public function Page_account_officer()
+    {
+        //GET THE FIRST AND LAST NAME OF THE USER 
+        $id = auth()->id();
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+        $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+
+        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $type = '4';
+        $account = DB::table('users')
+        ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
+        ->join('statuses', 'users.statuses_id', '=', 'statuses.statuses_id')
+        ->select('users.*','employee_profiles.first_name', 'employee_profiles.last_Name', 
+           'employee_profiles.position', 'employee_profiles.division','statuses.status')
+        ->where('employee_profiles.institutions_id', $institution)
+        ->where('users.user_types_id', $type)->get();
+
+
+       return view('officer_pages.officer_acc', compact('account','fname','lname'));
+    }
+
+    public function Account_officer_add(Request $request)
+    {   
+
+
+        $id = auth()->id();
+        $fname = request('fname');
+        $lname = request('lname');
+        $email = request('email');
+        $position = request('position');
+        $division = request('division');
+
+        OfficerAddAccOfficer::dispatch($id,$fname,$lname,$email,$position,$division);
+       
+        // //GET THE INSTITUTION ID
+        // $employee = DB::table('users')->find($id)->employee_profiles_id;
+        // $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+     
+        // //ADD OFFICER
+        // $emp = new Employee_profile();
+        // $emp->first_name = request('fname');
+        // $emp->last_Name = request('lname');
+        // $emp->position = request('position');
+        // $emp->division = request('division');
+        // $emp->institutions_id = $institution;
+        // $emp->save();
+        
+        // //ADD USER
+        // $users = $request->fname . '' . $request->lname . '123';
+        // $pass = 'officer12345678';
+
+        // $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
+        // $hashpass = Hash::make($pass);
+ 
+        // $user = new User();
+        // $user->username = $users;
+        // $user->email = $request->email;
+        // $user->password = $hashpass;
+        // $user->employee_profiles_id = $emp_id;
+        // $user->user_types_id = '4';
+        // $user->statuses_id = '1';
+        // $user->save();       
+
+
+        return  back()->with('success', 'Added a new account successfully');
+ 
     }
 
 

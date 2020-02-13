@@ -10,238 +10,352 @@
 @section('content')
   <div class="panel-header panel-header-sm">
   </div>
-  <div class="content"> 
+ 
+<div class="content"> 
+
+
+  <div class="container">
     <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> SUC</h5>
-          </div>
-          <div class="card-body">
-            
-            <div class="chart-area" style="height:150px;">
-                {!! $chart->container() !!}
+      <div class="col-md-6">
+        .col-md-8
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-category">  <i class="now-ui-icons business_chart-bar-32"></i> Total Male</h5>
               </div>
-
+              <div class="card-body" style="height:150px;">
+                {!! $male->container() !!}
+              </div>
+          </div>
           </div>
         </div>
-      </div>          
-  </div>
 
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i> SUC Enrollment</h5>
-          
-          </div>
-          <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-category">  <i class="now-ui-icons business_chart-bar-32"></i> Total Female</h5>
+              </div>
+              <div class="card-body" style="height:150px;">
+                {!! $female->container() !!}
+              </div>
             
-            <div class="chart-area" style="height:150px;">
-                {!! $TotalMF->container() !!}
-             </div>
-
-             <br>
-             <table class="table">
-                <thead style="background-color: #003471; font-size: 10px;color:white;">
-                  <tr>
-                    <th></th>
-                    <th><b>Male</b></th>
-                    <th><b>Female</b></th>
-                  </tr>
-                </thead>
-                <tbody> 
-            
-                      {{-- <tr> 
-                        <td>Average</td>
-                        <td>{{$AVGEnrollmentMale}}</td>
-                        <td>{{$AVGEnrollmentFemale}}</td>
-                      </tr> --}}
-                      <tr> 
-                        <td>Percentage</td>
-                        <td>{{ $percentageMaleEnroll}} %</td>
-                        <td>{{$percentageFemaleEnroll}}%</td>
-                        
-                      </tr>
-
-                      <tr> 
-                        <td>Total</td>
-                        <td>{{ $totalEnrollmentMale}}</td>
-                        <td>{{$totalEnrollmentFemale}}</td>
-                      </tr>
-                      
-                </tbody>
-            </table>
-
-          </div>
-        </div>
-      </div>       
-
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i> SUC Graduates</h5>
-          
-          </div>
-          <div class="card-body">
-            
-            <div class="chart-area" style="height:150px;">
-                {!! $TotalGradMF->container() !!}
-             </div>
-
-             <br>
-             <table class="table">
-                <thead style="background-color: #003471; font-size: 10px;color:white;">
-                  <tr>
-                    <th></th>
-                    <th><b>Male</b></th>
-                    <th><b>Female</b></th>
-                  </tr>
-                </thead>
-                <tbody> 
-            
-                      {{-- <tr> 
-                        <td>Average</td>
-                        <td>{{$AVGGraduateMale}}</td>
-                        <td>{{$AVGGraduateFemale}}</td>
-                      </tr> --}}
-                      <tr> 
-                        <td>Percentage</td>
-                        <td>{{ $percentageMaleGrad}} %</td>
-                        <td>{{$percentageFemaleGrad}}%</td>
-                        
-                      </tr>
-
-                      <tr> 
-                        <td>Total</td>
-                        <td>{{ $totalGraduateMale}}</td>
-                        <td>{{$totalGraduateFemale}}</td>
-                      </tr>
-                      
-                </tbody>
-            </table>
-
-            
-          </div>
-        </div>
-      </div>          
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> NON-SUC</h5>
-        </div>
-        <div class="card-body">
-          
-          <div class="chart-area" style="height:150px;">
-              {!! $TotalNonSucEG->container() !!}
             </div>
-
+          </div>
         </div>
       </div>
-    </div>          
+
+      <div class="col-md-6" style="padding-top:2%;">
+        <div class="card">
+          <div class="card-header ">
+            <center><h5>Total Male and Female</h5></center>
+          </div>
+          <div class="card-body" style="height:355px;">
+            {!! $gender->container() !!}
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+
+  <div class="row">
+    <div class="col-lg-4">
+
+      <div class="card">
+        <div class="card-header">
+          
+          <h5 class="card-title">
+          Total Population <br>
+          </h5>
+        </div>
+        <div class="card-body">
+          <center>
+          <h1>{{$TotalStudents}} </h1>
+        
+
+          <table class="table">
+            <thead style="background-color: #003471; font-size: 10px;color:white;">
+              <tr>
+                
+                <th style="text-align: center;"><b>Enrollment</b></th>
+                <th style="text-align: center;"><b>Graduates</b></th>
+              
+              </tr>
+            </thead>
+            <tbody> 
+                  <tr>
+                    
+                     <td style="text-align: center;"><h5>{{$TotalEnrollment}}</h5></td>
+                     <td style="text-align: center;"><h5>{{$TotalGraduates}}</h5></td>
+                    
+                  </tr>
+            </tbody>
+          </table>
+        </center>
+        </div>
+      </div> 
+
+
+  </div>
+  </div>
+
+  
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          
+          <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i></h5>
+          <h5 class="card-title">
+          Top 5 Disciplinary Group<br>
+          </h5>
+        </div>
+        <div class="card-body">
+       
+          <div class="chart-area" style="width: 450px; height: 230px">
+              {!! $Discipline->container() !!}
+          </div>
+
+        
+          <table class="table">
+            <thead style="background-color: #003471; font-size: 10px;color:white;">
+              <tr>
+                
+                <th><b>Discipline Group</b></th>
+                <th><b>Total</b></th>
+               
+              </tr>
+            </thead>
+            <tbody> 
+                  @foreach($DG as $dg)
+
+                
+                  <tr>
+                    
+                     <td>{{$dg->major_discipline}}</td>
+                     <td>{{$dg->Total}}</td>
+                    
+                  </tr>
+                  @endforeach
+
+
+            </tbody>
+          </table>
+
+
+        </div>
+      </div> 
+    </div>       
+
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          
+          <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i></h5>
+          <h5 class="card-title">
+          Top 5 Programs<br>
+          </h5>
+        </div>
+        <div class="card-body">
+       
+          <div class="chart-area" style="width: 450px; height: 230px">
+              {!! $program->container() !!}
+          </div>
+
+          <table class="table">
+            <thead style="background-color: #003471; font-size: 10px;color:white;">
+              <tr>
+                
+                <th><b>Programs</b></th>
+                <th><b>Total</b></th>
+              
+              </tr>
+            </thead>
+            <tbody> 
+                  @foreach($Programs as $p)
+                  <tr>
+                     
+                     <td>{{$p->program_name}}</td>
+                     <td>{{$p->Total}}</td>
+                    
+                  </tr>
+                  @endforeach
+             
+
+            </tbody>
+          </table>
+
+
+        </div>
+      </div> 
+    </div> 
+
 </div>
 
 <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i> NON-SUC Enrollment</h5>
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
         
-        </div>
-        <div class="card-body">
-          
-          <div class="chart-area" style="height:150px;">
-              {!! $TotalNonSucMF->container() !!}
-           </div>
-
-           <br>
-           <table class="table">
-              <thead style="background-color: #003471; font-size: 10px;color:white;">
-                <tr>
-                  <th></th>
-                  <th><b>Male</b></th>
-                  <th><b>Female</b></th>
-                </tr>
-              </thead>
-              <tbody> 
-          
-                    {{-- <tr> 
-                      <td>Average</td>
-                      <td>{{$NONSUCAVGEnrollmentMale}}</td>
-                      <td>{{$NONSUCAVGEnrollmentFemale}}</td>
-                    </tr> --}}
-                    <tr> 
-                      <td>Percentage</td>
-                      <td>{{ $percentageNonSucMaleEnroll}} %</td>
-                      <td>{{$percentageNonSucFemaleEnroll}}%</td>
-                      
-                    </tr>
-
-                    <tr> 
-                      <td>Total</td>
-                      <td>{{$NONSUCtotalEnrollmentMale}}</td>
-                      <td>{{$NONSUCtotalEnrollmentFemale}}</td>
-                    </tr>
-                    
-              </tbody>
-          </table>
-
-        </div>
+        <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> NON - SUC</h5>
+        <h5 class="card-title">
+        Top 10 Colleges with Highest Number of Enrollees<br>
+        </h5>
       </div>
-    </div>       
-
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i> NON-SUC Graduates</h5>
-        
+      <div class="card-body">
+     
+        <div class="chart-area" style="height:150px;">
+            {!! $ce->container() !!}
         </div>
-        <div class="card-body">
-          
-          <div class="chart-area" style="height:150px;">
-              {!! $TotalNonSucGradMF->container() !!}
-           </div>
 
-           <br>
-           <table class="table">
-              <thead style="background-color: #003471; font-size: 10px;color:white;">
+        <?php $i = 1; ?>
+        <table class="table">
+          <thead style="background-color: #003471; font-size: 10px;color:white;">
+            <tr>
+              <th></th>
+              <th><b>Institution</b></th>
+              <th><b>Total</b></th>
+            
+            </tr>
+          </thead>
+          <tbody> 
+            
+                @foreach($College_E as $e)
                 <tr>
-                  <th></th>
-                  <th><b>Male</b></th>
-                  <th><b>Female</b></th>
+                   <td>Top 
+
+                    {{$i}}
+                    <?php $i++; ?>
+                    </td>
+
+                   <td>{{$e->institution_name}}</td>
+                   <td>{{$e->Total}}</td>
+                  
                 </tr>
-              </thead>
-              <tbody> 
-          
-                    {{-- <tr> 
-                      <td>Average</td>
-                      <td>{{$NONSUCAVGGraduateMale}}</td>
-                      <td>{{$NONSUCAVGGraduateFemale}}</td>
-                    </tr> --}}
-                    <tr> 
-                      <td>Percentage</td>
-                      <td>{{$percentageNonSucMaleGrad}} %</td>
-                      <td>{{$percentageNonSucFemaleGrad}}%</td>
-                      
-                    </tr>
+                @endforeach
+           
 
-                    <tr> 
-                      <td>Total</td>
-                      <td>{{ $NONSUCtotalGraduateMale}}</td>
-                      <td>{{$NONSUCtotalGraduateFemale}}</td>
-                    </tr>
-                    
-              </tbody>
-          </table>
+          </tbody>
+        </table>
 
-          
-        </div>
+
       </div>
-    </div>          
+    </div> 
+  </div>          
 </div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        
+        <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> NON - SUC</h5>
+        <h5 class="card-title">
+        Top 5 Highest Courses Enrolled<br>
+        </h5>
+      </div>
+      <div class="card-body">
+     
+        <div class="chart-area" style="height:150px;">
+            {!! $courses->container() !!}
+        </div>
+
+        <?php $i = 1; ?>
+        <table class="table">
+          <thead style="background-color: #003471; font-size: 10px;color:white;">
+            <tr>
+              <th></th>
+              <th><b>Institution</b></th>
+              <th><b>Total</b></th>
+            
+            </tr>
+          </thead>
+          <tbody> 
+            
+                @foreach($Courses_E as $c)
+                <tr>
+                   <td> Top
+
+                    {{$i}}
+                    <?php $i++; ?>
+
+                   </td>
+                   <td>{{$c->program_name}}</td>
+                   <td>{{$c->Total}}</td>
+                  
+                </tr>
+                @endforeach
+           
+
+          </tbody>
+        </table>
+
+
+      </div>
+    </div> 
+  </div>  
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        
+        <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> NON - SUC</h5>
+        <h5 class="card-title">
+        Top 5 Colleges with Highest Number of Graduates<br>
+        </h5>
+      </div>
+      <div class="card-body">
+     
+        <div class="chart-area" style="height:150px;">
+            {!! $college->container() !!}
+        </div>
+
+        <?php $i = 1; ?>
+        <table class="table">
+          <thead style="background-color: #003471; font-size: 10px;color:white;">
+            <tr>
+              <th></th>
+              <th><b>Institution</b></th>
+              <th><b>Total</b></th>
+            
+            </tr>
+          </thead>
+          <tbody> 
+            
+                @foreach($College_G as $cc)
+                <tr>
+                   <td> Top
+
+                    {{$i}}
+                    <?php $i++; ?>
+
+                   </td>
+                   <td>{{$cc->institution_name}}</td>
+                   <td>{{$cc->Total}}</td>
+                  
+                </tr>
+                @endforeach
+           
+
+          </tbody>
+        </table>
+
+
+      </div>
+    </div> 
+  </div>          
+</div>
+
+ 
+
+
 
 
 </div>
@@ -249,11 +363,20 @@
 
 @section('scripts')
 
-{!! $chart->script() !!}
+{{-- {!! $chart->script() !!}
 {!! $TotalMF->script() !!}
 {!! $TotalGradMF->script() !!}
 {!! $TotalNonSucEG->script() !!}
 {!! $TotalNonSucMF->script() !!}
-{!! $TotalNonSucGradMF->script() !!}
+{!! $TotalNonSucGradMF->script() !!} --}}
+{!! $Discipline->script() !!}
+{!! $ce->script() !!}
+{!! $courses->script() !!}
+{!! $college->script() !!}
+{!! $program->script() !!}
+{!! $gender->script() !!}
+{!! $male->script() !!}
+{!! $female->script() !!}
+
 
 @endsection

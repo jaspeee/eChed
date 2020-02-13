@@ -19,7 +19,7 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    @endif
+    @endif 
 
       @if(session('success'))
       <div class="alert alert-success">
@@ -111,7 +111,7 @@
                                     @endif
                             </form>
                           </tr>
-                          @endforeach
+                          @endforeach 
                      
                     </tbody>
                   </table>

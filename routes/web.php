@@ -11,12 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', function () { 
+    return view('welcome'); 
 });
 
-
-// ENCODER
+ 
+// ENCODER 
 Route::get('/encoder/dashboard', 'EncoderController@Page_dashboard');
 Route::get('/encoder/forms', 'EncoderController@Page_form');
 Route::get('/encoder/upload', 'EncoderController@Page_upload');
@@ -25,14 +25,14 @@ Route::post('/encoder/upload', 'EncoderController@Upload_file');
 Route::get('/encoder/password', 'EncoderController@Page_password');
 Route::patch('/encoder/changepass', 'EncoderController@Password_change');
 Route::get('/encoder/references', 'EncoderController@Page_references');
-
-// VALIDATOR
+ 
+// VALIDATOR 
 Route::get('/validator/dashboard', 'ValidatorController@Page_dashboard');
 Route::get('/validator/validation', 'ValidatorController@Page_validation');
 Route::get('/validator/track', 'ValidatorController@Page_track');
 Route::get('/validator/records', 'ValidatorController@Page_records');
 Route::get('/validator/accounts', 'ValidatorController@Page_accounts');
-Route::patch('/validator/validation/approve/{form}', 'ValidatorController@Validation_approve');
+Route::patch('/validator/validation/approve/{form}', 'ValidatorController@Validation_approve'); 
 Route::patch('/validator/validation/disapprove/{id}', 'ValidatorController@Validation_disapproves');
 Route::patch('/validator/accounts/{status}/{id}', 'ValidatorController@Validation_accstat');
 Route::post('/validator/accounts/add', 'ValidatorController@Accounts_add');
@@ -68,8 +68,9 @@ Route::post('/officer/deadline/add', 'OfficerController@Deadline_add');
 Route::get('/officer/collation', 'OfficerController@Page_collation');
 Route::get('/officer/analytics', 'OfficerController@Page_analytics');
 Route::get('/officer/references', 'OfficerController@Page_references');
-
-
+Route::get('/officer/accounts/officer', 'OfficerController@Page_account_officer');
+Route::post('/officer/accounts/officer', 'OfficerController@Account_officer_add');
+ 
 //REPORTS
 Route::get('/officer/collate', 'ReportsController@import'); 
 Route::get('/officer/exports', 'ReportsController@exports');

@@ -16,25 +16,26 @@
       <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-              <h5 class="card-category">Validator Account</h5>
+             
               <h5 class="card-title">
                 <i class="now-ui-icons business_bank" ></i>
-                Welcome to E - CHED,<br>
+                Welcome to E - CHED<br>
               </h5>
+              <p style="font-size:13px;text-align: justify;color:gray;">
+                This page is design to give you some updates. 
+                Navigate below and see diffirent areas of data for your needs.
+                If you have any trouble contact the administration for support.
+              </p>
             </div>
             <div class="card-body">
               <div class="container" style="padding:10px;">
+                <center>
+                  <h5>Validator Account</h5>
+                  <hr>
+                  <h6 style="font-weight: inherit">{{$school}}</h6>
+                </center>
+            
                
-                <p style="font-size: 30px;text-align: center;"> {{$school}}</i></p>
-               
-              </div>
-            </div>
-            <div class="card-footer ">
-              <hr>
-              <div class="stats">
-              
-                Date Today : {{$dates}}
-                
               </div>
             </div>
         </div>
@@ -100,10 +101,10 @@
                 <i class="now-ui-icons loader_gear"></i>
               </button>
               </a>
-            </div>
+            </div> 
           </div>
           <div class="card-body">
-            <div class="chart-area">
+            <div class="chart-area" >
               {!! $chart->container() !!}
 
             </div>

@@ -19,9 +19,20 @@
           </div> 
           <div class="card-body">
             <div class="container" style="padding:40px;">
-
+ 
               <p style="font-size:18px;"><b> Collated Files</b></p>
+              <p style="font-size:13px;">Export : Please click this button to export the collated files
+                  
+                <a href="/officer/exports">
+                <button type="button" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
+                  <i class="now-ui-icons arrows-1_share-66" data-toggle="tooltip" data-placement="top" title="Collate"></i>
+                </button>
+                </a>
+              </p>
+ 
+              <hr>
 
+              <br>
                <!-- Nav tabs -->
                <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">

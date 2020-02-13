@@ -1,10 +1,10 @@
 @extends('layouts.layout_officer', [
-    'namePage' => 'Administer Verifiers',
+    'namePage' => 'Administer Officers',
     'fname' => $fname,
     'lname' => $lname,
     'class' => 'sidebar-mini',
     'pass' => '/officer/password',
-    'activePage' => 'verifier',
+    'activePage' => 'officer',
   ])
 
 @section('content')
@@ -38,8 +38,6 @@
       </div> 
       @endif
 
-
-
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -49,7 +47,7 @@
           <div class="card-body">
             <div class="container" style="padding:40px;">
 
-              <p style="font-size:18px;"><b>List of Verifier Accounts</b></p>
+              <p style="font-size:18px;"><b>List of Officer Accounts</b></p>
 
               <p style="font-size:13px;">Add Accounts : Please click this button to prompt the adding of accounts 
                   
@@ -58,9 +56,11 @@
                 </button>
               </p>
               <hr>
-              
 
-              <br>     
+
+              <br>
+
+                     
               <form class="form-inline " >
                   <div class="form-group">
                     <label >
@@ -73,7 +73,7 @@
                 <br> 
 
 
-              <table class="table" id="acctbl">
+              <table class="table" id="acctbl"> 
                   <thead style="background-color: #003471; font-size: 10px;color:white;">
                     <tr>
                       <th><b>Username</b></th>
@@ -97,7 +97,7 @@
                             @elseif($acc->status == 'Inactive')
                               <td><span class="badge badge-pill badge-danger mr-1" >{{$acc->status}}</span></td>
                             @endif
-                             
+                            
                             <form method="POST" action="/officer/accounts/{{$acc->status}}/{{$acc->id}}">
                               {{method_field('patch')}}
                               @csrf
@@ -118,13 +118,13 @@
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Add Verifier Accounts</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Add Officer Account</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  <form action="/officer/accounts/add" method="POST">
+                  <form action="/officer/accounts/officer" method="POST">
                     @csrf
 
                     
@@ -157,7 +157,7 @@
                 </div>
                 
               </div>
-            </div>
+            </div> 
           </div>
 
           </div>
@@ -195,7 +195,6 @@ $(document).ready(function() {
 $('#tracksearchbar').keyup(function(){
       oTable.search($(this).val()).draw() ;
 })
-
 
 
 </script>

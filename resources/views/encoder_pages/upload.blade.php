@@ -7,7 +7,7 @@
     'activePage' => 'upload',
   ])
 
-@section('content')
+@section('content') 
 
   <div class="panel-header panel-header-sm">
   </div>
@@ -123,7 +123,7 @@ $(".btn-success").click(function(){
 $("body").on("click",".btn-danger",function(){ 
     $(this).parents(".control-group").remove();
 });
-
+ 
 });
 
 

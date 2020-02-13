@@ -42,7 +42,7 @@
 
     <div class="row">
       <div class="col-md-12">
-        <div class="card">
+        <div class="card"> 
           <div class="card-header">
             {{-- <h4 class="card-title"> Simple Table</h4> --}}
           </div>
@@ -55,9 +55,9 @@
                   <p style="font-size:13px;">
                     Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming
                 
-                  </p>
+                  </p> 
                   <hr>
-
+                  <p style="font-size: initial">{{$institution}}</p>
                   <br>
                   <form class="form-inline " >
                       <div class="form-group">

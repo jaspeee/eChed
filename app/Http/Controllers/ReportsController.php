@@ -12,13 +12,13 @@ use App\Exports\EnrollmentExport;
 use App\InstitutionId;
 Use Carbon\Carbon;
 
-
 class ReportsController extends Controller 
 {   
-    
+     
 
     public function import() 
     {   
+
         $file = DB::table('completes')->where('forms_id','2')->get();
        
         foreach($file as $files)
@@ -26,7 +26,7 @@ class ReportsController extends Controller
            if (Storage::exists('public/complete/'.$files->verifier_submission)) 
            {    
 
-               
+                
                 //STORE DATA 
                 $ins = new InstitutionId();
                 $ins->institution = $files->institutions_id;
@@ -53,7 +53,7 @@ class ReportsController extends Controller
            if (Storage::exists('public/complete/'.$files->verifier_submission)) 
            {    
             
-    
+     
                 //STORE DATA 
                 $ins = new InstitutionId();
                 $ins->institution = $files->institutions_id;
@@ -71,37 +71,42 @@ class ReportsController extends Controller
 
         }
 
-        // $data = DB::table('collations')->get();
-        // $prog = DB::table('programs')->get();
+        $data = DB::table('collations')->get();
+        $prog = DB::table('programs')->get();
 
-        // $prog_name='';
-        // $discpline_id='';
-        // $idd = '';
-        // foreach($data as $d)
-        // {   
-        //     $prog_name = $d->program_name;
-        //     $idd = $d->collations_id;
+        $prog_name='';
+        $discpline_id='';
+        $idd = '';
+
+        foreach($data as $d)
+        {   
+            $prog_name = $d->program_name;
+            $idd = $d->collations_id;
             
-        //     foreach($prog as $p)
-        //     {
-        //         if( $prog_name == $p->program_name)
-        //         {
-        //             $discpline_id = $p->discipline_groups_id;
-        //         }
-        //         else
-        //         {
-        //             $discpline_id = '1';
-        //         }
-        //     }
+            //return  $prog_name . ''. $idd;
+         
+            foreach($prog as $p)
+            {
+                if( $prog_name == $p->program_name)
+                {
+                    $discpline_id = $p->discipline_groups_id;
 
-        //     DB::update('update collations set discipline_groups_id = ? where collations_id = ?', [$discpline_id,$idd]);
+                    //return $discpline_id;
+                }
+               
+            }
+            
+            DB::update('update collations set discipline_groups_id = ? where collations_id = ?', [$discpline_id,$idd]);
+            $discpline_id='22';
+           
+        }
 
-        // }
 
-        return back();
+        return  back()->with('success', 'Collated the files successfully');
 
     }
 
+    
 
     public function exports()
     {   

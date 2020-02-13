@@ -178,5 +178,14 @@ class Discipline_groupsTblSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+          //22
+          DB::table('discipline_groups')->insert([
+            'code' => '11',
+            'major_discipline' => 'BLANK',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
     }
 }
