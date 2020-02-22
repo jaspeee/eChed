@@ -12,9 +12,8 @@
   </div>
   <div class="content"> 
     
-
     <div class="container">
-      <div class="row">
+      <div class="row"> 
         <div class="col-md-6">
           .col-md-8
           <div class="row">
@@ -67,7 +66,7 @@
                  {{ $deadline->links("pagination::bootstrap-4")}}
                 </div>
               
-              </div>
+              </div> 
             </div>
           </div>
         </div>

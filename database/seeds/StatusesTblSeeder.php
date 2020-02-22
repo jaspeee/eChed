@@ -40,5 +40,17 @@ class StatusesTblSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        DB::table('statuses')->insert([
+            'status' => 'Forgot Password',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('statuses')->insert([
+            'status' => 'Inactive Acc',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 }

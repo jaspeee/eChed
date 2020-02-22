@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             Discipline_groupsTblSeeder::class,
             Program_levelsTblSeeder::class,
             ProgramsTblSeeder::class,
+            UsersTableSeeder::class,
         ]);
 
         // DB::statement('SET FOREIGN_KEY_CHECKS=1');

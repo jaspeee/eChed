@@ -38,8 +38,8 @@
                   <thead style="background-color: #003471; font-size: 10px;color:white;">
                     <tr>
                       <th><b>Form</b></th>
-                      <th><b>Date Submitted</b></th> 
                       <th><b>Validated by</b></th>
+                      <th><b>Date Submitted</b></th>   
                       <th style="text-align: center;"><b>Status</b></th>
                       <th style="text-align: center;"><b>Comment</b></th>
                     </tr>
@@ -48,8 +48,9 @@
                         @foreach($submissions as $sub)
                         <tr>
                             <td>{{$sub->validator_submission}}</td>
-                            <td>{{$sub->created_at}}</td>
                             <td>{{$sub->first_name}} &nbsp {{$sub->last_Name}}</td>
+                            <td>{{$sub->created_at}}</td>
+                            
                             
                             @if($sub->status == 'Pending')
                               <td style="text-align: center;"><span class="badge badge-pill badge-warning mr-1" >{{$sub->status}}</span></td>

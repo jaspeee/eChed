@@ -57,7 +57,7 @@
                   <i class="now-ui-icons ui-2_settings-90" data-toggle="tooltip" data-placement="top" title="Add Officer"></i>
                 </button>
               </p>
-              <hr>
+              <hr>  
               
 
               <br>     
@@ -81,7 +81,8 @@
                       <th><b>Position</b></th>
                       <th><b>Division</b></th>
                       <th><b>Status</b></th>
-                      <th><b>Action</b></th>
+                      <th><b></b></th>
+                      <th><b></b></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -106,7 +107,15 @@
                                   @else
                                   <td><button type="submit"  class="btn btn-success">Active</button></a></td>
                                   @endif
-                          </form>
+                          </form> 
+
+                          <td style="padding:0;">
+                            <button type="button" data-toggle="modal" data-target="#changePass" data-id="{{$acc->id}}" style="background-color: transparent;border: none;cursor:pointer;">
+                              <i class="now-ui-icons ui-1_settings-gear-63"  data-toggle="tooltip" data-placement="top" title="Reset Password" style="font-size: 20px;color: gray;"></i>
+                            </button>
+                          </td>
+                          
+
                         </tr>
                         @endforeach
                    
@@ -160,6 +169,45 @@
             </div>
           </div>
 
+          <div class="modal fade" id="changePass" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Reset Password</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+
+                    <form id="update" action="" method="POST">
+
+                    {{method_field('patch')}}
+                    @csrf
+
+                    
+                    <div class="form-group">
+                      <label class="col-form-label">New Password:</label>
+                      <input type="password" class="form-control" id="npass" name="npass">
+                    </div>
+                    <div class="form-group">
+                      <label class="col-form-label">Confirm Password:</label>
+                      <input type="password" class="form-control" id="cpass" name="cpass">
+                    </div>
+          
+                    <div class="form-group">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Confirm</button>
+                    </div>
+                
+                  </form> 
+                </div>
+                
+              </div>
+            </div>
+          </div>
+
+
           </div>
         </div>
       </div> 
@@ -196,6 +244,15 @@ $('#tracksearchbar').keyup(function(){
       oTable.search($(this).val()).draw() ;
 })
 
+
+$('#changePass').on('show.bs.modal', function(event) {
+  var button = $(event.relatedTarget);
+  var modal = $(this);
+  var id = button.data('id'); 
+
+   modal.find('#update').attr('action','/account/changePass/'+id);
+
+});
 
 
 </script>

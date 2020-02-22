@@ -16,7 +16,7 @@ use App\Charts\AccountStatusChart;
 use Hash;
 Use Carbon\Carbon;
 use App\Jobs\ValidatorApprove;
-use App\Jobs\ValidatorDisapprove;
+use App\Jobs\ValidatorDisapprove; 
 use App\Jobs\ValidatorAddAcc;
 use App\Jobs\ValidatorAccStatus;
 use App\Jobs\ValidatorChangePass;
@@ -107,7 +107,7 @@ class ValidatorController extends Controller
            
         $chart->displayLegend(false);
      
-
+ 
         //VALIDATOR
         $pending1 = DB::table('verifies')
         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
@@ -130,7 +130,7 @@ class ValidatorController extends Controller
          $charts->displayLegend(false);
 
         //ENCODER ACCOUNTS
-
+ 
         $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
         $active = DB::table('users')
         ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
@@ -150,7 +150,7 @@ class ValidatorController extends Controller
                 // ->color($borderColors1)
                 // ->backgroundcolor($fillColors1);
     
-        $chartss->displayAxes(false);
+        $chartss->displayAxes(false); 
        
          //GET THE DEADLINES
          $deadline = DB::table('deadlines')
@@ -164,9 +164,17 @@ class ValidatorController extends Controller
         $date = Carbon::now();
         $dates = $date->toFormattedDateString();         
 
+        //GET THE REQUEST
+        $request = DB::table('concerns')
+        ->join('users', 'concerns.user_id', '=','users.id')
+        ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->select('concerns.*', 'employee_profiles.first_name', 'employee_profiles.last_Name')
+        ->where('employee_profiles.institutions_id', $institution)
+        ->where('users.user_types_id', '<>', '2')
+        ->orderby('concerns_id','desc')->limit(3)->get();  
 
-
-        return view('validator_pages.dashboard', compact('school','dates','deadline','chartss','charts','chart','submissionss','submissions','fname','lname'));
+        return view('validator_pages.dashboard', compact('school','dates','request',
+        'deadline','chartss','charts','chart','submissionss','submissions','fname','lname'));
     }
 
     public function Page_validation()
@@ -328,7 +336,7 @@ class ValidatorController extends Controller
             return back()->with('danger', 'You already disapprove this file');
         }
         else
-        {   
+        {    
             $comment = $request->textarea;
 
             ValidatorDisapprove::dispatch($id,$comment);
@@ -340,7 +348,7 @@ class ValidatorController extends Controller
             // $sample = $id . ''. $comment; 
             // DB::update('update validates set comment = ? where validates_id = ?', [$comment,$id]);
 
-            // //UPDATE THE COMMENT IN VALIDATES TABLE
+            // //UPDATE THE COMMENT IN VALIDATES TABLE 
             
             
             // //GET THE FILE NAME 
@@ -441,7 +449,7 @@ class ValidatorController extends Controller
             //  $user = User::find($id);
             //  $user->password = Hash::make($request['password']);
             //  $user->save();  
-             
+              
             
          }
          else{ 
@@ -470,5 +478,15 @@ class ValidatorController extends Controller
    
            return view('validator_pages.references',compact('discipline','institutions','fname','lname'));
        
-    }
+    } 
+
+    // public function Accounts_changePass(Request $request, $id)
+    // {   
+
+    //     $newpass = Hash::make($request['npass']);
+        
+    //     DB::update('update users set password = ? where id = ?', [$newpass,$id]);
+
+    //      return back()->with('success', 'Change password successfully');
+    // }
 }

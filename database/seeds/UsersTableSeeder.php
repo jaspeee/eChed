@@ -13,10 +13,49 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'name' => 'Admin',
-            'email' => 'admin@nowui.com',
+            'username' => 'sample1',
+            'email' => 'sample1@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('secret'),
+            'employee_profiles_id' => '1',
+            'user_types_id' =>'1',
+            'statuses_id' => '1',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('users')->insert([
+            'username' => 'sample2',
+            'email' => 'sample2@gmail.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('secret'),
+            'employee_profiles_id' => '2',
+            'user_types_id' =>'2',
+            'statuses_id' => '1',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('users')->insert([
+            'username' => 'sample3',
+            'email' => 'sample3@gmail.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('secret'),
+            'employee_profiles_id' => '3',
+            'user_types_id' =>'3',
+            'statuses_id' => '1',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        DB::table('users')->insert([
+            'username' => 'sample4',
+            'email' => 'sample4@gmail.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('secret'),
+            'employee_profiles_id' => '4',
+            'user_types_id' =>'4',
+            'statuses_id' => '1',
             'created_at' => now(),
             'updated_at' => now()
         ]);

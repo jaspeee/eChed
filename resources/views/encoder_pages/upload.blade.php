@@ -51,8 +51,11 @@
 
             <div class="container" style="padding:40px;"> 
                 <p style="font-size:18px;"><b>Upload Forms to Validate</b></p>
-                <p style="font-size:13px;">Upload Form : Click on " Choose Files " to choose file to upload and click the button Upload</p>
-            
+                <p style="font-size:13px;">Upload Form : Click on " Choose Files " to choose file to upload and click the button upload
+                  <br> 
+                Notice : Make sure to upload Excel files (.xlsx) only
+              </p>
+             
                 <form method="post" action="" class="form-horizontal" enctype="multipart/form-data">
               @csrf 
                 <input type="file" name="file[]" id="file" multiple>
@@ -60,7 +63,7 @@
                 
                 <div id="selectedFiles" style="padding-top:2%;padding-bottom:%"></div>
 
-                <input type="submit" class="btn btn-info" value="Upload">
+                <input type="submit" onclick="return confirmation();" class="btn btn-info" value="Upload">
 
                 
             </form> 
@@ -127,7 +130,13 @@ $("body").on("click",".btn-danger",function(){
 });
 
 
-
+function confirmation(){
+    if(confirm('Are you sure you want to upload this forms?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
 
 </script>
 @endsection

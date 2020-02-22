@@ -40,6 +40,7 @@ Route::get('/validator/password', 'ValidatorController@Page_password');
 Route::patch('/validator/changepass', 'ValidatorController@Password_change');
 Route::get('/validator/references', 'ValidatorController@Page_references');
 
+
 // VERIFIER
 Route::get('/verifier/dashboard', 'VerifierController@Page_dashboard');
 Route::get('/verifier/verification', 'VerifierController@Page_verification');
@@ -49,6 +50,8 @@ Route::patch('/verifier/verify/disapprove/{id}', 'VerifierController@Verify_disa
 Route::get('/verifier/password', 'VerifierController@Page_password');
 Route::patch('/verifier/changepass', 'VerifierController@Password_change');
 Route::get('/verifier/references', 'VerifierController@Page_references');
+
+
 
 // OFFICER 
 Route::get('/officer/dashboard', 'OfficerController@Page_dashboard');
@@ -70,12 +73,26 @@ Route::get('/officer/analytics', 'OfficerController@Page_analytics');
 Route::get('/officer/references', 'OfficerController@Page_references');
 Route::get('/officer/accounts/officer', 'OfficerController@Page_account_officer');
 Route::post('/officer/accounts/officer', 'OfficerController@Account_officer_add');
- 
+Route::patch('/officer/final/approve/{form}', 'OfficerController@officer_approve'); 
+Route::patch('/officer/final/disapprove/{form}', 'OfficerController@officer_disapprove'); 
+
+
+//INACTIVE ACC REDIRECT
+Route::get('/account', 'AccountController@Page_acc');
+Route::post('/inactive/req', 'AccountController@Page_inactive_req');
+
+//FORGOT PASSWORD
+Route::get('/forgotpassword', 'AccountController@Page_forgot');
+Route::post('/forgotpassword/req', 'AccountController@Page_forgot_req');
+
+//CHANGE PASSWORD
+Route::patch('/account/changePass/{id}', 'AccountController@Accounts_changePass');
+
 //REPORTS
 Route::get('/officer/collate', 'ReportsController@import'); 
 Route::get('/officer/exports', 'ReportsController@exports');
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -85,5 +102,5 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
 	Route::get('{page}', ['as' => 'page.index', 'uses' => 'PageController@index']);
-});
+}); 
 

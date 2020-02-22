@@ -52,18 +52,11 @@
               </h5>
             </div>
             <div class="card-body" style="padding: 5%;">
-
-
-
               @foreach($deadline as $dd)
-
-            
               <h6 style="font-weight: normal;">Date : {{$dd->deadline_date}}</h6>
               <p>Note &nbsp;: {{$dd->message}} </p>
               <hr>
               <p style="font-size: small;color: gray;text-align: right;"><i class="now-ui-icons ui-2_setting-90"></i> Posted By: {{$dd->first_name}} {{$dd->last_Name}}</p>
-              
-         
              @endforeach
              {{ $deadline->links("pagination::bootstrap-4")}}
 
@@ -72,11 +65,9 @@
           </div>
          
         </div> 
-        
-                   
+         
     </div>
     
-      
       <div class="row">
       <div class="col-md-6"> 
         <div class="card  card-tasks">
@@ -139,8 +130,8 @@
             <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i>  Encoder </h5>
             <h4 class="card-title"> Submission Status</h4>
           </div>
-          <div class="card-body">
-            <div class="chart-area">
+          <div class="card-body" >
+            <div class="chart-area" style="height:190px;">
             {!! $chart->container() !!} 
             </div>
           </div>

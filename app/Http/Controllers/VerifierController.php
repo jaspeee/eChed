@@ -343,7 +343,7 @@ class VerifierController extends Controller
         return view('verifier_pages.verification', compact('institutions','fname','lname'));
     }
 
-    public function Page_verify($ins_id)
+    public function Page_verify($ins_id) 
     {   
         //GET THE FIRST AND LAST NAME OF THE USER 
         $id = auth()->id();
@@ -376,7 +376,7 @@ class VerifierController extends Controller
          $div = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->division;
 
          return view('verifier_pages.password', compact('pos','div','fname','lname'));
-    }
+    } 
 
 
     public function Verify_approve($id)
@@ -464,19 +464,28 @@ class VerifierController extends Controller
         {
             return back()->with('danger', 'You already disapprove this file');
         } 
-        else
-        {   
+        else 
+        {    
             $comment = $request->textarea;
 
             VerifierDisapprove::dispatch($id, $comment);
- 
+
              //UPDATE STATUS IN VERIFIES TABLE
-            $status = '5';
+            $status = '5'; 
             DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
+            
+            //UPDATE STATUS IN VALIDATES TABLE
+            $val_sub = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
+
+            $comment1 = $comment . ' - Verifier'; 
+            DB::table('validates')  
+            ->where('encoder_submission',$val_sub)
+            ->where('statuses_id','4') 
+            ->update(['statuses_id' => '5', 'comment' => $comment1]);
 
             // //UPDATE THE COMMENT IN VALIDATES TABLE
             // DB::update('update verifies set comment = ? where verifies_id = ?', [$comment,$id]);
-            
+             
             // //GET THE FILE NAME
             // $filename = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
             

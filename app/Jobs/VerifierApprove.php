@@ -38,7 +38,7 @@ class VerifierApprove implements ShouldQueue
     /** 
      * Execute the job.
      *
-     * @return void
+     * @return void 
      */
     public function handle()
     {
@@ -61,6 +61,8 @@ class VerifierApprove implements ShouldQueue
         $comp->verifier_submission =  $this->filename;
         $comp->forms_id =  $this->form_id; 
         $comp->institutions_id = $institution;
+        $comp->statuses_id = '3';
+        $comp->comment = ''; 
         $comp->save();
 
         Storage::move('public/verify/'.$this->filename, 'public/complete/' .$this->filename);

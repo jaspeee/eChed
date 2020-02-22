@@ -32,7 +32,7 @@ class VerifierDisapprove implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return void
+     * @return void 
      */
     public function handle()
     {
@@ -48,10 +48,10 @@ class VerifierDisapprove implements ShouldQueue
         $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
         $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
         $final_count = $count - 1;
-        DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
- 
+        DB::update('update counts set vcount = ? where institutions_id = ?', [$final_count,$institution]);
+  
         Storage::delete('public/verify/'.$filename);
-
+ 
 
     }
 }

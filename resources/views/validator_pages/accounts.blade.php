@@ -52,7 +52,7 @@
                   <p style="font-size:13px;">Add Accounts : Please click this button to prompt the adding of accounts 
                   
                     <button type="button" data-toggle="modal" data-target="#encoderModal" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
-                      <i class="now-ui-icons ui-2_settings-90" data-toggle="tooltip" data-placement="top" title="Add Encoder"></i>
+                      <i class="now-ui-icons users_single-02" data-toggle="tooltip" data-placement="top" title="Add Encoder"></i>
                     </button>
                   </p>
                   
@@ -84,7 +84,8 @@
                         <th><b>Position</b></th>
                         <th><b>Division</b></th>
                         <th><b>Status</b></th>
-                        <th><b>Action</b></th>
+                        <th><b></b></th> 
+                        <th><b></b></th> 
                       </tr>
                     </thead>
                     <tbody>
@@ -99,17 +100,25 @@
                                 <td><span class="badge badge-pill badge-success mr-1" >{{$acc->status}}</span></td>
                               @elseif($acc->status == 'Inactive')
                                 <td><span class="badge badge-pill badge-danger mr-1" >{{$acc->status}}</span></td>
-                              @endif
+                              @endif 
                               
                               <form method="POST" action="/validator/accounts/{{$acc->status}}/{{$acc->id}}">
                                 {{method_field('patch')}}
                                 @csrf
                                     @if($acc->status == 'Active')
-                                    <td><button onclick="return confirmation();" type="submit" class="btn btn-danger" >Inactive</button></a></td>
+                                    <td><button onclick="return confirmation();" type="submit" class="btn btn-danger">Inactive</button></a></td>
                                     @else
                                     <td><button onclick="return confirmation();" type="submit"  class="btn btn-success">Active</button></a></td>
                                     @endif
-                            </form>
+                              </form>
+
+                               
+                                  <td style="padding:0;">
+                                    <button type="button" data-toggle="modal" data-target="#changePass" data-id="{{$acc->id}}" style="background-color: transparent;border: none;cursor:pointer;">
+                                      <i class="now-ui-icons ui-1_settings-gear-63"  data-toggle="tooltip" data-placement="top" title="Reset Password" style="font-size: 20px;color: gray;"></i>
+                                    </button>
+                                  </td>
+
                           </tr>
                           @endforeach 
                      
@@ -130,7 +139,7 @@
                     <form action="/validator/accounts/add" method="POST">
                       @csrf
 
-                      
+                       
                       <div class="form-group">
                         <label class="col-form-label">Firstname:</label>
                         <input type="text" class="form-control" id="fname" name="fname">
@@ -156,7 +165,46 @@
                         <button type="submit" class="btn btn-primary">Add account</button>
                       </div>
                   
-                    </form>
+                    </form> 
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+
+
+            <div class="modal fade" id="changePass" tabindex="-1" role="dialog"  aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Reset Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+
+                      <form id="update" action="" method="POST">
+
+                      {{method_field('patch')}}
+                      @csrf
+
+                      
+                      <div class="form-group">
+                        <label class="col-form-label">New Password:</label>
+                        <input type="password" class="form-control" id="npass" name="npass">
+                      </div>
+                      <div class="form-group">
+                        <label class="col-form-label">Confirm Password:</label>
+                        <input type="password" class="form-control" id="cpass" name="cpass">
+                      </div>
+            
+                      <div class="form-group">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                      </div>
+                  
+                    </form> 
                   </div>
                   
                 </div>
@@ -198,6 +246,17 @@ $('#encoderModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget) 
   var modal = $(this)
 })
+
+
+$('#changePass').on('show.bs.modal', function(event) {
+  var button = $(event.relatedTarget);
+  var modal = $(this);
+  var id = button.data('id');
+
+   modal.find('#update').attr('action','/account/changePass/'+id);  
+
+});
+ 
 
 function confirmation(){
     if(confirm('Are you sure you want to take this action?')){

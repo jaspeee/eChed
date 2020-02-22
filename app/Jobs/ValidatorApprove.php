@@ -49,8 +49,8 @@ class ValidatorApprove implements ShouldQueue
         $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
         $final_count = $count + 1;
         DB::update('update counts set vcount = ? where institutions_id = ?', [$final_count,$institution]);
-
-         //STORE DATA TO VERIFIES TABLE
+ 
+         //STORE DATA TO VERIFIES TABLE 
         $vfy = new Verify();
         $vfy->user_id =  $this->id1;
         $vfy->validator_submission =  $this->filename;

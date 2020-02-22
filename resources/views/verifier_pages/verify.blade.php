@@ -74,22 +74,22 @@
                       <thead style="background-color: #003471; font-size: 10px;color:white;">
                         <tr>
                           <th><b>Form</b></th>
-                          <th><b>Date Submitted</b></th>
                           <th><b>Validated by</b></th>
+                          <th><b>Date Submitted</b></th>
                           <th><b>Status</b></th>
                           <th style="text-align: center;"><b>Comment</b></th>
                           <th></th>
                           <th></th>
                           <th></th>
-                        </tr>
-                      </thead>
+                        </tr> 
+                      </thead> 
                       <tbody>
                             @foreach($files as $file)
                             <tr>
                                 <td>{{$file->validator_submission}}</td>
-                                <td>{{$file->created_at}}</td>
                                 <td>{{$file->first_name}} &nbsp {{$file->last_Name}}</td>
-                                
+                                <td>{{$file->created_at}}</td>
+                              
                                 @if($file->status == 'Pending')
                                   <td><span class="badge badge-pill badge-warning mr-1" >{{$file->status}}</span></td>
                                 @elseif($file->status == 'Approve')
@@ -97,7 +97,7 @@
                                 @elseif($file->status == 'Disapprove')
                                 <td><span class="badge badge-pill badge-danger mr-1" >{{$file->status}}</span></td>
                                 @endif
-                                
+                                 
 
                                 @if($file->comment == null)
                                   <td></td>

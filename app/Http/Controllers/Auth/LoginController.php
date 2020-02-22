@@ -54,7 +54,7 @@ class LoginController extends Controller
     {
         return array_merge($request->only($this->username(), 'password'), ['statuses_id' => 1]);
     }
-
+ 
 
     /**
      * Create a new controller instance.

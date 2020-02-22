@@ -34,7 +34,7 @@ class ValidatorDisapprove implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     */
+     */ 
     public function handle()
     {
          //UPDATE COMMENT IN VALIDATES TABLE 
@@ -43,7 +43,7 @@ class ValidatorDisapprove implements ShouldQueue
         //  //UPDATE THE STATUS IN VALIDATES TABLE
         //  $status = '5';
         //  DB::update('update validates set statuses_id = ? where validates_id = ?', [$status,$this->id]);
-         
+          
          //GET THE FILE NAME 
          $filename = DB::table('validates')->where('validates_id', $this->id)->first()->encoder_submission;
 

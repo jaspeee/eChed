@@ -35,7 +35,9 @@ use App\Jobs\OfficerAddAccOfficer;
 Use Carbon\Carbon;
 use App\Charts\InstitutionChart;
 use App\Charts\StatusChart;
-
+use App\Jobs\OfficerApprove;
+use App\Jobs\OfficerDisapprove;
+ 
 class OfficerController extends Controller
 {   
 
@@ -93,12 +95,12 @@ class OfficerController extends Controller
         $ins_chart->displayLegend(false);
 
         //STATUS CHART
-         $Approve = DB::table('verifies')
-         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
+         $Approve = DB::table('completes')
+         ->join('statuses','completes.statuses_id', '=','statuses.statuses_id')
          ->where('statuses.status', 'approve')->count();
  
-         $Disapprove = DB::table('verifies')
-         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
+         $Disapprove = DB::table('completes')
+         ->join('statuses','completes.statuses_id', '=','statuses.statuses_id')
          ->where('statuses.status', 'disapprove')->count();
   
          $stat_chart = new StatusChart;
@@ -109,8 +111,18 @@ class OfficerController extends Controller
  
          $stat_chart->displayAxes(false);
         
-
-        return view('officer_pages.dashboard', compact('deadline','fname','lname','dates','HEI',
+         
+          //GET THE REQUEST
+          $request = DB::table('concerns')
+          ->join('users', 'concerns.user_id', '=','users.id')
+          ->join('user_types', 'users.user_types_id', '=','user_types.user_types_id')
+          ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+          ->select('concerns.*', 'employee_profiles.first_name', 'employee_profiles.last_Name','user_types.type')
+          ->where('users.user_types_id', '<>', '1')
+          ->orderby('concerns_id','desc')->limit(3)->get();
+ 
+        return view('officer_pages.dashboard', compact('deadline','fname',
+        'lname','dates','HEI','request',
         'submissions','ins_chart','total','stat_chart'));
 
     } 
@@ -165,7 +177,7 @@ class OfficerController extends Controller
 
     public function Page_final($ins_id)
     {
-         //GET THE FIRST AND LAST NAME OF THE USER 
+         //GET THE FIRST AND LAST NAME OF THE USER  
          $id = auth()->id();
          $employee = DB::table('users')->find($id)->employee_profiles_id;
          $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
@@ -173,9 +185,10 @@ class OfficerController extends Controller
 
          //GET THE SUBMITTED FILES OF A SPECIFIC INSTITUTION
          $files = DB::table('completes')
-        ->join('users', 'completes.user_id', '=', 'users.id')
+        ->join('users', 'completes.user_id', '=', 'users.id') 
         ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
-        ->select('completes.*','employee_profiles.first_name','employee_profiles.last_Name')
+        ->join('statuses', 'completes.statuses_id', '=', 'statuses.statuses_id')
+        ->select('completes.*','employee_profiles.first_name','employee_profiles.last_Name','statuses.status')
         ->where('completes.institutions_id', $ins_id)->get();
          
         $institution = DB::table('institutions')->where('institutions_id',$ins_id)->first()->institution_name;
@@ -183,7 +196,7 @@ class OfficerController extends Controller
         //return $files;
          return view('officer_pages.final', compact('files','fname','lname','institution'));
 
-    }
+    } 
 
     public function Page_account()
     {
@@ -213,7 +226,7 @@ class OfficerController extends Controller
            'employee_profiles.position', 'employee_profiles.division','statuses.status')
         ->where('employee_profiles.institutions_id', $institution)
         ->where('users.user_types_id', $type)->get();
-
+  
 
        return view('officer_pages.verifier_acc', compact('account','fname','lname'));
     }
@@ -1032,6 +1045,96 @@ class OfficerController extends Controller
         return  back()->with('success', 'Added a new account successfully');
  
     }
+
+    public function officer_approve($id)
+    {   
+         
+        $stat = DB::table('completes')->where('completes_id', $id)->first()->statuses_id;
+
+
+        if($stat == '5')
+        {
+            return back()->with('danger', 'You cannot approve this file. Contact the specific validator for resubmission');
+        }
+        else if($stat == '4')
+        {
+            return back()->with('danger', 'You already approve this file');
+        }
+        else
+        {   
+             //UPDATE STATUS IN VALIDATES TABLE
+            $status = '4';
+            DB::update('update completes set statuses_id = ? where completes_id = ?', [$status,$id]);
+
+            return back()->with('success', 'Approves the file successfully');
+
+        }
+     
+      
+    } 
+
+    public function officer_disapprove(Request $request,$id)
+    {    
+        $stat = DB::table('completes')->where('completes_id', $id)->first()->statuses_id;
+
+        if($stat == '4')
+        {
+            return back()->with('danger', 'You cannot disapprove this file. Contact Ched Officer for cancelling the form');
+        }
+        else if($stat == '5')
+        {
+            return back()->with('danger', 'You already disapprove this file');
+        } 
+        else
+        {    
+
+           
+            $comment = $request->textarea;
+
+            OfficerDisapprove::dispatch($id,$comment);
+
+             //UPDATE STATUS IN COMPLETES TABLE
+            $status = '5'; 
+            DB::update('update completes set statuses_id = ? where completes_id = ?', [$status,$id]);
+            
+            //UPDATE THE COMMENT IN COMPLETES TABLE
+            DB::update('update completes set comment = ? where completes_id = ?', [$comment,$id]);
+            
+            // //GET THE FILE NAME
+            // $filename = DB::table('completes')->where('completes_id', $id)->first()->verifier_submission;
+            
+            //   //UPDATE THE VCOUNT IN COUNTS TABLE
+            //   $institution = DB::table('completes')->where('completes_id', $id)->first()->institutions_id;
+            //   $fcount = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
+            //   $final_fcount = $fcount - 1;
+            //   $vcount = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
+            //   $final_vcount = $vcount - 1;
+ 
+            //   DB::table('counts')  
+            //   ->where('institutions_id',$institution)
+            //   ->update(['vcount' => $final_vcount, 'fcount' => $final_fcount]);
+
+            //   $comment1 = $comment . ' - Officer'; 
+            //   DB::table('verifies')  
+            //   ->where('validator_submission',$filename)
+            //   ->where('statuses_id','4')
+            //   ->update(['statuses_id' => '5', 'comment' => $comment1]);
+
+            //   DB::table('validates')  
+            //   ->where('encoder_submission',$filename)
+            //   ->where('statuses_id','4')
+            //   ->update(['statuses_id' => '5', 'comment' => $comment1]);
+
+            // Storage::delete('public/complete/'.$filename);
+            
+
+            return back()->with('success', 'Disapproves the file successfully');
+
+        }
+
+        
+    }
+
 
 
 }

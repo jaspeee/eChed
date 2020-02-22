@@ -4,14 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Deadline extends Model
+class Concern extends Model
 {
     protected $fillable = [
       
-        'id',
+        'concerns_id',
         'user_id',
-        'message',
-        'deadline_date',
-     
+        'statuses_id',
+        
      ];
 }
