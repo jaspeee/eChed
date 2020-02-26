@@ -36,7 +36,7 @@
         </button>
         {{ session('danger') }}
       </div> 
-      @endif
+      @endif 
 
     <div class="row">
       <div class="col-md-12">

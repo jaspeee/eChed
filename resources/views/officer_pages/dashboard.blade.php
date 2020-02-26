@@ -16,7 +16,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <div class="card">
+          <div class="card"> 
             <div class="card-header">
               {{-- <h5 class="card-category">Verifier Account</h5> --}}
               <h5 class="card-title">
@@ -74,10 +74,11 @@
         <div class="col-md-6">
           <div class="card">
             <div class="card-header">
-              <h5 class="card-title">
-                <i class="now-ui-icons ui-1_email-85" ></i>
-              Account Requests<br>
-              </h5>
+
+              <h5 class="card-category"> <i class="now-ui-icons ui-1_email-85"></i> Account List</h5>
+              <h4 class="card-title">Account Requests</h4>
+
+              
             </div> 
             <div class="card-body">
               

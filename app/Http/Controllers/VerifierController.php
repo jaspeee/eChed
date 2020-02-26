@@ -393,15 +393,34 @@ class VerifierController extends Controller
         $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
         $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
         $abbrv = DB::table('institutions')->where('institutions_id', $institution)->first()->abbreviation;  
-        
+         
         $filenames = Str::replaceLast('_'.$abbrv, '', $filename);
+
+        // $res = Str::containsAll($filenames, ['.xls']) . '';
+
         $form_id = '0';
         foreach ($forms as $form ) 
-        {
-            if($form->form == $filenames) 
-            {
-                $form_id = $form->forms_id;
-            }
+        {   
+
+            // if($res == 1)
+            // {
+            //     $file = Str::replaceLast('.xlsx', '.xls', $form->form);
+            //     if($file  == $filenames) 
+            //     {   
+            //         $form_id = $form->forms_id;
+                
+            //     }
+            // }
+            // else
+            // {
+                if($form->form  == $filenames) 
+                {   
+                    $form_id = $form->forms_id;
+                
+                }
+            // }
+
+           
         }
  
         if($stat == '5')

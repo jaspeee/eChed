@@ -64,14 +64,23 @@ class EncoderController extends Controller
 
         $pending = DB::table('validates')
         ->join('statuses','validates.statuses_id', '=','statuses.statuses_id')
+        ->join('users', 'validates.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->where('employee_profiles.institutions_id', $institution)
         ->where('statuses.status', 'pending')->count();
 
         $approve = DB::table('validates')
         ->join('statuses','validates.statuses_id', '=','statuses.statuses_id')
+        ->join('users', 'validates.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->where('employee_profiles.institutions_id', $institution)
         ->where('statuses.status', 'approve')->count();
 
         $disapprove = DB::table('validates')
         ->join('statuses','validates.statuses_id', '=','statuses.statuses_id')
+        ->join('users', 'validates.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->where('employee_profiles.institutions_id', $institution)
         ->where('statuses.status', 'disapprove')->count();
 
 
@@ -176,7 +185,7 @@ class EncoderController extends Controller
         $this->validate($request, [
 
             'file' => 'required',
-            'file.*' => 'mimes:xlsx'
+            'file.*' => 'mimes:xlsx,xls' 
 
         ]);
     
@@ -244,7 +253,7 @@ class EncoderController extends Controller
 
     public function Page_references()
     {
-         //GET THE FORMS
+         //GET THE FORMS 
         $id = auth()->id();
         $employee = DB::table('users')->find($id)->employee_profiles_id;
 

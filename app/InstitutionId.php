@@ -10,6 +10,6 @@ class InstitutionId extends Model
       
         'institution_ids_id',
         'institution',
-       
+        
      ];
 }

@@ -7,15 +7,19 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class NonSuc_Doctoral implements ToModel,  WithStartRow, WithCalculatedFormulas
+class NonSuc_Doctoral implements ToModel,  WithStartRow, WithCalculatedFormulas,
+WithBatchInserts, WithChunkReading
+
 {   
    
     public function startRow(): int
     {
         return 10;
     }
-
+ 
     public function getID()
     {
         return DB::table('institution_ids')
@@ -35,7 +39,7 @@ class NonSuc_Doctoral implements ToModel,  WithStartRow, WithCalculatedFormulas
                 'institutions_id' => $this->getID(), 
                 'program_name' => $row[0], 
                 'major_name' => $row[2],
-                'discipline_groups_id' => 1,
+                'discipline_groups_id' => '1',
                 'tuition' => $row[15],
                 '0M' => $row[17],
                 '0F' => $row[18],
@@ -62,8 +66,18 @@ class NonSuc_Doctoral implements ToModel,  WithStartRow, WithCalculatedFormulas
                 'institution_types_id' => '2',
             ]);
         }
-       
+        
 
+    }
+
+    public function batchSize(): int
+    {
+        return 1000;
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
     }
 
     

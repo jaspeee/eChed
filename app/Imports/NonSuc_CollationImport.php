@@ -11,7 +11,7 @@ class NonSuc_CollationImport implements WithMultipleSheets
     
     public function sheets(): array
     {
-        return [
+        return [ 
             1 => new NonSuc_Doctoral(),
             2 => new NonSuc_MasteralSheetImport(),
             3 => new NonSuc_PostBaccalaureateSheetImport(),

@@ -61,7 +61,7 @@ class VerifierApprove implements ShouldQueue
         $comp->verifier_submission =  $this->filename;
         $comp->forms_id =  $this->form_id; 
         $comp->institutions_id = $institution;
-        $comp->statuses_id = '3';
+        $comp->statuses_id = '3'; 
         $comp->comment = ''; 
         $comp->save();
 

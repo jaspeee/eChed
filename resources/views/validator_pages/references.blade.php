@@ -41,7 +41,7 @@
                 <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     
                     <br><br>
-                    <table class="table" >
+                    <table class="table">
                         <thead style="background-color: #003471; font-size: 10px;color:white;">
                           <tr>
                             <th><b>Institutional Code</b></th>

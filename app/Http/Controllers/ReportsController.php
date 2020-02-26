@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\Suc_CollationImport;
 use App\Imports\NonSuc_CollationImport;
 use App\Exports\EnrollmentExport;
-use App\InstitutionId;
+use App\InstitutionId; 
 Use Carbon\Carbon;
 
 class ReportsController extends Controller 
@@ -33,7 +33,7 @@ class ReportsController extends Controller
                 //STORE DATA 
                 $ins = new InstitutionId();
                 $ins->institution = $files->institutions_id;
-                $ins->save();
+                $ins->save(); 
 
                //$path = Storage::get('public/complete/'.$files->verifier_submission);
                $path = storage_path('app/public/complete/'.$files->verifier_submission);
@@ -90,7 +90,7 @@ class ReportsController extends Controller
             //return  $prog_name . ''. $idd;
          
             foreach($prog as $p)
-            {
+            { 
                 if( $prog_name == $p->program_name)
                 {
                     $discpline_id = $p->discipline_groups_id;

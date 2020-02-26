@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use App\Http\Controllers\ReportsController;
-class Suc_DoctoralSheetImport implements ToModel,  WithStartRow, WithCalculatedFormulas
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+
+class Suc_DoctoralSheetImport implements ToModel,  WithStartRow, WithCalculatedFormulas,
+WithBatchInserts, WithChunkReading
+
 {   
   
     public function startRow(): int
@@ -29,14 +34,14 @@ class Suc_DoctoralSheetImport implements ToModel,  WithStartRow, WithCalculatedF
             return null;
         }
         else
-        {
-            return new Collation([
+        { 
+          return new Collation([
             
                 'institutions_id' => $this->getID(), 
                 'program_name' => $row[1], 
                 'major_name' => $row[3],
                 'discipline_groups_id' => 1,
-                'tuition' => $row[1],
+                'tuition' => $row[15],
                 '0M' => $row[17],
                 '0F' => $row[18],
                 '1M' => $row[19], 
@@ -61,10 +66,19 @@ class Suc_DoctoralSheetImport implements ToModel,  WithStartRow, WithCalculatedF
                 'TG' => $row[41],
                 'institution_types_id' => '1',
             ]);
-        }   
+        }
     }
 
     
+    public function batchSize(): int
+    {
+        return 1000;
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000;
+    }
 
   
 }

@@ -88,15 +88,24 @@ class ValidatorController extends Controller
 
         //ENCODER
         $pending = DB::table('validates')
+        ->join('users', 'validates.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
         ->join('statuses','validates.statuses_id', '=','statuses.statuses_id')
+        ->where('employee_profiles.institutions_id', $institution)
         ->where('statuses.status', 'pending')->count();
 
         $approve = DB::table('validates')
         ->join('statuses','validates.statuses_id', '=','statuses.statuses_id')
+        ->join('users', 'validates.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->where('employee_profiles.institutions_id', $institution)
         ->where('statuses.status', 'approve')->count();
 
         $disapprove = DB::table('validates')
         ->join('statuses','validates.statuses_id', '=','statuses.statuses_id')
+        ->join('users', 'validates.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->where('employee_profiles.institutions_id', $institution)
         ->where('statuses.status', 'disapprove')->count();
 
         $chart = new StatusChart;
@@ -111,14 +120,23 @@ class ValidatorController extends Controller
         //VALIDATOR
         $pending1 = DB::table('verifies')
         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
+        ->join('users', 'verifies.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->where('employee_profiles.institutions_id', $institution)
         ->where('statuses.status', 'pending')->count();
 
         $approve1 = DB::table('verifies') 
         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
+        ->join('users', 'verifies.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->where('employee_profiles.institutions_id', $institution)
         ->where('statuses.status', 'approve')->count();
 
         $disapprove1 = DB::table('verifies')
         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
+        ->join('users', 'verifies.user_id', '=','users.id')
+        ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+        ->where('employee_profiles.institutions_id', $institution)
         ->where('statuses.status', 'disapprove')->count();
 
         $charts = new ValidatorStatusChart;
@@ -176,7 +194,7 @@ class ValidatorController extends Controller
         return view('validator_pages.dashboard', compact('school','dates','request',
         'deadline','chartss','charts','chart','submissionss','submissions','fname','lname'));
     }
-
+ 
     public function Page_validation()
     {   
 

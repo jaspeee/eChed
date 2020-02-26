@@ -82,7 +82,7 @@
             <div class="card-body ">
       
               <ul class="list-group list-group-flush">
-                @foreach($request as $req)
+                @foreach($request as $req) 
                 <li class="list-group-item" > 
 
                     <i class="now-ui-icons ui-1_email-85" style="font-size: 15px;color: gray;"></i> &nbsp;

@@ -37,7 +37,8 @@ use App\Charts\InstitutionChart;
 use App\Charts\StatusChart;
 use App\Jobs\OfficerApprove;
 use App\Jobs\OfficerDisapprove;
- 
+
+
 class OfficerController extends Controller
 {   
 
@@ -72,7 +73,7 @@ class OfficerController extends Controller
         ->join('users', 'completes.user_id', '=','users.id')
         ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
         ->select('completes.*','employee_profiles.first_name','employee_profiles.last_Name')
-        ->orderby('completes_id','desc')->limit(4)->get();
+        ->orderby('completes_id','desc')->limit(3)->get();
 
 
         //INSTITUTION CHART
@@ -112,7 +113,7 @@ class OfficerController extends Controller
          $stat_chart->displayAxes(false);
         
          
-          //GET THE REQUEST
+          //GET THE REQUEST 
           $request = DB::table('concerns')
           ->join('users', 'concerns.user_id', '=','users.id')
           ->join('user_types', 'users.user_types_id', '=','user_types.user_types_id')
@@ -158,7 +159,9 @@ class OfficerController extends Controller
          //GET THE COMPLETED FILES
          $files = DB::table('completes')
         ->join('institutions', 'completes.institutions_id', '=', 'institutions.institutions_id')
-        ->select('completes.*','institutions.institution_name')->get();
+        ->select('completes.*','institutions.institution_name')
+        ->where('completes.statuses_id','4')
+        ->get();
         
 
         return view('officer_pages.reports', compact('fname','lname','files'));
@@ -414,7 +417,7 @@ class OfficerController extends Controller
         $user->deadline_date = $request->date;
         $user->save();     
         
-        return back();
+        return back()->with('success', 'Set the deadline successfully');
     }
 
     public function Page_collation() 
@@ -444,7 +447,7 @@ class OfficerController extends Controller
       
          //CHART
          $borderColors = [
-        
+         
             "rgba(177, 48, 40)"
         ];
         $fillColors = [
@@ -544,17 +547,17 @@ class OfficerController extends Controller
         ->groupBy('discipline_groups.major_discipline')
         ->orderby('Total','desc')->skip(2)->first()->Total;
 
-        // $DG4 = DB::table('collations')
-        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
-        // ->select(DB::raw("SUM(TE+TG) as Total"))
-        // ->groupBy('discipline_groups.major_discipline')
-        // ->orderby('Total','desc')->skip(3)->first()->Total;
+        $DG4 = DB::table('collations') 
+        ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        ->select(DB::raw("SUM(TE+TG) as Total"))
+        ->groupBy('discipline_groups.major_discipline')
+        ->orderby('Total','desc')->skip(3)->first()->Total;
 
-        // $DG5 = DB::table('collations')
-        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
-        // ->select(DB::raw("SUM(TE+TG) as Total"))
-        // ->groupBy('discipline_groups.major_discipline')
-        // ->orderby('Total','desc')->skip(4)->first()->Total;
+        $DG5 = DB::table('collations')
+        ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        ->select(DB::raw("SUM(TE+TG) as Total"))
+        ->groupBy('discipline_groups.major_discipline')
+        ->orderby('Total','desc')->skip(4)->first()->Total;
 
         $DG = DB::table('collations')
         ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
@@ -576,13 +579,13 @@ class OfficerController extends Controller
             [$DG1,
             $DG2,  
             $DG3, 
-            // $DG4, 
-            // $DG5,
-            ])
+            $DG4, 
+            $DG5,
+            ]);
 
             
-            ->color($LinedgColor1)
-            ->backgroundcolor($FilldgColor1);
+            // ->color($LinedgColor1)
+            // ->backgroundcolor($FilldgColor1);
 
         $Discipline->displayLegend(false);
 
@@ -597,53 +600,53 @@ class OfficerController extends Controller
          ->groupBy('institutions.institution_name')
          ->orderby('Total','desc')->first()->Total;
 
-        //  $College_E2 = DB::table('collations')
-        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
-        //  ->groupBy('institutions.institution_name')
-        //  ->orderby('Total','desc')->skip(1)->first()->Total;
+         $College_E2 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->skip(1)->first()->Total;
 
-        //  $College_E3 = DB::table('collations')
-        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
-        //  ->groupBy('institutions.institution_name')
-        //  ->orderby('Total','desc')->skip(2)->first()->Total;
+         $College_E3 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->skip(2)->first()->Total;
 
-        //  $College_E4 = DB::table('collations')
-        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
-        //  ->groupBy('institutions.institution_name')
-        //  ->orderby('Total','desc')->skip(3)->first()->Total;
+         $College_E4 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->skip(3)->first()->Total;
 
-        //  $College_E5 = DB::table('collations')
-        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
-        //  ->groupBy('institutions.institution_name')
-        //  ->orderby('Total','desc')->skip(4)->first()->Total;
+         $College_E5 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->skip(4)->first()->Total;
 
-        //  $College_E6 = DB::table('collations')
-        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
-        //  ->groupBy('institutions.institution_name')
-        //  ->orderby('Total','desc')->skip(5)->first()->Total;
+         $College_E6 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->skip(5)->first()->Total;
 
-        //  $College_E7 = DB::table('collations')
-        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
-        //  ->groupBy('institutions.institution_name')
-        //  ->orderby('Total','desc')->skip(6)->first()->Total;
+         $College_E7 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->skip(6)->first()->Total;
 
-        //  $College_E8 = DB::table('collations')
-        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
-        //  ->groupBy('institutions.institution_name')
-        //  ->orderby('Total','desc')->skip(7)->first()->Total;
+         $College_E8 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->skip(7)->first()->Total;
 
-        //  $College_E9 = DB::table('collations')
-        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
-        //  ->groupBy('institutions.institution_name')
-        //  ->orderby('Total','desc')->skip(8)->first()->Total;
+         $College_E9 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->skip(8)->first()->Total;
 
         //  $College_E10 = DB::table('collations')
         //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
@@ -673,19 +676,19 @@ class OfficerController extends Controller
  
          $ce->dataset('NON SUC', 'bar', 
              [$College_E1,
-                //$College_E2,
-                // $College_E3,
-                // $College_E4,
-                // $College_E5,
-                // $College_E6,
-                // $College_E7,
-                // $College_E8,
-                // $College_E9,
+                $College_E2,
+                $College_E3,
+                $College_E4,
+                $College_E5,
+                $College_E6,
+                $College_E7,
+                $College_E8,
+                $College_E9,
                 // $College_E10,
-             ])
+             ]);
  
-             ->color($borderColors)
-             ->backgroundcolor($fillColors);
+            //  ->color($borderColors)
+            //  ->backgroundcolor($fillColors);
  
          $ce->displayLegend(false);
 
@@ -742,10 +745,10 @@ class OfficerController extends Controller
               $Courses_E4,
               $Courses_E5,
 
-             ])
+             ]);
  
-             ->color($borderColors)
-             ->backgroundcolor($fillColors);
+            //  ->color($borderColors)
+            //  ->backgroundcolor($fillColors);
  
          $courses->displayLegend(false);
 
@@ -765,29 +768,29 @@ class OfficerController extends Controller
           ->groupBy('institutions.institution_name')
           ->orderby('Total','desc')->first()->Total;
 
-        //   $College_G2 = DB::table('collations')
-        //   ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //   ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
-        //   ->groupBy('institutions.institution_name')
-        //   ->orderby('Total','desc')->skip(1)->first()->Total;
+          $College_G2 = DB::table('collations')
+          ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+          ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+          ->groupBy('institutions.institution_name')
+          ->orderby('Total','desc')->skip(1)->first()->Total;
 
-        //   $College_G3 = DB::table('collations')
-        //   ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //   ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
-        //   ->groupBy('institutions.institution_name')
-        //   ->orderby('Total','desc')->skip(2)->first()->Total;
+          $College_G3 = DB::table('collations')
+          ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+          ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+          ->groupBy('institutions.institution_name')
+          ->orderby('Total','desc')->skip(2)->first()->Total;
 
-        //   $College_G4 = DB::table('collations')
-        //   ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //   ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
-        //   ->groupBy('institutions.institution_name')
-        //   ->orderby('Total','desc')->skip(3)->first()->Total;
+          $College_G4 = DB::table('collations')
+          ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+          ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+          ->groupBy('institutions.institution_name')
+          ->orderby('Total','desc')->skip(3)->first()->Total;
 
-        //   $College_G5 = DB::table('collations')
-        //   ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //   ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
-        //   ->groupBy('institutions.institution_name')
-        //   ->orderby('Total','desc')->skip(4)->first()->Total;
+          $College_G5 = DB::table('collations')
+          ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+          ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
+          ->groupBy('institutions.institution_name')
+          ->orderby('Total','desc')->skip(4)->first()->Total;
 
         
          $college = new CollegeG;
@@ -803,15 +806,15 @@ class OfficerController extends Controller
          $college->dataset('NON SUC', 'bar', 
              [
                 $College_G1,
-                // $College_G2,
-                // $College_G3,
-                // $College_G4,
-                // $College_G5,
+                $College_G2,
+                $College_G3,
+                $College_G4,
+                $College_G5,
 
-             ])
+             ]);
  
-             ->color($borderColors)
-             ->backgroundcolor($fillColors);
+            //  ->color($borderColors)
+            //  ->backgroundcolor($fillColors);
  
          $college->displayLegend(false);
          
@@ -870,9 +873,9 @@ class OfficerController extends Controller
                
               ])
                 
-              ->fill(false)
-              ->color($LineprogColor1)
-              ->backgroundcolor($FillprogColor1);
+              ->fill(false);
+            //   ->color($LineprogColor1)
+            //   ->backgroundcolor($FillprogColor1);
   
           $program->displayLegend(false);
           
@@ -881,7 +884,7 @@ class OfficerController extends Controller
         
           $TotalEnrollment = DB::table('collations')
           ->select(DB::raw("SUM(TE) as Total"))
-          ->first()->Total;
+          ->first()->Total; 
 
           $TotalGraduates = DB::table('collations')
           ->select(DB::raw("SUM(TG) as Total"))
@@ -897,9 +900,9 @@ class OfficerController extends Controller
 
           $gender = new Gender;
           $gender->labels(['Male', 'Female',]);
-          $gender->dataset('Total', 'doughnut', [ $TotalMale,$TotalFemale])
-                 ->color($LinemfColor1)
-                 ->backgroundcolor($FillmfColor1);
+          $gender->dataset('Total', 'doughnut', [ $TotalMale,$TotalFemale]);
+                //  ->color($LinemfColor1)
+                //  ->backgroundcolor($FillmfColor1);
           $gender->displayLegend(false);
 
         
@@ -915,9 +918,9 @@ class OfficerController extends Controller
 
           $male = new Male;
           $male->labels(['SUC', 'NON-SUC',]);
-          $male->dataset('Total', 'bar', [ $SUCMale,$NONSUCMale])
-                 ->color($LinemColor1)
-                 ->backgroundcolor($FillmColor1);
+          $male->dataset('Total', 'bar', [ $SUCMale,$NONSUCMale]);
+                //  ->color($LinemColor1)
+                //  ->backgroundcolor($FillmColor1);
           $male->displayLegend(false);
 
           $SUCFemale = DB::table('collations')
@@ -929,31 +932,61 @@ class OfficerController extends Controller
           ->select(DB::raw("SUM(TFE+TFG) as Total"))
           ->where('institution_types_id','2')
           ->first()->Total;
-
+ 
           $female = new Female;
           $female->labels(['SUC', 'NON-SUC',]);
-          $female->dataset('Total', 'bar', [ $SUCFemale,$NONSUCFemale])
-                 ->color($LinefColor1)
-                 ->backgroundcolor($FillfColor1);
+          $female->dataset('Total', 'bar', [ $SUCFemale,$NONSUCFemale]);
+                //  ->color($LinefColor1)
+                //  ->backgroundcolor($FillfColor1);
           $female->displayLegend(false);
 
           $TotalStudents = DB::table('collations')
           ->select(DB::raw("SUM(TE+TG) as Total"))
-          ->first()->Total;
+          ->first()->Total; 
 
           $SUCPercentage = DB::table('collations')
           ->select(DB::raw("SUM(TE+TG) as Total"))
           ->first()->Total;
+
+          $SUC_Population =  DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"))
+          ->where('institution_types_id', '1')
+          ->first()->Total;  
+
+          $SUC_TE = DB::table('collations')
+          ->select(DB::raw("SUM(TE) as Total"))
+          ->where('institution_types_id', '1')
+          ->first()->Total; 
+
+          $SUC_TG = DB::table('collations')
+          ->select(DB::raw("SUM(TG) as Total"))
+          ->where('institution_types_id', '1')
+          ->first()->Total; 
+
+
+          $NONSUC_Population =  DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"))
+          ->where('institution_types_id', '2')
+          ->first()->Total;  
+
+          $NONSUC_TE = DB::table('collations')
+          ->select(DB::raw("SUM(TE) as Total"))
+          ->where('institution_types_id', '2')
+          ->first()->Total; 
+
+          $NONSUC_TG = DB::table('collations')
+          ->select(DB::raw("SUM(TG) as Total"))
+          ->where('institution_types_id', '2')
+          ->first()->Total; 
+
 
 
          return view('officer_pages.analytics', compact(
              'TotalStudents',
         'Discipline','DG','ce','College_E', 'courses', 'Courses_E','college', 'College_G',
         'Programs', 'program', 'male', 'female',
-    
-        'fname','lname','TotalEnrollment','TotalGraduates', 'gender'
-      
-
+        'fname','lname','TotalEnrollment','TotalGraduates', 'gender',
+        'SUC_Population','SUC_TE', 'SUC_TG', 'NONSUC_Population', 'NONSUC_TE', 'NONSUC_TG'
         ));
     }
 
