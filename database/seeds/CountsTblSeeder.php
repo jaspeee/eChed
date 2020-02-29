@@ -12,7 +12,7 @@ class CountsTblSeeder extends Seeder
     public function run()
     {   
 
-        for ($i=1; $i < 97; $i++) { 
+        for ($i=1; $i < 104; $i++) { 
 
             DB::table('counts')->insert([
                 'institutions_id' => $i,
