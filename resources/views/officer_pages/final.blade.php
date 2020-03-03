@@ -48,21 +48,30 @@
           <div class="card-body">
             <div class="container" style="padding:40px;">
 
-                <p style="font-size:18px;"><b>Track Submissions from Validators</b></p>
-                <p style="font-size:13px;">
-                  Notice : To download a specific form, click the download icon on the right-most part of the row
+                <p style="font-size:18px;">
+                  
+                  <a href="/officer/finalization">
+                    <button type="button" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
+                      <i class="now-ui-icons arrows-1_minimal-left" data-toggle="tooltip" data-placement="right" title="Back" ></i>
+                    </button>
+                    </a>
+   
+   
+                <b>Track Submissions from Verifier</b></p>
+                <p style="font-size:13px;color:red;">
+                  Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming.
                 </p>
-                <hr>  
- 
+                <hr>   
+  
                 <p style="font-size: initial">{{$institution}}</p>
-                <br>
+                <br> 
                 <form class="form-inline " >
                     <div class="form-group">
                       <label >
                         <i class="now-ui-icons ui-1_zoom-bold" style="font-size: 18px;"></i> &nbsp;
                       </label>
                         <input type="text" class="form-control" id="tracksearchbar" placeholder= "Search" > 
-                    </div>
+                    </div> 
                   </form>
   
                   <br>  
@@ -265,10 +274,10 @@
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
-
+ 
   $(document).ready(function() {
     // $('#subtbl').DataTable({
-    //   lengthChange: false
+    //   lengthChange: false 
      
     // });
     oTable = $('#institutionstbl').DataTable({
@@ -296,7 +305,7 @@ $('#disapproveModal').on('show.bs.modal', function(event) {
    modal.find('#fullname').text('Submitted by: '+fname+'  '+lname);
    modal.find('#update').attr('action','/officer/final/disapprove/'+id);
 
-
+ 
 });
 
 $('#commentModal').on('show.bs.modal', function(event) {
@@ -308,6 +317,14 @@ $('#commentModal').on('show.bs.modal', function(event) {
    modal.find('#comments').text(' " '+comment+' " ')
   
 });
+
+function confirmation(){
+    if(confirm('Are you sure that you want to approve this form?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
 
 
 </script> 

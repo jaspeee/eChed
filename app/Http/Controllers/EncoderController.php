@@ -24,7 +24,7 @@ class EncoderController extends Controller
     
     public function Page_dashboard()
     {   
-
+ 
         
         
         //GET THE FIRST AND LAST NAME OF THE USER 
@@ -46,18 +46,18 @@ class EncoderController extends Controller
         //GET THE INSTITUTION
         $school = DB::table('institutions')->where('institutions_id',$institution)->first()->institution_name;
 
-
+ 
         //CHART
         $borderColors = [
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(22,160,133, 1.0)",
-            "rgba(255, 99, 132, 1.0)"
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(16, 121, 16, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
            
         ];
         $fillColors = [
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(22,160,133, 0.2)",
-            "rgba(255, 99, 132, 0.2)"
+            "rgba(255, 206, 0, 0.7)",
+            "rgba(16, 121, 16, 0.7)",
+            "rgba(220, 0, 5, 0.7)",
            
 
         ];
@@ -85,7 +85,7 @@ class EncoderController extends Controller
 
 
         $chart = new StatusChart;
-        $chart->labels(['Pending', 'Approve', 'Disapprove']);
+        $chart->labels(['Pending', 'Approved', 'Disapproved']);
         $chart->dataset('Dataset', 'bar', [$pending,  $approve, $disapprove])
             ->color($borderColors)
             ->backgroundcolor($fillColors);
@@ -107,7 +107,7 @@ class EncoderController extends Controller
 
     public function Page_form()
     { 
-        //GET THE FORMS
+        //GET THE FORMS 
         $id = auth()->id();
         $employee = DB::table('users')->find($id)->employee_profiles_id;
         $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;

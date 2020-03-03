@@ -18,7 +18,7 @@
       <p>There were some problems with your File input.</p>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
-      </button>
+      </button>  
     </div>
     @endif
 
@@ -52,10 +52,10 @@
             <div class="container" style="padding:40px;"> 
                 <p style="font-size:18px;"><b>Upload Forms to Validate</b></p>
                 <p style="font-size:13px;">Upload Form : Click on " Choose Files " to choose file to upload and click the button upload
-                  <br> 
-                Notice : Make sure to upload Excel files (.xlsx) only
+                  
+                <div class="notice" style="color:red;margin-top:-15px;font-size: 13px;">Notice : Make sure to upload Excel files (.xlsx) only</div>
               </p>
-             
+              
                 <form method="post" action="" class="form-horizontal" enctype="multipart/form-data">
               @csrf 
                 <input type="file" name="file[]" id="file" multiple>

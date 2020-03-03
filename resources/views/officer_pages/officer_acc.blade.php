@@ -83,6 +83,7 @@
                       <th><b>Status</b></th>
                       <th><b></b></th>
                       <th><b></b></th>
+                      <th><b></b></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -110,9 +111,26 @@
                           </form>
 
                           <td style="padding:0;">
-                            <button type="button" data-toggle="modal" data-target="#changePass" data-id="{{$acc->id}}" style="background-color: transparent;border: none;cursor:pointer;">
+                            {{-- <button type="button" data-toggle="modal" data-target="#changePass" data-id="{{$acc->id}}" style="background-color: transparent;border: none;cursor:pointer;">
                               <i class="now-ui-icons ui-1_settings-gear-63"  data-toggle="tooltip" data-placement="top" title="Reset Password" style="font-size: 20px;color: gray;"></i>
+                            </button> --}}
+                            <button type="button"   class="btn btn-warning" data-toggle="modal" data-target="#changePass" data-id="{{$acc->id}}">
+                              Reset Password
                             </button>
+                          </td>
+
+                          <td>
+                             {{-- <button type="button" data-toggle="modal" data-target="#changePass" data-id="{{$acc->id}}" style="background-color: transparent;border: none;cursor:pointer;">
+                              <i class="now-ui-icons ui-1_settings-gear-63"  data-toggle="tooltip" data-placement="top" title="Edit Account" style="font-size: 20px;color: gray;"></i>
+                            </button> --}}
+
+                            <button type="button" data-toggle="modal" data-target="#EditAccModal" data-id="{{$acc->id}}"  data-username="{{$acc->username}}" data-position="{{$acc->position}}" 
+                              data-division="{{$acc->division}}" data-fname=" {{$acc->first_name}}"
+                              data-lname="{{$acc->last_Name}}" 
+                              style="background-color: transparent;border: none;cursor:pointer;">
+                              <i class="now-ui-icons  ui-1_settings-gear-63" style="font-size: 20px;color: gray" data-toggle="tooltip" data-placement="top" title="Disapprove"></i>
+                            </button>
+                             
                           </td>
 
 
@@ -121,6 +139,54 @@
                    
                   </tbody>
                 </table>
+          </div>
+
+
+          <div class="modal fade" id="EditAccModal" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Edit Account</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form id="update" action="" method="POST">
+                    {{method_field('patch')}}
+                   @csrf
+
+                    
+                    <div class="form-group">
+                      <label class="col-form-label">Firstname:</label>
+                      <input type="text" class="form-control" id="fname" name="fname">
+                    </div>
+                    <div class="form-group">
+                      <label class="col-form-label">Lastname:</label>
+                      <input type="text" class="form-control" id="lname" name="lname">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Username:</label>
+                        <input type="text" class="form-control" id="users" name="users">
+                      </div>
+                    <div class="form-group">
+                      <label class="col-form-label">Position:</label>
+                      <input type="text" class="form-control" id="position" name="position">
+                    </div>
+                    <div class="form-group">
+                      <label class="col-form-label">Division:</label>
+                      <input type="text" class="form-control" id="division" name="division">
+                    </div>
+                    <div class="form-group">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Edit account</button>
+                    </div>
+                
+                  </form>
+                </div>
+                
+              </div>
+            </div>
           </div>
 
           <div class="modal fade" id="verifierModal" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -227,7 +293,7 @@ $('#verifierModal').on('show.bs.modal', function (event) {
   var button = $(event.relatedTarget) 
   var modal = $(this)
 })
-
+ 
 $(document).ready(function() {
     // $('#subtbl').DataTable({
     //   lengthChange: false
@@ -254,6 +320,26 @@ $('#changePass').on('show.bs.modal', function(event) {
 
 });
 
+$('#EditAccModal').on('show.bs.modal', function(event) {
+  var button = $(event.relatedTarget);
+  var modal = $(this);
+  var position = button.data('position');
+  var division = button.data('division');
+  var username = button.data('username');
+  var id = button.data('id');
+  var fname = button.data('fname');
+  var lname = button.data('lname');
+
+  
+   modal.find('#fname').val(fname);
+   modal.find('#lname').val(lname);
+   modal.find('#users').val(username);
+   modal.find('#position').val(position);
+   modal.find('#division').val(division);
+   modal.find('#update').attr('action','/officer/account/edit/'+id);
+
+
+});
 
 </script>
 @endsection

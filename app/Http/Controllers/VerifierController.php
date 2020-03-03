@@ -140,17 +140,26 @@ class VerifierController extends Controller
 
          //CHART
          $borderColors = [
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(22,160,133, 1.0)",
-            "rgba(255, 99, 132, 1.0)"
+
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
            
         ];
         $fillColors = [
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(22,160,133, 0.2)",
-            "rgba(255, 99, 132, 0.2)"
+        
+            "rgba(0, 52, 113, 0.7)",
+            "rgba(255, 206, 0, 0.7)",
            
 
+        ];
+        $borderColors1 = [
+            "rgba(16, 121, 16, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+           
+        ];
+        $fillColors1 = [
+            "rgba(16, 121, 16, 0.7)",
+            "rgba(220, 0, 5, 0.7)",
         ];
 
         //INSTITUTION
@@ -167,9 +176,9 @@ class VerifierController extends Controller
        
         $chart = new InstitutionChart;
         $chart->labels(['SUC', 'NON-SUC']);
-        $chart->dataset('Institutions', 'horizontalBar', [$SUC,  $NONSUC]);
-            // ->color($borderColors)
-            // ->backgroundcolor($fillColors);
+        $chart->dataset('Institutions', 'horizontalBar', [$SUC,  $NONSUC])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
         
         $chart->displayLegend(false);
         
@@ -215,12 +224,13 @@ class VerifierController extends Controller
         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
         ->where('institution_types.type', 'NON-SUC')
         ->where('statuses.status', 'disapprove')->count();
- 
+        
+       
         $StatNonSUC_charts = new StatNonSucChart;
         $StatNonSUC_charts->labels(['Approve','Disapprove']);
         $StatNonSUC_charts->dataset('Non-SUC', 'doughnut', [$NonSUC_Approve,$NonSUC_Disapprove])
-            ->color($borderColors)
-            ->backgroundcolor($fillColors);
+            ->color($borderColors1)
+            ->backgroundcolor($fillColors1);
 
         $StatNonSUC_charts->displayAxes(false);
         // $StatNonSUC_charts->displayLegend(false);
@@ -310,12 +320,13 @@ class VerifierController extends Controller
         $Disapprove = DB::table('verifies')
         ->join('statuses','verifies.statuses_id', '=','statuses.statuses_id')
         ->where('statuses.status', 'disapprove')->count();
- 
+        
+    
         $stat_chart = new StatusChart;
         $stat_chart->labels(['Approve','Disapprove']);
-        $stat_chart->dataset('Status', 'doughnut', [$Approve,$Disapprove]);
-           //  ->color($borderColors)
-           //  ->backgroundcolor($fillColors);
+        $stat_chart->dataset('Status', 'doughnut', [$Approve,$Disapprove])
+            ->color($borderColors1)
+            ->backgroundcolor($fillColors1);
 
         $stat_chart->displayAxes(false);
 
@@ -420,7 +431,7 @@ class VerifierController extends Controller
                 }
             // }
 
-           
+            
         }
  
         if($stat == '5')

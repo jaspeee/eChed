@@ -78,7 +78,7 @@
               </div>
             </div>
             <div class="card-footer ">
-              <button type="submit" class="btn btn-primary btn-round ">{{__('Change Password')}}</button>
+              <button type="submit" onclick="return confirmation();" class="btn btn-primary btn-round ">{{__('Change Password')}}</button>
             </div>
           </form>
         </div>
@@ -115,4 +115,18 @@
       </div>
     </div>
   </div>
+@endsection
+
+@section('scripts')
+<script  type="text/javascript">
+
+function confirmation(){
+    if(confirm('Are you sure you want to change password ?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
+
+</script>
 @endsection

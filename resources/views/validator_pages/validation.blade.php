@@ -49,8 +49,8 @@
               <div class="container" style="padding:40px;">
 
                   <p style="font-size:18px;"><b>Submitted Forms by the Encoders</b></p>
-                  <p style="font-size:13px;">
-                    Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming
+                  <p style="font-size:13px;color:red;">
+                    Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming.
                   </p>
                   <hr>
                 <br>  

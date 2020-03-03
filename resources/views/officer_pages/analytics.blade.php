@@ -9,7 +9,7 @@
 
 @section('content')
   <div class="panel-header panel-header-sm">
-  </div>
+  </div> 
  
 <div class="content"> 
 
@@ -455,4 +455,4 @@
 {!! $female->script() !!}
 
 
-@endsection
+@endsection 

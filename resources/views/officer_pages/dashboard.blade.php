@@ -77,7 +77,10 @@
 
               <h5 class="card-category"> <i class="now-ui-icons ui-1_email-85"></i> Account List</h5>
               <h4 class="card-title">Account Requests</h4>
-
+              <p style="font-size:13px;text-align: justify;color:gray;">
+               Click the Envelope Button to take an action of the request and you will automatically 
+               redirect to the managing accounts
+              </p>
               
             </div> 
             <div class="card-body">
@@ -85,16 +88,25 @@
               <ul class="list-group list-group-flush">
                 @foreach($request as $req)
                 <li class="list-group-item" > 
+
+                <form id="update" action="/officer/request/{{$req->concerns_id}}/{{$req->type}}" method="POST">
+                    {{method_field('patch')}}
+                   @csrf
  
-                    <i class="now-ui-icons ui-1_email-85" style="font-size: 15px;color: gray;"></i> &nbsp;
+                   <button type="submit" 
+                    style="background-color: transparent;border: none;cursor:pointer;">
+                    <i class="now-ui-icons  ui-1_email-85" style="font-size: 17px;color: blue; opacity:0.8" data-toggle="tooltip" data-placement="top" title="Open Request"></i>
+                  </button> 
+ 
+                    &nbsp;
                     {{$req->type}} <br>
                     @if($req->statuses_id == '6')
                     {{$req->first_name}} {{$req->last_Name}} requested to "Reset Password"
                     @else
-                    {{$req->first_name}} {{$req->last_Name}} requested to "Active the account"
+                    {{$req->first_name}} {{$req->last_Name}} requested to "Activate the account"
                     @endif 
                    
-                  
+                  </form>  
                  <p style="text-align:right;font-size: 10px;padding-top: 2%;color:gray;"> {{$req->created_at}} </p>
                 @endforeach 
                  </ul>
@@ -203,11 +215,16 @@
   </div>
 @endsection
 
-@section('scripts')
+@section('scripts') 
 
 {!! $ins_chart->script() !!}
 {!! $stat_chart->script() !!}
 
+<script>
+  $(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+</script>
 
 
 @endsection

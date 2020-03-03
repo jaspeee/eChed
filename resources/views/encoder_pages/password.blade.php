@@ -11,7 +11,7 @@
   <div class="panel-header panel-header-sm">
   </div>
   <div class="content">
-    @if (count($errors) > 0)
+    @if (count($errors) > 0) 
     <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
       <p>There were some problems with your File input.</p>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -76,7 +76,7 @@
               </div>
             </div>
             <div class="card-footer ">
-              <button type="submit" class="btn btn-primary btn-round ">{{__('Change Password')}}</button>
+              <button type="submit"  onclick="return confirmation();" class="btn btn-primary btn-round ">{{__('Change Password')}}</button>
             </div>
           </form>
         </div>
@@ -113,4 +113,18 @@
       </div>
     </div>
   </div>
+@endsection
+
+@section('scripts')
+<script  type="text/javascript">
+
+function confirmation(){
+    if(confirm('Are you sure you want to change password ?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
+
+</script>
 @endsection

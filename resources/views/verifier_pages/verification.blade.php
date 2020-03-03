@@ -21,8 +21,8 @@
               <div class="container" style="padding:40px;">
 
                   <p style="font-size:18px;"><b>List of Institutions</b></p>
-                  <p style="font-size:13px;">
-                    Notice : To expand a specific institution, click the arrow on the right-most part of the row
+                  <p style="font-size:13px;color:red;">
+                    Notice : To expand a specific institution, click the arrow on the right-most part of the row.
                   </p>
                   <hr>
                   <br>

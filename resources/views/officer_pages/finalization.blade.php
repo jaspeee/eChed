@@ -23,7 +23,7 @@
               <p style="font-size:18px;"><b>List of Institutions</b></p>
 
               <p style="font-size:13px;">
-                Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming
+                Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming.
               </p>
               <hr>
               

@@ -11,6 +11,7 @@ use App\Count;
 use App\Verify;
 use App\Employee_profile;
 use App\Deadline;
+use App\Institution;
 use App\Charts\TotalEGChar;
 use App\Charts\TotalMFChar;
 use App\Charts\TotalGradMFChart;
@@ -47,7 +48,7 @@ class OfficerController extends Controller
         $this->middleware('auth');
 
     }
-    
+     
     public function Page_dashboard()
     {   
          //GET THE FIRST AND LAST NAME OF THE USER 
@@ -76,6 +77,29 @@ class OfficerController extends Controller
         ->orderby('completes_id','desc')->limit(3)->get();
 
 
+        $borderColors = [
+
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+           
+        ];
+        $fillColors = [
+        
+            "rgba(0, 52, 113, 0.7)",
+            "rgba(255, 206, 0, 0.7)",
+           
+
+        ];
+        $borderColors1 = [
+            "rgba(16, 121, 16, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+           
+        ];
+        $fillColors1 = [
+            "rgba(16, 121, 16, 0.7)",
+            "rgba(220, 0, 5, 0.7)",
+        ];
+
         //INSTITUTION CHART
         $SUC = DB::table('institutions')
         ->join('institution_types','institutions.institution_types_id', '=','institution_types.institution_types_id')
@@ -89,9 +113,9 @@ class OfficerController extends Controller
 
         $ins_chart = new InstitutionChart;
         $ins_chart->labels(['SUC', 'NON-SUC']);
-        $ins_chart->dataset('Institutions', 'horizontalBar', [$SUC,  $NONSUC]);
-            // ->color($borderColors)
-            // ->backgroundcolor($fillColors);
+        $ins_chart->dataset('Institutions', 'horizontalBar', [$SUC,  $NONSUC])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
         
         $ins_chart->displayLegend(false);
 
@@ -106,9 +130,9 @@ class OfficerController extends Controller
   
          $stat_chart = new StatusChart;
          $stat_chart->labels(['Approve','Disapprove']);
-         $stat_chart->dataset('Status', 'doughnut', [$Approve,$Disapprove]);
-            //  ->color($borderColors)
-            //  ->backgroundcolor($fillColors);
+         $stat_chart->dataset('Status', 'doughnut', [$Approve,$Disapprove])
+             ->color($borderColors1)
+             ->backgroundcolor($fillColors1);
  
          $stat_chart->displayAxes(false);
         
@@ -221,7 +245,7 @@ class OfficerController extends Controller
         $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
 
         $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
-        $type = '3';
+        $type = '3'; 
         $account = DB::table('users')
         ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
         ->join('statuses', 'users.statuses_id', '=', 'statuses.statuses_id')
@@ -455,77 +479,23 @@ class OfficerController extends Controller
             "rgba(250, 161, 155)"
         ];
 
+    
         $LinedgColor1 = [
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(255, 205, 86, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
             
         ];
         $FilldgColor1 = [
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(255, 205, 86, 0.2)",
+            "rgba(255, 206, 0, 0.8)",
+            "rgba(255, 206, 0, 0.7)",
+            "rgba(255, 206, 0, 0.5)",
+            "rgba(255, 206, 0, 0.4)",
+            "rgba(255, 206, 0, 0.3)",
             
         ];
-
-        $LineprogColor1 = [
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(255, 205, 86, 1.0)",
-           
-        ];
-
-        $FillprogColor1 = [
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(255, 205, 86, 0.2)",
-           
-        ];
-
-        $LinemColor1 = [
-            "rgba(0, 80, 115, 0.9)",
-            "rgba(0, 80, 115, 0.9)",
-         
-           
-        ];
-      
-        $FillmColor1 = [
-            "rgba(2, 106, 167, 0.6)",
-            "rgba(2, 106, 167, 0.6)",
-        
-        ];
-
-        $LinemfColor1 = [
-            
-            "rgba(0, 80, 115, 0.9)",
-            "rgba(177, 48, 40, 0.8)",
-         
-           
-        ];
-
-        $FillmfColor1 = [
-            "rgba(2, 106, 167, 0.6)",
-            "rgba(250, 161, 155, 0.6)",
-        ];
-
-        $LinefColor1 = [
-            "rgba(177, 48, 40, 0.8)",
-            "rgba(177, 48, 40, 0.8)",
-        ];
-
-        $FillfColor1 = [
-            "rgba(250, 161, 155, 0.6)",
-            "rgba(250, 161, 155, 0.6)",
-        ];
-
 
         //TOP 5 DISCIPLINE GROUP
         $DG1 = DB::table('collations')
@@ -581,11 +551,9 @@ class OfficerController extends Controller
             $DG3, 
             $DG4, 
             $DG5,
-            ]);
-
-            
-            // ->color($LinedgColor1)
-            // ->backgroundcolor($FilldgColor1);
+            ])
+            ->color($LinedgColor1)
+            ->backgroundcolor($FilldgColor1);
 
         $Discipline->displayLegend(false);
 
@@ -653,13 +621,39 @@ class OfficerController extends Controller
         //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
         //  ->groupBy('institutions.institution_name')
         //  ->orderby('Total','desc')->skip(9)->first()->Total;
-
+        
        
         $College_E = DB::table('collations')
         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
          ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
          ->groupBy('institutions.institution_name')
          ->orderby('Total','desc')->limit(10)->get();
+
+         $LineCollegeColor1 = [
+            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
+        ];
+        $FillCollegeColor1 = [
+            "rgba(220, 0, 5, 0.8)",
+            "rgba(220, 0, 5, 0.8)",
+            "rgba(220, 0, 5, 0.7)",
+            "rgba(220, 0, 5, 0.7)",
+            "rgba(220, 0, 5, 0.6)",
+            "rgba(220, 0, 5, 0.6)",
+            "rgba(220, 0, 5, 0.5)",
+            "rgba(220, 0, 5, 0.5)",
+            "rgba(220, 0, 5, 0.4)",
+            "rgba(220, 0, 5, 0.4)",
+            
+        ];
 
          $ce = new CollegeE;
          $ce->labels(['Top 1',
@@ -685,14 +679,31 @@ class OfficerController extends Controller
                 $College_E8,
                 $College_E9,
                 // $College_E10,
-             ]);
+             ])
  
-            //  ->color($borderColors)
-            //  ->backgroundcolor($fillColors);
+             ->color($LineCollegeColor1)
+             ->backgroundcolor($FillCollegeColor1);
  
          $ce->displayLegend(false);
 
- 
+        
+         $LineCourseColor1 = [
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(0, 52, 113, 1.0)",
+           
+        ];
+        $FillCourseColor1 = [
+            "rgba(0, 52, 113, 0.8)",
+            "rgba(0, 52, 113, 0.7)",
+            "rgba(0, 52, 113, 0.6)",
+            "rgba(0, 52, 113, 0.5)",
+            "rgba(0, 52, 113, 0.4)",
+            
+        ];
+
         //TOP 5 COURSES ENROLLEES
 
 
@@ -745,13 +756,30 @@ class OfficerController extends Controller
               $Courses_E4,
               $Courses_E5,
 
-             ]);
+             ])
  
-            //  ->color($borderColors)
-            //  ->backgroundcolor($fillColors);
+             ->color($LineCourseColor1)
+             ->backgroundcolor($FillCourseColor1);
  
          $courses->displayLegend(false);
 
+
+         $LinegradColor1 = [
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(0, 52, 113, 1.0)",
+            "rgba(0, 52, 113, 1.0)",
+           
+        ];
+        $FillgradColor1 = [
+            "rgba(0, 52, 113, 0.8)",
+            "rgba(0, 52, 113, 0.7)",
+            "rgba(0, 52, 113, 0.6)",
+            "rgba(0, 52, 113, 0.5)",
+            "rgba(0, 52, 113, 0.4)",
+            
+        ];
 
 
         //TOP 5 HIGHEST NUMBER OF GRADUATES
@@ -779,7 +807,7 @@ class OfficerController extends Controller
           ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
           ->groupBy('institutions.institution_name')
           ->orderby('Total','desc')->skip(2)->first()->Total;
-
+ 
           $College_G4 = DB::table('collations')
           ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
           ->select(DB::raw("SUM(collations.TG) as Total"),'institutions.institution_name')
@@ -801,7 +829,7 @@ class OfficerController extends Controller
          'Top 5',
            
        
-        ]);
+        ]); 
  
          $college->dataset('NON SUC', 'bar', 
              [
@@ -809,15 +837,32 @@ class OfficerController extends Controller
                 $College_G2,
                 $College_G3,
                 $College_G4,
-                $College_G5,
+                $College_G5, 
 
-             ]);
+             ])
  
-            //  ->color($borderColors)
-            //  ->backgroundcolor($fillColors);
+             ->color($LinegradColor1)
+             ->backgroundcolor($FillgradColor1);
  
          $college->displayLegend(false);
          
+
+         $LineprogColor1 = [
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            
+        ];
+        $FillprogColor1 = [
+            "rgba(255, 206, 0, 0.8)",
+            "rgba(255, 206, 0, 0.7)",
+            "rgba(255, 206, 0, 0.5)",
+            "rgba(255, 206, 0, 0.4)",
+            "rgba(255, 206, 0, 0.3)",
+            
+        ];
 
         
           //TOP 5 POPULAR PROGRAMS
@@ -873,15 +918,13 @@ class OfficerController extends Controller
                
               ])
                 
-              ->fill(false);
-            //   ->color($LineprogColor1)
-            //   ->backgroundcolor($FillprogColor1);
+            //   ->fill(false)
+              ->color($LineprogColor1)
+              ->backgroundcolor($FillprogColor1);
   
           $program->displayLegend(false);
           
 
-
-        
           $TotalEnrollment = DB::table('collations')
           ->select(DB::raw("SUM(TE) as Total"))
           ->first()->Total; 
@@ -898,11 +941,21 @@ class OfficerController extends Controller
           ->select(DB::raw("SUM(TFE+TFG) as Total"))
           ->first()->Total;
 
+        $LinemfColor1 = [  
+            "rgba(0, 52, 113, 0.8)",  
+            "rgba(255, 20, 134, 0.9)",
+        ];
+
+        $FillmfColor1 = [
+            "rgba(0, 52, 113, 0.7)",
+            "rgba(255, 20, 134, 0.7)",
+        ];
+
           $gender = new Gender;
           $gender->labels(['Male', 'Female',]);
-          $gender->dataset('Total', 'doughnut', [ $TotalMale,$TotalFemale]);
-                //  ->color($LinemfColor1)
-                //  ->backgroundcolor($FillmfColor1);
+          $gender->dataset('Total', 'doughnut', [ $TotalMale,$TotalFemale])
+                 ->color($LinemfColor1)
+                 ->backgroundcolor($FillmfColor1);
           $gender->displayLegend(false);
 
         
@@ -916,12 +969,33 @@ class OfficerController extends Controller
           ->where('institution_types_id','2')
           ->first()->Total;
 
+          $LinemColor1 = [
+            "rgba(0, 52, 113, 0.8)",  
+            "rgba(0, 52, 113, 0.8)",   
+         ];
+      
+        $FillmColor1 = [
+            "rgba(0, 52, 113, 0.7)",  
+            "rgba(0, 52, 113, 0.7)",  
+        ];
+
           $male = new Male;
           $male->labels(['SUC', 'NON-SUC',]);
-          $male->dataset('Total', 'bar', [ $SUCMale,$NONSUCMale]);
-                //  ->color($LinemColor1)
-                //  ->backgroundcolor($FillmColor1);
+          $male->dataset('Total', 'bar', [ $SUCMale,$NONSUCMale])
+                 ->color($LinemColor1)
+                 ->backgroundcolor($FillmColor1);
           $male->displayLegend(false);
+
+          
+        $LinefColor1 = [
+            "rgba(255, 20, 134, 0.9)",
+            "rgba(255, 20, 134, 0.9)",
+        ];
+
+        $FillfColor1 = [
+            "rgba(255, 20, 134, 0.7)",
+            "rgba(255, 20, 134, 0.7)",
+        ];
 
           $SUCFemale = DB::table('collations')
           ->select(DB::raw("SUM(TFE+TFG) as Total"))
@@ -935,9 +1009,9 @@ class OfficerController extends Controller
  
           $female = new Female;
           $female->labels(['SUC', 'NON-SUC',]);
-          $female->dataset('Total', 'bar', [ $SUCFemale,$NONSUCFemale]);
-                //  ->color($LinefColor1)
-                //  ->backgroundcolor($FillfColor1);
+          $female->dataset('Total', 'bar', [ $SUCFemale,$NONSUCFemale])
+                 ->color($LinefColor1)
+                 ->backgroundcolor($FillfColor1);
           $female->displayLegend(false);
 
           $TotalStudents = DB::table('collations')
@@ -1099,8 +1173,8 @@ class OfficerController extends Controller
             $status = '4';
             DB::update('update completes set statuses_id = ? where completes_id = ?', [$status,$id]);
 
-            return back()->with('success', 'Approves the file successfully');
-
+            return back()->with('success', 'Approves the file successfully'); 
+ 
         }
      
       
@@ -1111,7 +1185,7 @@ class OfficerController extends Controller
         $stat = DB::table('completes')->where('completes_id', $id)->first()->statuses_id;
 
         if($stat == '4')
-        {
+        { 
             return back()->with('danger', 'You cannot disapprove this file. Contact Ched Officer for cancelling the form');
         }
         else if($stat == '5')
@@ -1124,8 +1198,8 @@ class OfficerController extends Controller
            
             $comment = $request->textarea;
 
-            OfficerDisapprove::dispatch($id,$comment);
-
+            OfficerDisapprove::dispatch($id,$comment); 
+ 
              //UPDATE STATUS IN COMPLETES TABLE
             $status = '5'; 
             DB::update('update completes set statuses_id = ? where completes_id = ?', [$status,$id]);
@@ -1141,7 +1215,7 @@ class OfficerController extends Controller
             //   $fcount = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
             //   $final_fcount = $fcount - 1;
             //   $vcount = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
-            //   $final_vcount = $vcount - 1;
+            //   $final_vcount = $vcount - 1; 
  
             //   DB::table('counts')  
             //   ->where('institutions_id',$institution)
@@ -1166,6 +1240,80 @@ class OfficerController extends Controller
         }
 
         
+    }
+
+    public function Institution_add(Request $request)
+    {
+        
+       
+        //ADD INSTITUTION
+        $ins = new Institution();
+        $ins->code = request('code');
+        $ins->institution_name = request('institution');
+        $ins->abbreviation = request('abbrv');
+        $ins->institution_types_id = request('type');
+        $ins->statuses_id = '1'; 
+        $ins->save();
+         
+        return back()->with('success', 'Added a new Institution successfully');
+
+    }
+
+    public function Account_edit(Request $request, $id)
+    {
+        
+          DB::table('users')   
+          ->where('id',$id)
+          ->update(['username' => $request->users]);
+
+        $emp_id = DB::table('users')->where('id', $id)->first()->employee_profiles_id;
+
+        DB::table('employee_profiles')   
+        ->where('employee_profiles_id',$emp_id)
+        ->update(['first_name' => $request->fname, 
+        'last_Name' => $request->lname,
+        'position' => $request->position,
+        'division' => $request->division]);
+
+ 
+        return back()->with('success', 'Edit the account successfully');
+         
+
+    }
+
+    public function Account_request(Request $request, $id, $type)
+    {   
+
+        if($type === "Officer")
+        {   
+            DB::table('concerns')   
+            ->where('concerns_id',$id)
+            ->delete();
+
+            return redirect('/officer/accounts/officer');
+        }
+        else if($type === "Validator")
+        {   
+            DB::table('concerns')   
+            ->where('concerns_id',$id)
+            ->delete();
+            return redirect('/officer/accounts/validator');
+        }
+        else if($type === "6")
+        {   
+            DB::table('concerns')   
+            ->where('concerns_id',$id)
+            ->delete();
+            return redirect('/validator/accounts');
+        }
+        else
+        {   
+            DB::table('concerns')   
+            ->where('concerns_id',$id)
+            ->delete();
+            return redirect('/officer/accounts/verifier');
+        }
+       
     }
 
 

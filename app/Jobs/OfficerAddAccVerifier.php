@@ -62,7 +62,7 @@ class OfficerAddAccVerifier implements ShouldQueue
         $emp->save();
         
         //ADD USER
-        $users = $this->fname . '' . $this->lname . '123';
+        $users = 'ver'.$this->fname . '' . $this->lname;
         $pass = 'verifier123';
 
         $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 

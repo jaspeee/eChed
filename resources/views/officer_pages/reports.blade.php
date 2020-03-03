@@ -18,7 +18,7 @@
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-    </div>
+    </div>  
     @endif
 
       @if(session('success'))
@@ -52,7 +52,7 @@
               <p style="font-size:13px;">Collate : Please click this button to collate files
                   
                 <a href="/officer/collate">
-                <button type="button" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
+                <button  onclick="return confirmation();" type="button" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
                   <i class="now-ui-icons files_box" data-toggle="tooltip" data-placement="top" title="Collate"></i>
                 </button>
                 </a>
@@ -129,7 +129,13 @@ $('#tracksearchbar').keyup(function(){
       oTable.search($(this).val()).draw() ;
 })
 
-
+function confirmation(){
+    if(confirm('Are you sure that you want to collate data?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
 
   </script>
     

@@ -57,36 +57,30 @@ class ValidatorController extends Controller
         ->where('employee_profiles.institutions_id', $institution)->orderby('validates_id','desc')->limit(3)->get();
 
 
-         //CHART
-         $borderColors = [
-            "rgba(255, 205, 86, 1.0)",
-            "rgba(22,160,133, 1.0)",
-            "rgba(255, 99, 132, 1.0)"
+        $borderColors = [
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(16, 121, 16, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
            
         ];
         $fillColors = [
-            "rgba(255, 205, 86, 0.2)",
-            "rgba(22,160,133, 0.2)",
-            "rgba(255, 99, 132, 0.2)"
-           
-
+            "rgba(255, 206, 0, 0.7)",
+            "rgba(16, 121, 16, 0.7)",
+            "rgba(220, 0, 5, 0.7)",
         ];
 
         $borderColors1 = [
-            "rgba(22,160,133, 1.0)",
-            "rgba(255, 99, 132, 1.0)"
+            "rgba(16, 121, 16, 1.0)",
+            "rgba(220, 0, 5, 1.0)",
            
         ];
         $fillColors1 = [
-            "rgba(22,160,133, 0.2)",
-            "rgba(255, 99, 132, 0.2)"
-           
-           
-
+            "rgba(16, 121, 16, 0.7)",
+            "rgba(220, 0, 5, 0.7)",
         ];
 
 
-        //ENCODER
+        //ENCODER 
         $pending = DB::table('validates')
         ->join('users', 'validates.user_id', '=','users.id')
         ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
@@ -110,9 +104,9 @@ class ValidatorController extends Controller
 
         $chart = new StatusChart;
         $chart->labels(['Pending', 'Approve', 'Disapprove']);
-        $chart->dataset('Dataset', 'bar', [$pending,  $approve, $disapprove]);
-            // ->color($borderColors)
-            // ->backgroundcolor($fillColors);
+        $chart->dataset('Dataset', 'bar', [$pending,  $approve, $disapprove])
+            ->color($borderColors)
+            ->backgroundcolor($fillColors);
            
         $chart->displayLegend(false);
      
@@ -141,9 +135,9 @@ class ValidatorController extends Controller
 
         $charts = new ValidatorStatusChart;
         $charts->labels(['Pending', 'Approve', 'Disapprove']);
-        $charts->dataset('Dataset', 'bar', [$pending1,  $approve1, $disapprove1]);
-                // ->color($borderColors)
-                // ->backgroundcolor($fillColors);
+        $charts->dataset('Dataset', 'bar', [$pending1,  $approve1, $disapprove1])
+                ->color($borderColors)
+                ->backgroundcolor($fillColors);
         
          $charts->displayLegend(false);
 
@@ -164,9 +158,9 @@ class ValidatorController extends Controller
     
         $chartss = new AccountStatusChart;
         $chartss->labels(['Active', 'Inactive']);
-        $chartss->dataset('Dataset', 'doughnut', [$active,  $inactive]);
-                // ->color($borderColors1)
-                // ->backgroundcolor($fillColors1);
+        $chartss->dataset('Dataset', 'doughnut', [$active,  $inactive])
+                ->color($borderColors1)
+                ->backgroundcolor($fillColors1);
     
         $chartss->displayAxes(false); 
        
@@ -245,10 +239,16 @@ class ValidatorController extends Controller
         //GET THE FIRST AND LAST NAME OF THE USER 
         $id = auth()->id();
         $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
         $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
         $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+ 
+        $forms = DB::table('completes')
+        ->where('institutions_id', $institution)
+        ->where('statuses_id', '4')->get();
 
-        return view('validator_pages.record', compact('fname','lname'));
+        
+        return view('validator_pages.record', compact('fname','lname','forms'));
     }
 
     public function Page_accounts()

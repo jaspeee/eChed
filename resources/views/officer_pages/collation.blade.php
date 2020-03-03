@@ -20,11 +20,11 @@
           <div class="card-body">
             <div class="container" style="padding:40px;">
  
-              <p style="font-size:18px;"><b> Collated Files</b></p>
+              <p style="font-size:18px;"><b> Collated Data</b></p>
               <p style="font-size:13px;">Export : Please click this button to export the collated files
                   
                 <a href="/officer/exports">
-                <button type="button" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
+                <button  onclick="return confirmation();" type="button" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
                   <i class="now-ui-icons arrows-1_share-66" data-toggle="tooltip" data-placement="top" title="Collate"></i>
                 </button>
                 </a>
@@ -198,6 +198,16 @@ $('#tracksearchbar1').keyup(function(){
 $('#tracksearchbar').keyup(function(){
       oTable.search($(this).val()).draw() ;
 })
+ 
+ 
+function confirmation(){
+    if(confirm('Are you sure that you want to export the collated data?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
+
 
   </script>
     

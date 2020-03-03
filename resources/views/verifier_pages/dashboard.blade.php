@@ -81,7 +81,7 @@
                 <button type="button" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
                   <i class="now-ui-icons loader_gear" ></i>
                 </button>
-                </a> 
+                </a>  
       
               </h4>
               

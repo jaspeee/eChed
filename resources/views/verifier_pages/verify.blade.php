@@ -50,10 +50,18 @@
             
               <div class="container" style="padding:40px;">
 
-                  <p style="font-size:18px;"><b>Track Submissions from Validators</b></p>
+               
+                  <p style="font-size:18px;">
+                    <a href="/verifier/verification">
+                      <button type="button" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
+                        <i class="now-ui-icons arrows-1_minimal-left" data-toggle="tooltip" data-placement="right" title="Back" ></i>
+                      </button>
+                      </a>
+     
+                      <b>Track Submissions from Validators</b></p>
 
-                  <p style="font-size:13px;">
-                    Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming
+                  <p style="font-size:13px;color:red;">
+                    Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming.
                 
                   </p> 
                   <hr>
@@ -162,7 +170,7 @@
                                     <form method="POST" action="/verifier/verify/approve/{{$file->verifies_id}}">
                                       {{method_field('patch')}}
                                       @csrf
-                                    <button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                    <button type="submit" onclick="return confirmation();" style="background-color: transparent;border: none;cursor:pointer;">
                                       <i class="now-ui-icons ui-1_check" style="font-size: 15px;color: green" data-toggle="tooltip" data-placement="top" title="Approve" ></i>
                                     </button>
                                     </form>
@@ -175,15 +183,8 @@
                                     </td>
 
                                 @endif
-
-                                
-                                
-                               
-
                             </tr>
                             @endforeach
-                       
-
                       </tbody>
                     </table>
               </div>
@@ -321,6 +322,14 @@ $('#commentModal').on('show.bs.modal', function(event) {
    //var textarea_value = $('#textarea').val();
 
 });
+
+function confirmation(){
+    if(confirm('Are you sure that you want to approve this form?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
 
 </script>
 @endsection 

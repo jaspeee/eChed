@@ -7,12 +7,14 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class OfficerDisapprove implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-
+ 
     protected $comment;
     protected $id;
 
@@ -33,7 +35,7 @@ class OfficerDisapprove implements ShouldQueue
      * @return void
      */
     public function handle()
-    {
+    { 
        
            
             //GET THE FILE NAME
@@ -45,14 +47,14 @@ class OfficerDisapprove implements ShouldQueue
               $final_fcount = $fcount - 1;
               $vcount = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
               $final_vcount = $vcount - 1;
- 
+  
               DB::table('counts')  
               ->where('institutions_id',$institution)
               ->update(['vcount' => $final_vcount, 'fcount' => $final_fcount]);
 
               $comment1 =  $this->comment . ' - Officer'; 
               DB::table('verifies')  
-              ->where('validator_submission',$filename)
+              ->where('validator_submission',$filename) 
               ->where('statuses_id','4')
               ->update(['statuses_id' => '5', 'comment' => $comment1]);
 
@@ -60,7 +62,7 @@ class OfficerDisapprove implements ShouldQueue
               ->where('encoder_submission',$filename)
               ->where('statuses_id','4')
               ->update(['statuses_id' => '5', 'comment' => $comment1]);
-
+ 
             Storage::delete('public/complete/'.$filename);
             
 

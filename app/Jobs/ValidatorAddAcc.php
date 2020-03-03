@@ -60,7 +60,7 @@ class ValidatorAddAcc implements ShouldQueue
         $emp->save();
         
         //ADD USER 
-        $users = $this->fname . '' . $this->lname . '123';
+        $users = 'enc'.$this->fname . '' . $this->lname;
         $pass = 'encoder123';
 
         $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 

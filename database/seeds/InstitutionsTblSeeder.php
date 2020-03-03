@@ -22,7 +22,7 @@ class InstitutionsTblSeeder extends Seeder
         ]);
 
         
-       DB::table('institutions')->insert([
+        DB::table('institutions')->insert([
           'code' => '11155',
           'institution_name' => 'ACES Polytechnic College',
           'abbreviation' => 'ACES-PC',
@@ -30,7 +30,7 @@ class InstitutionsTblSeeder extends Seeder
           'statuses_id' => '1',
           'created_at' => now(),
           'updated_at' => now()
-       ]);
+     ]);
      
      //1 = SUC
      //2 = NON SUC
@@ -827,7 +827,7 @@ class InstitutionsTblSeeder extends Seeder
      
      DB::table('institutions')->insert([
           'code' => '11140',
-          'institution_name' => 'St. Mary S College Baganga',
+          'institution_name' => 'St. MaryS College Baganga',
           'abbreviation' => 'SM-BAG',
           'institution_types_id' => '2',
           'statuses_id' => '1',
@@ -837,7 +837,7 @@ class InstitutionsTblSeeder extends Seeder
      
      DB::table('institutions')->insert([
           'code' => '11034',
-          'institution_name' => 'St. Mary S College Of Bansalan',
+          'institution_name' => 'St. MaryS College Of Bansalan',
           'abbreviation' => 'SM-BAN',
           'institution_types_id' => '2',
           'statuses_id' => '1',
@@ -847,7 +847,7 @@ class InstitutionsTblSeeder extends Seeder
      
      DB::table('institutions')->insert([
           'code' => '11064',
-          'institution_name' => 'St. Mary S College Of Tagum',
+          'institution_name' => 'St. MaryS College Of Tagum',
           'abbreviation' => 'SM-TAG',
           'institution_types_id' => '2',
           'statuses_id' => '1',

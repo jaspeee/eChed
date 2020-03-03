@@ -75,7 +75,10 @@ Route::get('/officer/accounts/officer', 'OfficerController@Page_account_officer'
 Route::post('/officer/accounts/officer', 'OfficerController@Account_officer_add');
 Route::patch('/officer/final/approve/{form}', 'OfficerController@officer_approve'); 
 Route::patch('/officer/final/disapprove/{form}', 'OfficerController@officer_disapprove'); 
+Route::post('/officer/institution', 'OfficerController@Institution_add');
+Route::patch('/officer/account/edit/{id}', 'OfficerController@Account_edit'); 
 
+Route::patch('/officer/request/{id}/{type}', 'OfficerController@Account_request');  
 
 //INACTIVE ACC REDIRECT
 Route::get('/account', 'AccountController@Page_acc');
