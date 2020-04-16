@@ -15,6 +15,25 @@ Route::get('/', function () {
     return view('welcome'); 
 });
 
+//Clear configurations:
+Route::get('/config-clear', function() {
+	$status = Artisan::call('config:clear');
+	return '<h1>Configurations cleared</h1>';
+});
+
+//Clear cache:
+Route::get('/cache-clear', function() {
+	$status = Artisan::call('cache:clear');
+	return '<h1>Cache cleared</h1>';
+});
+
+//Clear configuration cache:
+Route::get('/config-cache', function() {
+	$status = Artisan::call('config:Cache');
+	return '<h1>Configurations cache cleared</h1>';
+});
+
+
  
 // ENCODER 
 Route::get('/encoder/dashboard', 'EncoderController@Page_dashboard');
@@ -25,7 +44,10 @@ Route::post('/encoder/upload', 'EncoderController@Upload_file');
 Route::get('/encoder/password', 'EncoderController@Page_password');
 Route::patch('/encoder/changepass', 'EncoderController@Password_change');
 Route::get('/encoder/references', 'EncoderController@Page_references');
- 
+//Route::get('/encoder/try/try/try', 'EncoderController@tryyyyy');
+Route::get('/encoder/audit/{val}', 'EncoderController@audit');
+
+
 // VALIDATOR 
 Route::get('/validator/dashboard', 'ValidatorController@Page_dashboard');
 Route::get('/validator/validation', 'ValidatorController@Page_validation');
@@ -39,7 +61,7 @@ Route::post('/validator/accounts/add', 'ValidatorController@Accounts_add');
 Route::get('/validator/password', 'ValidatorController@Page_password');
 Route::patch('/validator/changepass', 'ValidatorController@Password_change');
 Route::get('/validator/references', 'ValidatorController@Page_references');
-
+Route::get('/validator/audit/{val}', 'ValidatorController@audit_download');
 
 // VERIFIER
 Route::get('/verifier/dashboard', 'VerifierController@Page_dashboard');
@@ -50,7 +72,7 @@ Route::patch('/verifier/verify/disapprove/{id}', 'VerifierController@Verify_disa
 Route::get('/verifier/password', 'VerifierController@Page_password');
 Route::patch('/verifier/changepass', 'VerifierController@Password_change');
 Route::get('/verifier/references', 'VerifierController@Page_references');
-
+Route::get('/verifier/audit/{val}', 'VerifierController@audit_download');
 
 
 // OFFICER 
@@ -90,7 +112,7 @@ Route::post('/forgotpassword/req', 'AccountController@Page_forgot_req');
 
 //CHANGE PASSWORD
 Route::patch('/account/changePass/{id}', 'AccountController@Accounts_changePass');
-
+ 
 //REPORTS
 Route::get('/officer/collate', 'ReportsController@import'); 
 Route::get('/officer/exports', 'ReportsController@exports');

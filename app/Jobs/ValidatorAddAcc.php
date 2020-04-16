@@ -19,7 +19,7 @@ class ValidatorAddAcc implements ShouldQueue
 
     protected $id;
     protected $fname;
-    protected $lname;
+    protected $lname; 
     protected $email;
     protected $position;
     protected $division;
@@ -66,7 +66,7 @@ class ValidatorAddAcc implements ShouldQueue
         $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
         $hashpass = Hash::make($pass);
 
-        $user = new User();
+        $user = new User(); 
         $user->username = $users;
         $user->email = $this->email;
         $user->password = $hashpass;

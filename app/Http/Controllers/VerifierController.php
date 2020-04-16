@@ -23,6 +23,8 @@ use App\Jobs\VerifierApprove;
 use App\Jobs\VerifierDisapprove;
 use App\Jobs\VerifierChangePass;
 use App\Charts\StatusChart;
+use Illuminate\Support\Facades\URL;
+use App\Audit_log;
 
 class VerifierController extends Controller
 {   
@@ -390,7 +392,7 @@ class VerifierController extends Controller
     } 
 
 
-    public function Verify_approve($id)
+    public function Verify_approve(Request $request,$id)
     {   
          //GET THE FILE NAME 
         $filename = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
@@ -407,6 +409,11 @@ class VerifierController extends Controller
          
         $filenames = Str::replaceLast('_'.$abbrv, '', $filename);
 
+        $date = Carbon::now();
+        $date=  $date->year;
+
+        $filenames = Str::replaceLast('_'.$date, '', $filenames);
+      
         // $res = Str::containsAll($filenames, ['.xls']) . '';
 
         $form_id = '0';
@@ -475,6 +482,40 @@ class VerifierController extends Controller
             //     return back()->with('success', 'Approves the file successfully');
             // }
 
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '3';
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\Verify';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:pending}';
+            $audit->new_values = '{status:approve}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();  
+
+            $count = \DB::table('completes')->count();
+            if($count == 0) {
+                $audit_ID = '1';
+            }else {
+                $audit_ID = DB::table('completes')->orderBy('completes_id', 'DESC')->first()->completes_id;
+                $audit_ID= $audit_ID+1;
+            }
+
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '3';
+            $audit->event = 'Upload';
+            $audit->auditable_type = 'App\Complete';
+            $audit->auditable_id = $audit_ID ;
+            $audit->old_values = '';
+            $audit->new_values = '{user_id:'.auth()->id().', verifier_submission:'.$filename.', forms_id:'.$form_id.', institutions_id:'.$institution.', statuses_id:3, comment:, }';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save(); 
+
             return back()->with('success', 'Approves the file successfully');
 
         }
@@ -534,6 +575,19 @@ class VerifierController extends Controller
             //     return back()->with('success', 'Disapproves the file successfully');
             // } 
             
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '3';
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\Verify';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:pending}';
+            $audit->new_values = '{status:disapprove}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();  
+
             return back()->with('success', 'Disapproves the file successfully');
 
         }
@@ -556,6 +610,19 @@ class VerifierController extends Controller
             //  $user->password = Hash::make($request['password']);
             //  $user->save();  
              
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '3';
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\User';
+            $audit->auditable_id = auth()->id();
+            $audit->old_values = '{password:'.$current_password.'}';
+            $audit->new_values = '{password:'.Hash::make($request['password']).'}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();
+
              
          }
          else{
@@ -582,6 +649,28 @@ class VerifierController extends Controller
    
            return view('verifier_pages.references',compact('discipline','institutions','fname','lname'));
        
+    }
+
+    public function audit_download(Request $request, $val)
+    {   
+
+        $form = DB::table('verifies')->where('verifies_id',$val)->first()->validator_submission;
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = '3';
+        $audit->event = 'Download';
+        $audit->auditable_type = 'App\Verify';
+        $audit->auditable_id = $val;
+        $audit->old_values = '';
+        $audit->new_values = '{download:'.$form.'}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save();  
+        
+        return Storage::download('public/verify/'.$form);
+
     }
 
 }

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Concern;
+use App\Audit_log;
 use Hash;
+use Illuminate\Support\Facades\URL;
 
 
 class AccountController extends Controller
@@ -48,7 +50,25 @@ class AccountController extends Controller
         
         DB::update('update users set password = ? where id = ?', [$newpass,$id]);
 
-         return back()->with('success', 'Change password successfully');
+
+        $usertype = DB::table('users')->where('id',auth()->id())->first()->user_types_id;
+        $oldpass = DB::table('users')->where('id',$id)->first()->password;
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = $usertype;
+        $audit->event = 'Update';
+        $audit->auditable_type = 'App\User';
+        $audit->auditable_id = $id;
+        $audit->old_values = '{password:'.$oldpass.'}';
+        $audit->new_values = '{password:'.$newpass.'}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save();  
+        
+
+         return back()->with('success', 'Change password successfully'); 
     }
 
     public function Page_inactive_req(Request $request)

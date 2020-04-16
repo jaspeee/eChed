@@ -19,7 +19,7 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    @endif
+    @endif 
 
       @if(session('success'))
       <div class="alert alert-success">
@@ -132,8 +132,9 @@
 
                             @elseif($sub->status == 'Approve')
 
-                                <td style="padding:0;">
-                                  <a href="/storage/verify/{{$sub->encoder_submission}}" download><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                <td style="padding:0;"> 
+                                  
+                                  <a href="/validator/audit/{{$sub->validates_id}}" style="text-decoration-line: none;" ><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
                                     <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
                                     {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
                                   </button></a>
@@ -155,7 +156,7 @@
 
                             @else
                               <td style="padding:0;">
-                                <a href="/storage/validate/{{$sub->encoder_submission}}" download><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                <a href="/validator/audit/{{$sub->validates_id}}" style="text-decoration-line: none;" ><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
                                   <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
                                   {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
                                 </button></a>

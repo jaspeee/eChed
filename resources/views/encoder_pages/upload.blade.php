@@ -68,7 +68,9 @@
                 
             </form> 
 
-
+          
+            {{-- <a href="/encoder/try/try/try">
+            <button >tryy</button></a> --}}
 
           </div>
         </div>

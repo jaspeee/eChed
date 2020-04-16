@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\User;
 use App\Form;
 use App\Validate;
+use App\Audit_log;
 use App\Charts\StatusChart;
 use Hash;
 Use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
 use App\Jobs\EncoderUpload;
 use App\Jobs\EncoderChangePass;
+use Illuminate\Support\Facades\URL;
 
 class EncoderController extends Controller
 {   
+    
 
     public function __construct()
     {
@@ -194,30 +197,57 @@ class EncoderController extends Controller
         {
             foreach($request->file as $file)
             {   
-                
+
+                $date = Carbon::now();
+                $date=  $date->year;
+        
                  $filenameWithExt = $file->getClientOriginalName();
-                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME).'_'.$abbrv;
+                 $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME).'_'.$abbrv.'_'.$date;
                  $extension = $file->getClientOriginalExtension();
                  $fileNameToStore = $filename.'.'.$extension;
-                
+                 
                  if (Storage::exists('public/validate/'.$fileNameToStore)) 
                 {    
                     return back()->with('danger', 'Files are already submitted to validator');
                 }
                 else
                 {   
+                    
+                    $count = \DB::table('validates')->count();
+                    if($count == 0) {
+                        $audit_ID = '1';
+                    }else {
+                        $audit_ID = DB::table('validates')->orderBy('validates_id', 'DESC')->first()->validates_id;
+                        $audit_ID= $audit_ID+1;
+                    }
 
-
-                    EncoderUpload::dispatch($fileNameToStore,$id);
+                    EncoderUpload::dispatch($fileNameToStore,$id); 
                      
                     $file->storeAs('public/validate',$fileNameToStore);
-                     
+                      
+
+                    $audit = new Audit_log();
+                    $audit->user_id =   $id;
+                    $audit->user_types_id = '1';
+                    $audit->event = 'Upload';
+                    $audit->auditable_type = 'App\Validate';
+                    $audit->auditable_id = $audit_ID;
+                    $audit->old_values = '';
+                    $audit->new_values = '{user_id:'.$id.', encoder_submission:'.$fileNameToStore.', statuses_id:3, comment:}';
+
+                    $audit->url = URL::current();
+                    $audit->ip_address = \Request::ip();
+                    $audit->user_agent = $request->header('User-Agent');
+                    $audit->save();  
+                    
+
+
                     // $val = new Validate();
                     // $val->user_id = auth()->id();
                     // $val->encoder_submission = $fileNameToStore;
                     // $val->statuses_id = '3';
                     // $val->comment = '';
-                    // $val->save(); 
+                    // $val->save();  
                 }
 
             } 
@@ -243,7 +273,24 @@ class EncoderController extends Controller
             
             EncoderChangePass::dispatch($id,$request['password']);
 
-            
+            $oldpass =  User::find($id)->password;
+            $npass = Hash::make($request['password']);
+          
+
+            $audit = new Audit_log();
+            $audit->user_id = $id;
+            $audit->user_types_id = '1';
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\User';
+            $audit->auditable_id =  auth()->id();
+            $audit->old_values =  '{password:'.$oldpass.'}';
+            $audit->new_values = '{password:'.$npass.'}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();  
+
+             
          } 
          else{ 
             return back()->with('danger', 'Current password was incorrect');
@@ -270,4 +317,39 @@ class EncoderController extends Controller
         return view('encoder_pages.references',compact('discipline','institutions','fname','lname'));
     }
 
+    // public function tryyyyy(Request $request)
+    // {
+    //     // $val = new Validate();
+    //     // $val->user_id = 1;
+    //     // $val->encoder_submission = 'sample';
+    //     // $val->statuses_id = '3';
+    //     // $val->comment = '';
+    //     // $val->save();   
+    //    $sample= \Request::ip();
+    //    $sample1= URL::current();
+    //    $sample2= $request->header('User-Agent');
+    //     return $sample2;
+    // }
+
+    public function audit(Request $request, $val)
+    {   
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = '1';
+        $audit->event = 'Download';
+        $audit->auditable_type = 'App\Form';
+        $audit->auditable_id = '';
+        $audit->old_values = '';
+        $audit->new_values = '{download:'.$val.'}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save();  
+        
+        return Storage::download('public/forms/'.$val);
+        //return 'wala';
+    }
+
 }
+ 

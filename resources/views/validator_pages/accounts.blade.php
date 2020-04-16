@@ -131,8 +131,8 @@
                                 <button type="button" data-toggle="modal" data-target="#EditAccModal" data-id="{{$acc->id}}"  data-username="{{$acc->username}}" data-position="{{$acc->position}}" 
                                   data-division="{{$acc->division}}" data-fname=" {{$acc->first_name}}"
                                   data-lname="{{$acc->last_Name}}" 
-                                  style="background-color: transparent;border: none;cursor:pointer;">
-                                  <i class="now-ui-icons  ui-1_settings-gear-63" style="font-size: 20px;color: gray" data-toggle="tooltip" data-placement="top" title="Disapprove"></i>
+                                  style="background-color: transparent;border: none;cursor:pointer;"> 
+                                  <i class="now-ui-icons  ui-1_settings-gear-63" style="font-size: 20px;color: gray" data-toggle="tooltip" data-placement="top" title="Edit Account"></i>
                                 </button>
                                  
                               </td>

@@ -8,7 +8,8 @@ use App\User;
 use App\Form;
 use App\Validate;
 use App\Count;
-use App\Verify;
+use App\Verify; 
+use App\Audit_log; 
 use App\Employee_profile;
 use App\Charts\StatusChart;
 use App\Charts\ValidatorStatusChart;
@@ -20,6 +21,7 @@ use App\Jobs\ValidatorDisapprove;
 use App\Jobs\ValidatorAddAcc;
 use App\Jobs\ValidatorAccStatus;
 use App\Jobs\ValidatorChangePass;
+use Illuminate\Support\Facades\URL;
 
 class ValidatorController extends Controller
 {   
@@ -30,7 +32,7 @@ class ValidatorController extends Controller
 
     }
     
-    public function Page_dashboard()
+    public function Page_dashboard() 
     {   
         //GET THE FIRST AND LAST NAME OF THE USER 
         $id = auth()->id();
@@ -269,7 +271,7 @@ class ValidatorController extends Controller
             'employee_profiles.position', 'employee_profiles.division','statuses.status')
          ->where('employee_profiles.institutions_id', $institution)->get();
 
- 
+  
         return view('validator_pages.accounts', compact('account','fname','lname'));
     }
 
@@ -287,7 +289,7 @@ class ValidatorController extends Controller
          return view('validator_pages.password', compact('pos','div','fname','lname'));
     }
 
-    public function Validation_approve($id)
+    public function Validation_approve(Request $request,$id)
     {   
  
         //GET THE FILE NAME
@@ -333,7 +335,42 @@ class ValidatorController extends Controller
             // if(Storage::move('public/validate/'.$filename, 'public/verify/' .$filename))
             // {
             //     
-            // }
+            // } 
+
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '2';
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\Validate';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:pending}';
+            $audit->new_values = '{status:approve}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();  
+
+            $count = \DB::table('verifies')->count();
+            if($count == 0) {
+                $audit_ID = '1';
+            }else {
+                $audit_ID = DB::table('verifies')->orderBy('verifies_id', 'DESC')->first()->verifies_id;
+                $audit_ID= $audit_ID+1;
+            }
+
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '2';
+            $audit->event = 'Upload';
+            $audit->auditable_type = 'App\Verify';
+            $audit->auditable_id = $audit_ID ;
+            $audit->old_values = '';
+            $audit->new_values = '{user_id:'.auth()->id().', validator_submission:'.$filename.', statuses_id:3, comment:, }';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save(); 
+
             return  back()->with('success', 'Approves the file successfully');
         }
         
@@ -379,6 +416,19 @@ class ValidatorController extends Controller
             //     return back()->with('success', 'Disapproves the file successfully');
             // }
 
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '2';
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\Validate';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:pending}';
+            $audit->new_values = '{status:disapprove, comment:'. $comment.'}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();  
+
             return back()->with('success', 'Disapproves the file successfully');
 
         } 
@@ -386,7 +436,7 @@ class ValidatorController extends Controller
         
     }
 
-    public function Validation_accstat($status, $id)
+    public function Validation_accstat(Request $request,$status, $id)
     {   
         //UPDATE STATUS IN USER TABLE
         
@@ -397,12 +447,40 @@ class ValidatorController extends Controller
             // $user = User::find($id);
             // $user ->statuses_id = '2'; 
             // $user ->save(); 
+
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '2';
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\User';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:active}';
+            $audit->new_values = '{status:inactive}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save(); 
+
             
             return back()->with('success', 'Deactivate the account successfully');
         }else{
             // $user = User::find($id);
             // $user ->statuses_id = '1';
             // $user ->save(); 
+
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '2';
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\User';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:inactive}';
+            $audit->new_values = '{status:active}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save(); 
+
             return back()->with('success', 'Activate the account successfully');
         }
  
@@ -421,8 +499,8 @@ class ValidatorController extends Controller
        
         ValidatorAddAcc::dispatch($id,$fname,$lname,$email,$position,$division);
 
-        // $employee = DB::table('users')->find($id)->employee_profiles_id;
-        // $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
      
         // //ADD EMPLOYEE 
         // $emp = new Employee_profile();
@@ -433,12 +511,12 @@ class ValidatorController extends Controller
         // $emp->institutions_id = $institution;
         // $emp->save();
         
-        // //ADD USER 
-        // $users = $request->fname . '' . $request->lname . '123';
-        // $pass = 'encoder123';
+        //ADD USER 
+        $users = $request->fname . '' . $request->lname . '123';
+        $pass = 'encoder123';
 
-        // $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
-        // $hashpass = Hash::make($pass);
+        $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
+        $hashpass = Hash::make($pass);
 
         // $user = new User();
         // $user->username = $users;
@@ -448,6 +526,48 @@ class ValidatorController extends Controller
         // $user->user_types_id = '1';
         // $user->statuses_id = '1';
         // $user->save();       
+
+        $count = \DB::table('users')->count();
+        if($count == 0) {
+            $audit_ID = '1';
+        }else {
+            $audit_ID = DB::table('users')->orderBy('id', 'DESC')->first()->id;
+            $audit_ID= $audit_ID+1;
+        }
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = '2';
+        $audit->event = 'Create';
+        $audit->auditable_type = 'App\User';
+        $audit->auditable_id = $audit_ID;
+        $audit->old_values = '';
+        $audit->new_values = '{username:'.$users.', email:'.$email.', password:'.$hashpass.', employee_profiles_id:'.$emp_id.', user_types_id:1, statuses_id:1}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save();
+        
+        $count = \DB::table('employee_profiles')->count();
+        if($count == 0) {
+            $audit_ID1 = '1';
+        }else {
+            $audit_ID1 = DB::table('employee_profiles')->orderBy('employee_profiles_id', 'DESC')->first()->employee_profiles_id;
+            $audit_ID1= $audit_ID1+1;
+        }
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = '2';
+        $audit->event = 'Create';
+        $audit->auditable_type = 'App\Employee_profile';
+        $audit->auditable_id = $audit_ID1;
+        $audit->old_values = '';
+        $audit->new_values = '{first_name:'.$fname.', last_name:'.$lname.', position:'.$position.', division:'.$division.', institutions_id:'.$institution.'}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save(); 
 
 
         return back()->with('success', 'Added new account successfully');
@@ -468,7 +588,20 @@ class ValidatorController extends Controller
             //  $user->password = Hash::make($request['password']);
             //  $user->save();  
               
-            
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '2';
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\User';
+            $audit->auditable_id = auth()->id();
+            $audit->old_values = '{password:'.$current_password.'}';
+            $audit->new_values = '{password:'.Hash::make($request['password']).'}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();  
+        
+             
          }
          else{ 
              return back()->with('danger', 'Current password was incorrect');
@@ -507,4 +640,26 @@ class ValidatorController extends Controller
 
     //      return back()->with('success', 'Change password successfully');
     // }
+
+    public function audit_download(Request $request, $val)
+    {   
+
+        $form = DB::table('validates')->where('validates_id',$val)->first()->encoder_submission;
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = '2';
+        $audit->event = 'Download';
+        $audit->auditable_type = 'App\Validate';
+        $audit->auditable_id = $val;
+        $audit->old_values = '';
+        $audit->new_values = '{download:'.$form.'}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save();  
+        
+        return Storage::download('public/validate/'.$form);
+
+    }
 }

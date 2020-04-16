@@ -38,7 +38,8 @@ use App\Charts\InstitutionChart;
 use App\Charts\StatusChart;
 use App\Jobs\OfficerApprove;
 use App\Jobs\OfficerDisapprove;
-
+use Illuminate\Support\Facades\URL;
+use App\Audit_log;
 
 class OfficerController extends Controller
 {   
@@ -133,7 +134,7 @@ class OfficerController extends Controller
          $stat_chart->dataset('Status', 'doughnut', [$Approve,$Disapprove])
              ->color($borderColors1)
              ->backgroundcolor($fillColors1);
- 
+  
          $stat_chart->displayAxes(false);
         
          
@@ -616,11 +617,11 @@ class OfficerController extends Controller
          ->groupBy('institutions.institution_name')
          ->orderby('Total','desc')->skip(8)->first()->Total;
 
-        //  $College_E10 = DB::table('collations')
-        //  ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
-        //  ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
-        //  ->groupBy('institutions.institution_name')
-        //  ->orderby('Total','desc')->skip(9)->first()->Total;
+         $College_E10 = DB::table('collations')
+         ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+         ->select(DB::raw("SUM(collations.TE) as Total"),'institutions.institution_name')
+         ->groupBy('institutions.institution_name')
+         ->orderby('Total','desc')->skip(9)->first()->Total;
         
        
         $College_E = DB::table('collations')
@@ -678,7 +679,7 @@ class OfficerController extends Controller
                 $College_E7,
                 $College_E8,
                 $College_E9,
-                // $College_E10,
+                $College_E10,
              ])
  
              ->color($LineCollegeColor1)
@@ -1262,11 +1263,41 @@ class OfficerController extends Controller
     public function Account_edit(Request $request, $id)
     {
         
-          DB::table('users')   
-          ->where('id',$id)
-          ->update(['username' => $request->users]);
+        $username = DB::table('users')->where('id', $id)->first()->username;
+        $usertype = DB::table('users')->where('id',auth()->id())->first()->user_types_id;
 
+        if($username == $request->users )
+        {
+            
+        }
+        else
+        {
+            DB::table('users')   
+            ->where('id',$id)
+            ->update(['username' => $request->users]);
+
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = $usertype;
+            $audit->event = 'Update';
+            $audit->auditable_type = 'App\User';
+            $audit->auditable_id = $id ;
+            $audit->old_values = '{username:'.$username.'}';
+            $audit->new_values = '{username:'.$request->users.'}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save(); 
+
+        }
+
+        
         $emp_id = DB::table('users')->where('id', $id)->first()->employee_profiles_id;
+        $f = DB::table('employee_profiles')->where('employee_profiles_id', $emp_id)->first()->first_name;
+        $l = DB::table('employee_profiles')->where('employee_profiles_id', $emp_id)->first()->last_Name;
+        $p = DB::table('employee_profiles')->where('employee_profiles_id', $emp_id)->first()->position;
+        $d = DB::table('employee_profiles')->where('employee_profiles_id', $emp_id)->first()->division;
+        $i = DB::table('employee_profiles')->where('employee_profiles_id', $emp_id)->first()->institutions_id;
 
         DB::table('employee_profiles')   
         ->where('employee_profiles_id',$emp_id)
@@ -1274,6 +1305,21 @@ class OfficerController extends Controller
         'last_Name' => $request->lname,
         'position' => $request->position,
         'division' => $request->division]);
+
+       
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = $usertype;
+        $audit->event = 'Update';
+        $audit->auditable_type = 'App\Employee_profile';
+        $audit->auditable_id = $emp_id ;
+        $audit->old_values = '{first_name:'.$f.', last_name:'.$l.', position:'.$p.', division:'.$d.', institutions_id:'.$i.',}';
+        $audit->new_values = '{first_name:'.$request->fname.', last_name:'.$request->lname.', position:'.$request->position.', division:'.$request->division.', institutions_id:'.$i.',}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save(); 
 
  
         return back()->with('success', 'Edit the account successfully');

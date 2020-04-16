@@ -29,19 +29,22 @@
               @else
               <p style="font-size:18px;"><b>Data Collection Forms For Non-State Universities and Colleges</b></p>
               @endif
-              <p style="font-size:13px;">Download Form : Please access the forms below and fill them out.</p>
 
+              <p style="font-size:13px;">Download Form : Please access the forms below and fill them out.</p>
+ 
                 <div class="list-group">
                   
                     @foreach($forms as $form)
                     
                    <ul class="list-group list-group-flush">
-                   <a href="/storage/forms/{{$form->form}}" style="text-decoration-line: none;" download>
-                      <li class="list-group-item list-group-item-action">
-                          <i class="now-ui-icons arrows-1_cloud-download-93"></i> &nbsp&nbsp {{$form->description}} <b>({{$form->form}})</b>
+                 
+                    <a href="/encoder/audit/{{$form->form}}" style="text-decoration-line: none;">
+                     <li class="list-group-item list-group-item-action">
+                        <i class="now-ui-icons arrows-1_cloud-download-93"></i> &nbsp&nbsp {{$form->description}} <b>({{$form->form}})</b>
                       </li>
-                      </a>
-                     
+                    </a>
+                    
+                  
                     </ul>
                    
                    @endforeach
