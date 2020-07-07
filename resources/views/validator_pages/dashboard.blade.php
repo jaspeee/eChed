@@ -62,13 +62,13 @@
                  <hr>
                     <p style="font-size: small;color: gray;text-align: right;"><i class="now-ui-icons ui-2_setting-90"></i> Posted By: {{$dd->first_name}} {{$dd->last_Name}}</p>
                  @endforeach
-                 {{ $deadline->links("pagination::bootstrap-4")}}
+                
                 </div>
                 
               </div>
             </div>
           </div>
-        </div>
+        </div> 
 
         <div class="col-md-6" style="padding-top:2%;">
           <div class="card">

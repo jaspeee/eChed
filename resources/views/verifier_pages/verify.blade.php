@@ -12,34 +12,7 @@
   </div>
   <div class="content"> 
 
-    @if (count($errors) > 0)
-    <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
-      <p>There were some problems with your File input.</p>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div> 
-    @endif
-
-      @if(session('success'))
-      <div class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        {{ session('success') }}
-      </div> 
-
-      @elseif(session('danger'))
-      <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        {{ session('danger') }}
-      </div> 
-      @endif
-
-
-
+  
     <div class="row">
       <div class="col-md-12">
         <div class="card"> 
@@ -81,6 +54,7 @@
                   <table class="table" id="verifytbl">
                       <thead style="background-color: #003471; font-size: 10px;color:white;">
                         <tr>
+                          <th><b>Reference ID</b></th>
                           <th><b>Form</b></th>
                           <th><b>Validated by</b></th>
                           <th><b>Date Submitted</b></th>
@@ -94,6 +68,7 @@
                       <tbody>
                             @foreach($files as $file)
                             <tr>
+                                <td>{{$file->verifies_id}}</td>
                                 <td>{{$file->validator_submission}}</td>
                                 <td>{{$file->first_name}} &nbsp {{$file->last_Name}}</td>
                                 <td>{{$file->created_at}}</td>
@@ -257,11 +232,7 @@
 
 @section('scripts')
 <script  type="text/javascript">
-$(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();   
-});
-
-  $(document).ready(function() {
+ $(document).ready(function() {
     // $('#subtbl').DataTable({
     //   lengthChange: false
      
@@ -277,6 +248,11 @@ $('#tracksearchbar').keyup(function(){
       oTable.search($(this).val()).draw() ;
 })
 
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+
+ 
 
 
 

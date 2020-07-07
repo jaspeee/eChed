@@ -12,7 +12,7 @@
   <div class="panel-header panel-header-sm">
   </div>
   <div class="content"> 
-    <div class="row">
+    <div class="row"> 
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
@@ -29,7 +29,7 @@
               @else
               <p style="font-size:18px;"><b>Data Collection Forms For Non-State Universities and Colleges</b></p>
               @endif
-
+ 
               <p style="font-size:13px;">Download Form : Please access the forms below and fill them out.</p>
  
                 <div class="list-group">

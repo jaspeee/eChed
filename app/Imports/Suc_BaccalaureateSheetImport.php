@@ -9,9 +9,10 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class Suc_BaccalaureateSheetImport implements ToModel,  WithStartRow, WithCalculatedFormulas,
-WithBatchInserts, WithChunkReading
+WithBatchInserts, WithChunkReading, ShouldQueue
 
 {   
 
@@ -21,10 +22,16 @@ WithBatchInserts, WithChunkReading
         return 13;
     }
 
-    public function getID()
+    public function getInstitutionID()
     {
         return DB::table('institution_ids')
         ->orderby('institution_ids_id','desc')->limit(1)->first()->institution;
+    }
+
+    public function getCollationID()
+    {
+        return DB::table('institution_ids')
+        ->orderby('institution_ids_id','desc')->limit(1)->first()->collation;
     }
 
     public function model(array $row)
@@ -39,7 +46,7 @@ WithBatchInserts, WithChunkReading
 
         return new Collation([
             
-            'institutions_id' => $this->getID(), 
+            'institutions_id' => $this->getInstitutionID(), 
             'program_name' => $row[1], 
             'major_name' => $row[3],
             'discipline_groups_id' => 1,
@@ -67,6 +74,7 @@ WithBatchInserts, WithChunkReading
             'TFG' => $row[40],
             'TG' => $row[41],
             'institution_types_id' => '1',
+            'collation_lists_id' => $this->getCollationID(),
         ]);
         }
     }

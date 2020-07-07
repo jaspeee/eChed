@@ -56,12 +56,15 @@ Route::get('/validator/records', 'ValidatorController@Page_records');
 Route::get('/validator/accounts', 'ValidatorController@Page_accounts');
 Route::patch('/validator/validation/approve/{form}', 'ValidatorController@Validation_approve'); 
 Route::patch('/validator/validation/disapprove/{id}', 'ValidatorController@Validation_disapproves');
+
 Route::patch('/validator/accounts/{status}/{id}', 'ValidatorController@Validation_accstat');
 Route::post('/validator/accounts/add', 'ValidatorController@Accounts_add');
 Route::get('/validator/password', 'ValidatorController@Page_password');
 Route::patch('/validator/changepass', 'ValidatorController@Password_change');
 Route::get('/validator/references', 'ValidatorController@Page_references');
 Route::get('/validator/audit/{val}', 'ValidatorController@audit_download');
+Route::get('/validator/record/{val}', 'ValidatorController@record_download');
+
 
 // VERIFIER
 Route::get('/verifier/dashboard', 'VerifierController@Page_dashboard');
@@ -89,33 +92,45 @@ Route::post('/officer/accounts/add', 'OfficerController@Account_verifier_add');
 Route::post('/officer/accounts/validator/add', 'OfficerController@Account_validator_add');
 Route::get('/officer/password', 'OfficerController@Page_password');
 Route::patch('/officer/changepass', 'OfficerController@Password_change');
-Route::post('/officer/deadline/add', 'OfficerController@Deadline_add'); 
+Route::patch('/officer/deadline/add', 'OfficerController@Deadline_add'); 
 Route::get('/officer/collation', 'OfficerController@Page_collation');
-Route::get('/officer/analytics', 'OfficerController@Page_analytics');
+//Route::get('/officer/analytics', 'OfficerController@Page_analytics');
 Route::get('/officer/references', 'OfficerController@Page_references');
 Route::get('/officer/accounts/officer', 'OfficerController@Page_account_officer');
 Route::post('/officer/accounts/officer', 'OfficerController@Account_officer_add');
 Route::patch('/officer/final/approve/{form}', 'OfficerController@officer_approve'); 
 Route::patch('/officer/final/disapprove/{form}', 'OfficerController@officer_disapprove'); 
 Route::post('/officer/institution', 'OfficerController@Institution_add');
-Route::patch('/officer/account/edit/{id}', 'OfficerController@Account_edit'); 
+Route::patch('/officer/account/edit/{id}', 'OfficerController@Account_edit');
+Route::get('/officer/audit/{val}', 'OfficerController@audit_download');
+Route::get('/officer/auditlogs', 'OfficerController@auditlogs');
+Route::get('/officer/backup', 'OfficerController@backup');
+Route::get('/officer/startbackup', 'OfficerController@startbackup');
+Route::get('/officer/collatefiles', 'OfficerController@collatefiles');
+Route::get('/officer/collatefiles/result/{id}', 'OfficerController@result_collatefiles');
+Route::get('/officer/analytics/{id}', 'OfficerController@analytics');
 
 Route::patch('/officer/request/{id}/{type}', 'OfficerController@Account_request');  
+
+
+//REPORTS
+Route::get('/officer/collate', 'ReportsController@import'); 
+Route::get('/officer/exports/{id}', 'ReportsController@exports');
+Route::post('/officer/collatefiles/add', 'ReportsController@addcollation');
+
+
 
 //INACTIVE ACC REDIRECT
 Route::get('/account', 'AccountController@Page_acc');
 Route::post('/inactive/req', 'AccountController@Page_inactive_req');
 
-//FORGOT PASSWORD
+//FORGOT PASSWORD 
 Route::get('/forgotpassword', 'AccountController@Page_forgot');
 Route::post('/forgotpassword/req', 'AccountController@Page_forgot_req');
 
 //CHANGE PASSWORD
 Route::patch('/account/changePass/{id}', 'AccountController@Accounts_changePass');
- 
-//REPORTS
-Route::get('/officer/collate', 'ReportsController@import'); 
-Route::get('/officer/exports', 'ReportsController@exports');
+  
 
 Auth::routes(['register' => false]);
 

@@ -45,6 +45,7 @@
                 <table class="table" id="subtbl">
                     <thead style="background-color: #003471; font-size: 10px;color:white;">
                       <tr>
+                        <th><b>Reference ID</b></th>
                         <th><b>Form</b></th>
                         <th><b>Encoded by</b></th>
                         <th><b>Date Submitted</b></th>
@@ -54,7 +55,8 @@
                     </thead>
                     <tbody>
                           @foreach($submissions as $sub)
-                          <tr>
+                          <tr> 
+                              <td>{{$sub->validates_id}}</td>
                               <td>{{$sub->encoder_submission}}</td>
                               <td>{{$sub->first_name}} &nbsp {{$sub->last_Name}}</td>
                               <td>{{$sub->created_at}}</td>
@@ -123,6 +125,22 @@
 
 @section('scripts')
 <script  type="text/javascript">
+$(document).ready(function() {
+    // $('#subtbl').DataTable({
+    //   lengthChange: false
+     
+    // });
+    oTable = $('#subtbl').DataTable({
+  sDom: 'lrtip',lengthChange: false
+  
+
+}); 
+} );
+
+$('#tracksearchbar').keyup(function(){
+      oTable.search($(this).val()).draw() ;
+})
+
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
@@ -147,21 +165,7 @@ $('#commentModal').on('show.bs.modal', function(event) {
    //var textarea_value = $('#textarea').val();
 
 });
-$(document).ready(function() {
-    // $('#subtbl').DataTable({
-    //   lengthChange: false
-     
-    // });
-    oTable = $('#subtbl').DataTable({
-  sDom: 'lrtip',lengthChange: false
-  
 
-}); 
-} );
-
-$('#tracksearchbar').keyup(function(){
-      oTable.search($(this).val()).draw() ;
-})
 
 </script>
 @endsection

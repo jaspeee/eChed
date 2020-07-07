@@ -25,6 +25,8 @@ use App\Jobs\VerifierChangePass;
 use App\Charts\StatusChart;
 use Illuminate\Support\Facades\URL;
 use App\Audit_log;
+use RealRashid\SweetAlert\Facades\Alert;
+
 
 class VerifierController extends Controller
 {   
@@ -301,7 +303,8 @@ class VerifierController extends Controller
          $deadline = DB::table('deadlines')
          ->join('users', 'deadlines.user_id', '=','users.id')
          ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
-         ->select('deadlines.*', 'employee_profiles.first_name', 'employee_profiles.last_Name')->paginate(1);
+         ->select('deadlines.*', 'employee_profiles.first_name', 'employee_profiles.last_Name')
+         ->orderby('id','desc')->limit(1)->get();
  
          //GET THE INSTITUTION
         //$school = DB::table('institutions')->where('institutions_id',$institution)->first()->institution_name;
@@ -370,7 +373,8 @@ class VerifierController extends Controller
         ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
         ->join('statuses', 'verifies.statuses_id', '=', 'statuses.statuses_id')
         ->select('verifies.*','employee_profiles.first_name','employee_profiles.last_Name','statuses.status')
-        ->where('employee_profiles.institutions_id', $ins_id)->get(); 
+        ->where('employee_profiles.institutions_id', $ins_id)
+        ->whereNotIn('statuses.status', ['Active','Done'])->get(); 
 
         $institution = DB::table('institutions')->where('institutions_id',$ins_id)->first()->institution_name;
 
@@ -443,49 +447,50 @@ class VerifierController extends Controller
  
         if($stat == '5')
         {
-            return back()->with('danger', 'You cannot approve this file. Contact the specific validator for resubmission');
+            return back()->with('warning', 'You cannot approve this file. Contact the specific validator for resubmission');
         }
         else if($stat == '4')
         {
-            return back()->with('danger', 'You already approve this file');
+            return back()->with('warning', 'You already approve this file');
         }
         else
         {   
 
             $id1 = auth()->id();
-            VerifierApprove::dispatch($id, $id1, $filename, $form_id);
+            //VerifierApprove::dispatch($id, $id1, $filename, $form_id);
  
+          
+            //STORE DATA TO COMPLETE TABLE
+            $comp = new Complete();
+            $comp->user_id = auth()->id();
+            $comp->verifier_submission = $filename;
+            $comp->forms_id = $form_id;
+            $comp->institutions_id = $institution;
+            $comp->save();
+
+           // COPY FILE TO ANOTHER STORAGE FOLDER 
+            if(Storage::move('public/verify/'.$filename, 'public/complete/' .$filename))
+            {
+                return back()->with('success', 'Approves the file successfully');
+            }
+
+               //UPDATE THE VCOUNT IN COUNTS TABLE
+               $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
+               $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
+               $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
+               $count = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
+               $final_count = $count + 1;
+               DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
+            
+               
             //UPDATE STATUS IN VALIDATES TABLE
             $status = '4';
             DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
-        
-            // //UPDATE THE VCOUNT IN COUNTS TABLE
-            // $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
-            // $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
-            // $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
-            // $count = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
-            // $final_count = $count + 1;
-            // DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
-            
-             
-            // //STORE DATA TO VERIFIES TABLE
-            // $comp = new Complete();
-            // $comp->user_id = auth()->id();
-            // $comp->verifier_submission = $filename;
-            // $comp->forms_id = $form_id;
-            // $comp->institutions_id = $institution;
-            // $comp->save();
-
-            //COPY FILE TO ANOTHER STORAGE FOLDER 
-            // if(Storage::move('public/verify/'.$filename, 'public/complete/' .$filename))
-            // {
-            //     return back()->with('success', 'Approves the file successfully');
-            // }
-
+          
             $audit = new Audit_log();
             $audit->user_id =  auth()->id();
             $audit->user_types_id = '3';
-            $audit->event = 'Update';
+            $audit->event = 'approved';
             $audit->auditable_type = 'App\Verify';
             $audit->auditable_id = $id;
             $audit->old_values = '{status:pending}';
@@ -494,27 +499,6 @@ class VerifierController extends Controller
             $audit->ip_address = \Request::ip();
             $audit->user_agent = $request->header('User-Agent');
             $audit->save();  
-
-            $count = \DB::table('completes')->count();
-            if($count == 0) {
-                $audit_ID = '1';
-            }else {
-                $audit_ID = DB::table('completes')->orderBy('completes_id', 'DESC')->first()->completes_id;
-                $audit_ID= $audit_ID+1;
-            }
-
-            $audit = new Audit_log();
-            $audit->user_id =  auth()->id();
-            $audit->user_types_id = '3';
-            $audit->event = 'Upload';
-            $audit->auditable_type = 'App\Complete';
-            $audit->auditable_id = $audit_ID ;
-            $audit->old_values = '';
-            $audit->new_values = '{user_id:'.auth()->id().', verifier_submission:'.$filename.', forms_id:'.$form_id.', institutions_id:'.$institution.', statuses_id:3, comment:, }';
-            $audit->url = URL::current();
-            $audit->ip_address = \Request::ip();
-            $audit->user_agent = $request->header('User-Agent');
-            $audit->save(); 
 
             return back()->with('success', 'Approves the file successfully');
 
@@ -529,56 +513,58 @@ class VerifierController extends Controller
 
         if($stat == '4')
         {
-            return back()->with('danger', 'You cannot disapprove this file. Contact Ched Officer for cancelling the form');
+            return back()->with('warning', 'You cannot disapprove this file. Contact Ched Officer for cancelling the form');
         }
         else if($stat == '5')
         {
-            return back()->with('danger', 'You already disapprove this file');
+            return back()->with('warning', 'You already disapprove this file');
         } 
         else 
         {    
             $comment = $request->textarea;
 
-            VerifierDisapprove::dispatch($id, $comment);
+            //VerifierDisapprove::dispatch($id, $comment);
 
-             //UPDATE STATUS IN VERIFIES TABLE
-            $status = '5'; 
-            DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
-            
-            //UPDATE STATUS IN VALIDATES TABLE
-            $val_sub = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
-
+           
             $comment1 = $comment . ' - Verifier'; 
             DB::table('validates')  
             ->where('encoder_submission',$val_sub)
             ->where('statuses_id','4') 
             ->update(['statuses_id' => '5', 'comment' => $comment1]);
 
-            // //UPDATE THE COMMENT IN VALIDATES TABLE
-            // DB::update('update verifies set comment = ? where verifies_id = ?', [$comment,$id]);
+            //UPDATE THE COMMENT IN VERIFIES TABLE
+            DB::update('update verifies set comment = ? where verifies_id = ?', [$comment,$id]);
              
-            // //GET THE FILE NAME
-            // $filename = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
+            //GET THE FILE NAME
+            $filename = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
             
-            //   //UPDATE THE VCOUNT IN COUNTS TABLE
-            //   $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
-            //   $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
-            //   $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
-            //   $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
-            //   $final_count = $count - 1;
-            //   DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
+              //UPDATE THE VCOUNT IN COUNTS TABLE
+              $user = DB::table('verifies')->where('verifies_id', $id)->first()->user_id;
+              $employee = DB::table('users')->where('id', $user)->first()->employee_profiles_id;
+              $institution = DB::table('employee_profiles')->where('employee_profiles_id', $employee)->first()->institutions_id;  
+              $count = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
+              $final_count = $count - 1;
+              DB::update('update counts set fcount = ? where institutions_id = ?', [$final_count,$institution]);
   
 
-            // //COPY FILE TO ANOTHER STORAGE FOLDER
-            // if(Storage::delete('public/verify/'.$filename))
-            // {
-            //     return back()->with('success', 'Disapproves the file successfully');
-            // } 
             
+            if(Storage::delete('public/verify/'.$filename))
+            {
+                return back()->with('success', 'Disapproves the file successfully');
+            } 
+            
+             //UPDATE STATUS IN VALIDATES TABLE
+             $val_sub = DB::table('verifies')->where('verifies_id', $id)->first()->validator_submission;
+
+
+             //UPDATE STATUS IN VERIFIES TABLE
+             $status = '5'; 
+             DB::update('update verifies set statuses_id = ? where verifies_id = ?', [$status,$id]);
+             
             $audit = new Audit_log();
             $audit->user_id =  auth()->id();
             $audit->user_types_id = '3';
-            $audit->event = 'Update';
+            $audit->event = 'disapproved';
             $audit->auditable_type = 'App\Verify';
             $audit->auditable_id = $id;
             $audit->old_values = '{status:pending}';
@@ -604,29 +590,16 @@ class VerifierController extends Controller
          if(Hash::check($request['old_password'], $current_password))
          {   
 
-            VerifierChangePass::dispatch($id, $request['password']);
+            //VerifierChangePass::dispatch($id, $request['password']);
 
-            //  $user = User::find($id);
-            //  $user->password = Hash::make($request['password']);
-            //  $user->save();  
-             
-            $audit = new Audit_log();
-            $audit->user_id =  auth()->id();
-            $audit->user_types_id = '3';
-            $audit->event = 'Update';
-            $audit->auditable_type = 'App\User';
-            $audit->auditable_id = auth()->id();
-            $audit->old_values = '{password:'.$current_password.'}';
-            $audit->new_values = '{password:'.Hash::make($request['password']).'}';
-            $audit->url = URL::current();
-            $audit->ip_address = \Request::ip();
-            $audit->user_agent = $request->header('User-Agent');
-            $audit->save();
-
+             $user = User::find($id);
+             $user->password = Hash::make($request['password']);
+             $user->save();  
+     
              
          }
          else{
-            return back()->with('danger', 'Current password was incorrect');
+            return back()->with('warning', 'Current password was incorrect');
          }
          return back()->with('success', 'Change password successfully');
     }
@@ -652,24 +625,20 @@ class VerifierController extends Controller
     }
 
     public function audit_download(Request $request, $val)
-    {   
+    {    
 
         $form = DB::table('verifies')->where('verifies_id',$val)->first()->validator_submission;
+        $status = DB::table('verifies')->where('verifies_id',$val)->first()->statuses_id;
 
-        $audit = new Audit_log();
-        $audit->user_id =  auth()->id();
-        $audit->user_types_id = '3';
-        $audit->event = 'Download';
-        $audit->auditable_type = 'App\Verify';
-        $audit->auditable_id = $val;
-        $audit->old_values = '';
-        $audit->new_values = '{download:'.$form.'}';
-        $audit->url = URL::current();
-        $audit->ip_address = \Request::ip();
-        $audit->user_agent = $request->header('User-Agent');
-        $audit->save();  
-        
-        return Storage::download('public/verify/'.$form);
+        if( $status == 4)
+        {
+            return Storage::download('public/complete/'.$form);
+        }
+        else
+        {
+            return Storage::download('public/verify/'.$form);
+        }
+
 
     }
 

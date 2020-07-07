@@ -31,7 +31,7 @@ class EncoderUpload implements ShouldQueue
         $this->fileNameToStore = $fileNameToStore;
         $this->id = $id;
     
-    }
+    } 
 
     /**
      * Execute the job.

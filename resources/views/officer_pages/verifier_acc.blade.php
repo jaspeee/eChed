@@ -12,34 +12,6 @@
   </div>
   <div class="content"> 
 
-    @if (count($errors) > 0)
-    <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
-      <p>There were some problems with your File input.</p>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    @endif
-
-      @if(session('success'))
-      <div class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        {{ session('success') }}
-      </div> 
-
-      @elseif(session('danger'))
-      <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        {{ session('danger') }}
-      </div> 
-      @endif
-
-
-
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -108,7 +80,7 @@
                                   @else
                                   <td><button type="submit"  class="btn btn-success">Active</button></a></td>
                                   @endif
-                          </form> 
+                           </form> 
 
                           <td style="padding:0;">
                             {{-- <button type="button" data-toggle="modal" data-target="#changePass" data-id="{{$acc->id}}" style="background-color: transparent;border: none;cursor:pointer;">
@@ -123,7 +95,7 @@
                              {{-- <button type="button" data-toggle="modal" data-target="#changePass" data-id="{{$acc->id}}" style="background-color: transparent;border: none;cursor:pointer;">
                               <i class="now-ui-icons ui-1_settings-gear-63"  data-toggle="tooltip" data-placement="top" title="Edit Account" style="font-size: 20px;color: gray;"></i>
                             </button> --}}
-
+      
                             <button type="button" data-toggle="modal" data-target="#EditAccModal" data-id="{{$acc->id}}"  data-username="{{$acc->username}}" data-position="{{$acc->position}}" 
                               data-division="{{$acc->division}}" data-fname=" {{$acc->first_name}}"
                               data-lname="{{$acc->last_Name}}" 
@@ -284,7 +256,23 @@
 
 @section('scripts')
 <script  type="text/javascript">
-$(document).ready(function(){
+
+  $(document).ready(function() {
+    // $('#subtbl').DataTable({
+    //   lengthChange: false
+     
+    // });
+    oTable = $('#acctbl').DataTable({
+  sDom: 'lrtip',lengthChange: false
+  }); 
+  
+
+
+$('#tracksearchbar').keyup(function(){
+      oTable.search($(this).val()).draw() ;
+})
+
+
   $('[data-toggle="tooltip"]').tooltip();   
 });
 
@@ -294,21 +282,6 @@ $('#verifierModal').on('show.bs.modal', function (event) {
   var modal = $(this)
 })
 
-$(document).ready(function() {
-    // $('#subtbl').DataTable({
-    //   lengthChange: false
-     
-    // });
-    oTable = $('#acctbl').DataTable({
-  sDom: 'lrtip',lengthChange: false
-  
-
-}); 
-} );
-
-$('#tracksearchbar').keyup(function(){
-      oTable.search($(this).val()).draw() ;
-})
 
 
 $('#changePass').on('show.bs.modal', function(event) {

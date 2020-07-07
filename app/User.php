@@ -5,15 +5,13 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-// use OwenIt\Auditing\Auditable;
-// use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
-// use OwenIt\Auditing\Contracts\UserResolver;
+use OwenIt\Auditing\Contracts\Auditable;
 use Auth;
 
 //implements AuditableContract, UserResolver
-class User extends Authenticatable 
+class User extends Authenticatable implements Auditable
 {   
-    //use Auditable;
+    use \OwenIt\Auditing\Auditable;
     use Notifiable;
 
     /**

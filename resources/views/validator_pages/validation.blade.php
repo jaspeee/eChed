@@ -12,31 +12,6 @@
   </div>
   <div class="content"> 
 
-    @if (count($errors) > 0)
-    <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
-      <p>There were some problems with your File input.</p>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    @endif 
-
-      @if(session('success'))
-      <div class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        {{ session('success') }}
-      </div> 
-
-      @elseif(session('danger'))
-      <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        {{ session('danger') }}
-      </div> 
-      @endif
 
     <div class="row">
       <div class="col-md-12">
@@ -67,7 +42,8 @@
 
                 <table class="table" id="example">
                   <thead style="background-color: #003471; font-size: 10px;color:white;">
-                    <tr>
+                    <tr> 
+                      <th><b>Reference ID</b></th>
                       <th><b>Form</b></th> 
                       <th><b>Encoded by</b></th>
                       <th><b>Date Submitted</b></th>
@@ -81,6 +57,7 @@
                   <tbody>
                         @foreach($submissions as $sub)
                         <tr>
+                            <td>{{$sub->validates_id}}</td>
                             <td>{{$sub->encoder_submission}}</td>
                             <td>{{$sub->first_name}} &nbsp {{$sub->last_Name}}</td>
                             <td>{{$sub->created_at}}</td>
@@ -137,7 +114,7 @@
                                   <a href="/validator/audit/{{$sub->validates_id}}" style="text-decoration-line: none;" ><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
                                     <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
                                     {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
-                                  </button></a>
+                                  </button></a> 
                                 </td>
                                 <td style="padding:0;">
                                 
@@ -181,7 +158,8 @@
                       
                         </tr>
                         @endforeach
-                  
+
+
                   </tbody>
                 </table>
 
@@ -202,9 +180,8 @@
                           <p id="fullname"></p>
                         
                           <form id="update" action="" method="POST">
-                              {{method_field('patch')}}
-                           @csrf
-
+                          <input type="hidden" name="_method" value="PATCH">
+                          <input type="hidden" name="_token" value="{{{ csrf_token() }}}">
                             
                             <div class="form-group">
                               <label class="col-form-label">Comment:</label>
@@ -245,7 +222,6 @@
                     </div>
 
 
-
           </div>
         </div>
       </div>
@@ -256,6 +232,22 @@
 
 @section('scripts')
 <script  type="text/javascript">
+$(document).ready(function() {
+    // $('#subtbl').DataTable({
+    //   lengthChange: false
+     
+    // });
+    oTable = $('#example').DataTable({
+  sDom: 'lrtip',lengthChange: false
+  
+
+}); 
+} );
+
+
+$('#tracksearchbar').keyup(function(){
+      oTable.search($(this).val()).draw();
+});
 
 
 $(document).ready(function(){
@@ -307,22 +299,8 @@ $('#commentModal').on('show.bs.modal', function(event) {
 
 });
 
-$(document).ready(function() {
-    // $('#subtbl').DataTable({
-    //   lengthChange: false
-     
-    // });
-    oTable = $('#example').DataTable({
-  sDom: 'lrtip',lengthChange: false
-  
-
-}); 
-} );
 
 
-$('#tracksearchbar').keyup(function(){
-      oTable.search($(this).val()).draw() ;
-})
 
 function confirmation(){
     if(confirm('Are you sure that you want to approve this form?')){

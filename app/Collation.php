@@ -36,6 +36,6 @@ class Collation extends Model
         'TFG',
         'TG',
         'institution_types_id',
-
+        'collation_lists_id', 
      ];
 }

@@ -3,13 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use OwenIt\Auditing\Auditable;
-use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Validate extends Model implements AuditableContract
+class Validate extends Model implements Auditable
 {   
     
-    use Auditable;
+    use \OwenIt\Auditing\Auditable; 
 
     protected $fillable = [
         'validates_id',
@@ -19,11 +18,7 @@ class Validate extends Model implements AuditableContract
         'comment',
      ]; 
 
-     protected $auditInclude  = [
-
-        'created_at', 'updated_at', 'deleted_at'
-
-    ];
+    
 
    
 }

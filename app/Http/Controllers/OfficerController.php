@@ -40,6 +40,11 @@ use App\Jobs\OfficerApprove;
 use App\Jobs\OfficerDisapprove;
 use Illuminate\Support\Facades\URL;
 use App\Audit_log;
+use App\Archive;
+use Illuminate\Support\Facades\Artisan;
+use App\Collation_list;
+use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Filesystem\Filesystem;
 
 class OfficerController extends Controller
 {   
@@ -62,7 +67,8 @@ class OfficerController extends Controller
         $deadline = DB::table('deadlines')
         ->join('users', 'deadlines.user_id', '=','users.id')
         ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
-        ->select('deadlines.*', 'employee_profiles.first_name', 'employee_profiles.last_Name')->paginate(1);
+        ->select('deadlines.*', 'employee_profiles.first_name', 'employee_profiles.last_Name')
+        ->orderby('id','desc')->limit(1)->get();
 
         $date = Carbon::now();
         $dates = $date->toFormattedDateString();  
@@ -162,7 +168,7 @@ class OfficerController extends Controller
         $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
 
         //GET THE LIST OF INSTITUTIONS
-        $institutions = DB::table('institutions')
+        $institutions = DB::table('institutions') 
         ->join('counts', 'institutions.institutions_id', '=','counts.institutions_id')
         ->join('institution_types', 'institutions.institution_types_id', '=','institution_types.institution_types_id')
         ->select('institutions.*','counts.vcount','counts.fcount','institution_types.type')
@@ -217,7 +223,8 @@ class OfficerController extends Controller
         ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
         ->join('statuses', 'completes.statuses_id', '=', 'statuses.statuses_id')
         ->select('completes.*','employee_profiles.first_name','employee_profiles.last_Name','statuses.status')
-        ->where('completes.institutions_id', $ins_id)->get();
+        ->where('completes.institutions_id', $ins_id)
+        ->whereNotIn('statuses.status', ['Active','Done'])->get();
          
         $institution = DB::table('institutions')->where('institutions_id',$ins_id)->first()->institution_name;
 
@@ -298,20 +305,46 @@ class OfficerController extends Controller
     public function Account_verifier_status($status, $id)
     {   
 
-        OfficerAccStatusVerifier::dispatch($id,$status);
+        //OfficerAccStatusVerifier::dispatch($id,$status);
  
         if($status == 'Active')
         {   
-            // $user = User::find($id);
-            // $user ->statuses_id = '2';
-            // $user ->save(); 
+            $user = User::find($id);
+            $user ->statuses_id = '2';
+            $user ->save(); 
              
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '4';
+            $audit->event = 'change status';
+            $audit->auditable_type = 'App\User';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:active}';
+            $audit->new_values = '{status:inactive}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save(); 
+
             return back()->with('success', 'Deactivate the account successfully');
         }else{ 
 
-            // $user = User::find($id);
-            // $user ->statuses_id = '1';
-            // $user ->save(); 
+            $user = User::find($id);
+            $user ->statuses_id = '1';
+            $user ->save(); 
+
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '4';
+            $audit->event = 'change status';
+            $audit->auditable_type = 'App\User';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:active}';
+            $audit->new_values = '{status:inactive}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save(); 
 
             return back()->with('success', 'Activate the account successfully');
         }
@@ -328,36 +361,59 @@ class OfficerController extends Controller
         $position = request('position');
         $division = request('division');
 
-        OfficerAddAccVerifier::dispatch($id,$fname,$lname,$email,$position,$division);
+        //OfficerAddAccVerifier::dispatch($id,$fname,$lname,$email,$position,$division);
 
-        // //GET THE INSTITUTION ID
-        // $employee = DB::table('users')->find($id)->employee_profiles_id;
-        // $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        //GET THE INSTITUTION ID
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
      
-        // //ADD EMPLOYEE
-        // $emp = new Employee_profile();
-        // $emp->first_name = request('fname');
-        // $emp->last_Name = request('lname');
-        // $emp->position = request('position');
-        // $emp->division = request('division');
-        // $emp->institutions_id = $institution;
-        // $emp->save();
+        //ADD EMPLOYEE
+        $emp = new Employee_profile();
+        $emp->first_name = request('fname');
+        $emp->last_Name = request('lname');
+        $emp->position = request('position');
+        $emp->division = request('division');
+        $emp->institutions_id = $institution;
+        $emp->save();
         
-        // //ADD USER
-        // $users = $request->fname . '' . $request->lname . '123'; 
-        // $pass = 'verifier123';
+        //ADD USER
+        $users = $request->fname . '' . $request->lname . '123'; 
+        $pass = 'verifier123';
 
-        // $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
-        // $hashpass = Hash::make($pass);
+        $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
+        $hashpass = Hash::make($pass);
 
-        // $user = new User();
-        // $user->username = $users;
-        // $user->email = $request->email;
-        // $user->password = $hashpass;
-        // $user->employee_profiles_id = $emp_id;
-        // $user->user_types_id = '3';
-        // $user->statuses_id = '1';
-        // $user->save();        
+        $user = new User();
+        $user->username = $users;
+        $user->email = $request->email;
+        $user->password = $hashpass;
+        $user->employee_profiles_id = $emp_id;
+        $user->user_types_id = '3';
+        $user->statuses_id = '1';
+        $user->save();        
+
+
+        
+        $count = \DB::table('users')->count();
+        if($count == 0) {
+            $audit_ID = '1';
+        }else {
+            $audit_ID = DB::table('users')->orderBy('id', 'DESC')->first()->id;
+            $audit_ID= $audit_ID+1;
+        }
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = '4';
+        $audit->event = 'created';
+        $audit->auditable_type = 'App\User';
+        $audit->auditable_id = $audit_ID;
+        $audit->old_values = '';
+        $audit->new_values = '{username:'.$users.', email:'.$email.', password:'.$hashpass.', employee_profiles_id:'.$emp_id.', user_types_id:3, statuses_id:1}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save();
 
 
         return  back()->with('success', 'Added a new account successfully');
@@ -375,44 +431,68 @@ class OfficerController extends Controller
         $division = request('division');
         $institution1 = $request->institution;
 
-        OfficerAddAccValidator::dispatch($id,$fname,$lname,$email,$position,$division,$institution1);
+        //OfficerAddAccValidator::dispatch($id,$fname,$lname,$email,$position,$division,$institution1);
 
-        // //GET THE INSTITUTION ID
-        // $employee = DB::table('users')->find($id)->employee_profiles_id;
-        // $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        //GET THE INSTITUTION ID
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
      
-        // //ADD EMPLOYEE
-        // $emp = new Employee_profile();
-        // $emp->first_name = request('fname');
-        // $emp->last_Name = request('lname');
-        // $emp->position = request('position');
-        // $emp->division = request('division');
-        // $emp->institutions_id = $request->institution;
-        // $emp->save();
+        //ADD EMPLOYEE
+        $emp = new Employee_profile();
+        $emp->first_name = request('fname');
+        $emp->last_Name = request('lname');
+        $emp->position = request('position');
+        $emp->division = request('division');
+        $emp->institutions_id = $request->institution;
+        $emp->save();
         
-        // //ADD USER
-        // $users = $request->fname . '' . $request->lname . '123';
-        // $pass = 'validator12345678';
+        //ADD USER
+        $users = $request->fname . '' . $request->lname . '123';
+        $pass = 'validator12345678';
 
-        // $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
-        // $hashpass = Hash::make($pass);
+        $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
+        $hashpass = Hash::make($pass);
 
-        // $user = new User();
-        // $user->username = $users;
-        // $user->email = $request->email;
-        // $user->password = $hashpass;
-        // $user->employee_profiles_id = $emp_id;
-        // $user->user_types_id = '2';
-        // $user->statuses_id = '1';
-        // $user->save();      
+        $user = new User();
+        $user->username = $users;
+        $user->email = $request->email;
+        $user->password = $hashpass;
+        $user->employee_profiles_id = $emp_id;
+        $user->user_types_id = '2';
+        $user->statuses_id = '1';
+        $user->save();      
         
+        
+        $count = \DB::table('users')->count();
+        if($count == 0) {
+            $audit_ID = '1';
+        }else {
+            $audit_ID = DB::table('users')->orderBy('id', 'DESC')->first()->id;
+            $audit_ID= $audit_ID+1;
+        }
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = '4';
+        $audit->event = 'created';
+        $audit->auditable_type = 'App\User';
+        $audit->auditable_id = $audit_ID;
+        $audit->old_values = '';
+        $audit->new_values = '{username:'.$users.', email:'.$email.', password:'.$hashpass.', employee_profiles_id:'.$emp_id.', user_types_id:2, statuses_id:1}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save();
+
+
 
         return  back()->with('success', 'Added a new account successfully');
     }
 
-    public function Password_change(Request $request)
+    public function Password_change(Request $request) 
     {
         
+
         $id = auth()->id();
          $current_password = User::find($id)->password;
          
@@ -421,9 +501,9 @@ class OfficerController extends Controller
             
              $user = User::find($id);
              $user->password = Hash::make($request['password']);
-             $user->save(); 
+             $user->save();  
              
-            
+  
          }
          else{
              return back();
@@ -441,7 +521,25 @@ class OfficerController extends Controller
         $user->message = $request->note;
         $user->deadline_date = $request->date;
         $user->save();     
-        
+
+        DB::table('completes')  
+        ->update(['statuses_id' => '8']);
+
+        DB::table('verifies')  
+        ->update(['statuses_id' => '8']);
+
+        DB::table('validates')  
+        ->update(['statuses_id' => '8']);
+
+        DB::table('counts')  
+        ->update(['vcount' => '0', 'fcount' => '0']);
+
+        // $file = new Filesystem;
+        // $file->cleanDirectory('public/complete');
+        // $file->cleanDirectory('public/verify');
+        // $file->cleanDirectory('public/validate');
+        // Storage::delete(Storage::files('public/validate'));
+
         return back()->with('success', 'Set the deadline successfully');
     }
 
@@ -1118,61 +1216,115 @@ class OfficerController extends Controller
         $position = request('position');
         $division = request('division');
 
-        OfficerAddAccOfficer::dispatch($id,$fname,$lname,$email,$position,$division);
+        //OfficerAddAccOfficer::dispatch($id,$fname,$lname,$email,$position,$division);
        
-        // //GET THE INSTITUTION ID
-        // $employee = DB::table('users')->find($id)->employee_profiles_id;
-        // $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
+        //GET THE INSTITUTION ID
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;
      
-        // //ADD OFFICER
-        // $emp = new Employee_profile();
-        // $emp->first_name = request('fname');
-        // $emp->last_Name = request('lname');
-        // $emp->position = request('position');
-        // $emp->division = request('division');
-        // $emp->institutions_id = $institution;
-        // $emp->save();
+        //ADD OFFICER
+        $emp = new Employee_profile();
+        $emp->first_name = request('fname');
+        $emp->last_Name = request('lname');
+        $emp->position = request('position');
+        $emp->division = request('division');
+        $emp->institutions_id = $institution;
+        $emp->save();
         
-        // //ADD USER
-        // $users = $request->fname . '' . $request->lname . '123';
-        // $pass = 'officer12345678';
+        //ADD USER
+        $users = $request->fname . '' . $request->lname . '123';
+        $pass = 'officer12345678';
 
-        // $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
-        // $hashpass = Hash::make($pass);
+        $emp_id =  DB::table('employee_profiles')->latest()->first()->employee_profiles_id; 
+        $hashpass = Hash::make($pass);
  
-        // $user = new User();
-        // $user->username = $users;
-        // $user->email = $request->email;
-        // $user->password = $hashpass;
-        // $user->employee_profiles_id = $emp_id;
-        // $user->user_types_id = '4';
-        // $user->statuses_id = '1';
-        // $user->save();       
+        $user = new User();
+        $user->username = $users;
+        $user->email = $request->email;
+        $user->password = $hashpass;
+        $user->employee_profiles_id = $emp_id;
+        $user->user_types_id = '4';
+        $user->statuses_id = '1';
+        $user->save();       
+
+        $count = \DB::table('users')->count();
+        if($count == 0) {
+            $audit_ID = '1';
+        }else {
+            $audit_ID = DB::table('users')->orderBy('id', 'DESC')->first()->id;
+            $audit_ID= $audit_ID+1;
+        }
+
+        $audit = new Audit_log();
+        $audit->user_id =  auth()->id();
+        $audit->user_types_id = '4';
+        $audit->event = 'created';
+        $audit->auditable_type = 'App\User';
+        $audit->auditable_id = $audit_ID;
+        $audit->old_values = '';
+        $audit->new_values = '{username:'.$users.', email:'.$email.', password:'.$hashpass.', employee_profiles_id:'.$emp_id.', user_types_id:4, statuses_id:1}';
+        $audit->url = URL::current();
+        $audit->ip_address = \Request::ip();
+        $audit->user_agent = $request->header('User-Agent');
+        $audit->save();
 
 
         return  back()->with('success', 'Added a new account successfully');
  
     }
 
-    public function officer_approve($id)
+    public function officer_approve(Request $request ,$id)
     {   
          
         $stat = DB::table('completes')->where('completes_id', $id)->first()->statuses_id;
+        $filename = DB::table('completes')->where('completes_id', $id)->first()->verifier_submission;
+        $forms_id = DB::table('completes')->where('completes_id', $id)->first()->forms_id;
+        $institutions_id = DB::table('completes')->where('completes_id', $id)->first()->institutions_id;
 
 
         if($stat == '5')
         {
-            return back()->with('danger', 'You cannot approve this file. Contact the specific validator for resubmission');
+            return back()->with('warning', 'You cannot approve this file. Contact the specific validator for resubmission');
         }
         else if($stat == '4')
         {
-            return back()->with('danger', 'You already approve this file');
+            return back()->with('warning', 'You already approve this file');
         }
         else
         {   
-             //UPDATE STATUS IN VALIDATES TABLE
+            //UPDATE STATUS IN VALIDATES TABLE
             $status = '4';
             DB::update('update completes set statuses_id = ? where completes_id = ?', [$status,$id]);
+
+           //STORE DATA TO ARCHIVES TABLE
+            $arch = new Archive();
+            $arch->user_id = auth()->id();
+            $arch->file = $filename;
+            $arch->forms_id = $forms_id;
+            $arch->institutions_id = $institutions_id;
+            $arch->save();
+
+    
+            //MOVE FILE TO ANOTHER STORAGE FOLDER 
+            if(Storage::move('public/complete/'.$filename, 'public/archives/'.$filename))
+            {
+                
+            } 
+
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '4';
+            $audit->event = 'approved';
+            $audit->auditable_type = 'App\Complete';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:pending}';
+            $audit->new_values = '{status:approve}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();  
+
+        
 
             return back()->with('success', 'Approves the file successfully'); 
  
@@ -1187,11 +1339,11 @@ class OfficerController extends Controller
 
         if($stat == '4')
         { 
-            return back()->with('danger', 'You cannot disapprove this file. Contact Ched Officer for cancelling the form');
+            return back()->with('warning', 'You cannot disapprove this file. Contact Ched Officer for cancelling the form');
         }
         else if($stat == '5')
         {
-            return back()->with('danger', 'You already disapprove this file');
+            return back()->with('warning', 'You already disapprove this file');
         } 
         else
         {    
@@ -1199,42 +1351,57 @@ class OfficerController extends Controller
            
             $comment = $request->textarea;
 
-            OfficerDisapprove::dispatch($id,$comment); 
+            //OfficerDisapprove::dispatch($id,$comment); 
  
-             //UPDATE STATUS IN COMPLETES TABLE
+        
+            //GET THE FILE NAME
+            $filename = DB::table('completes')->where('completes_id', $id)->first()->verifier_submission;
+            
+              //UPDATE THE VCOUNT IN COUNTS TABLE
+              $institution = DB::table('completes')->where('completes_id', $id)->first()->institutions_id;
+              $fcount = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
+              $final_fcount = $fcount - 1;
+              $vcount = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
+              $final_vcount = $vcount - 1; 
+ 
+              DB::table('counts')  
+              ->where('institutions_id',$institution)
+              ->update(['vcount' => $final_vcount, 'fcount' => $final_fcount]);
+
+              $comment1 = $comment . ' - Officer'; 
+              DB::table('verifies')  
+              ->where('validator_submission',$filename)
+              ->where('statuses_id','4')
+              ->update(['statuses_id' => '5', 'comment' => $comment1]);
+
+              DB::table('validates')  
+              ->where('encoder_submission',$filename)
+              ->where('statuses_id','4')
+              ->update(['statuses_id' => '5', 'comment' => $comment1]);
+
+            Storage::delete('public/complete/'.$filename);
+            
+            
+            //UPDATE STATUS IN COMPLETES TABLE
             $status = '5'; 
             DB::update('update completes set statuses_id = ? where completes_id = ?', [$status,$id]);
-            
+                
             //UPDATE THE COMMENT IN COMPLETES TABLE
             DB::update('update completes set comment = ? where completes_id = ?', [$comment,$id]);
             
-            // //GET THE FILE NAME
-            // $filename = DB::table('completes')->where('completes_id', $id)->first()->verifier_submission;
-            
-            //   //UPDATE THE VCOUNT IN COUNTS TABLE
-            //   $institution = DB::table('completes')->where('completes_id', $id)->first()->institutions_id;
-            //   $fcount = DB::table('counts')->where('institutions_id', $institution)->first()->fcount;
-            //   $final_fcount = $fcount - 1;
-            //   $vcount = DB::table('counts')->where('institutions_id', $institution)->first()->vcount;
-            //   $final_vcount = $vcount - 1; 
- 
-            //   DB::table('counts')  
-            //   ->where('institutions_id',$institution)
-            //   ->update(['vcount' => $final_vcount, 'fcount' => $final_fcount]);
-
-            //   $comment1 = $comment . ' - Officer'; 
-            //   DB::table('verifies')  
-            //   ->where('validator_submission',$filename)
-            //   ->where('statuses_id','4')
-            //   ->update(['statuses_id' => '5', 'comment' => $comment1]);
-
-            //   DB::table('validates')  
-            //   ->where('encoder_submission',$filename)
-            //   ->where('statuses_id','4')
-            //   ->update(['statuses_id' => '5', 'comment' => $comment1]);
-
-            // Storage::delete('public/complete/'.$filename);
-            
+                
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = '4';
+            $audit->event = 'disapproved';
+            $audit->auditable_type = 'App\Complete';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{status:pending}';
+            $audit->new_values = '{status:disapproved}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();  
 
             return back()->with('success', 'Disapproves the file successfully');
 
@@ -1246,7 +1413,6 @@ class OfficerController extends Controller
     public function Institution_add(Request $request)
     {
         
-       
         //ADD INSTITUTION
         $ins = new Institution();
         $ins->code = request('code');
@@ -1279,7 +1445,7 @@ class OfficerController extends Controller
             $audit = new Audit_log();
             $audit->user_id =  auth()->id();
             $audit->user_types_id = $usertype;
-            $audit->event = 'Update';
+            $audit->event = 'updated';
             $audit->auditable_type = 'App\User';
             $audit->auditable_id = $id ;
             $audit->old_values = '{username:'.$username.'}';
@@ -1307,11 +1473,10 @@ class OfficerController extends Controller
         'division' => $request->division]);
 
        
-
         $audit = new Audit_log();
         $audit->user_id =  auth()->id();
         $audit->user_types_id = $usertype;
-        $audit->event = 'Update';
+        $audit->event = 'updated';
         $audit->auditable_type = 'App\Employee_profile';
         $audit->auditable_id = $emp_id ;
         $audit->old_values = '{first_name:'.$f.', last_name:'.$l.', position:'.$p.', division:'.$d.', institutions_id:'.$i.',}';
@@ -1362,6 +1527,377 @@ class OfficerController extends Controller
        
     }
 
+    public function audit_download(Request $request, $val)
+    {   
+
+        $form = DB::table('completes')->where('completes_id',$val)->first()->verifier_submission;
+        $status = DB::table('completes')->where('completes_id',$val)->first()->statuses_id;
+
+        if( $status == 4)
+        {
+            return Storage::download('public/archives/'.$form);
+        }
+        else 
+        {
+            return Storage::download('public/complete/'.$form);
+        }
+
+
+    }
+
+    public function auditlogs()
+    {    
+
+        //GET THE FIRST AND LAST NAME OF THE USER 
+        $id = auth()->id();
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+        $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+
+        $audits = DB::table('audit_logs')
+        ->join('users', 'audit_logs.user_id', '=', 'users.id')
+        ->join('employee_profiles', 'users.employee_profiles_id', '=', 'employee_profiles.employee_profiles_id')
+        ->select('audit_logs.*','employee_profiles.first_name', 'employee_profiles.last_Name')
+        ->paginate(5);
+
+
+       return view('officer_pages.auditlogs', compact('fname','lname','audits'));
+    }
+
+    public function backup()
+    {   
+
+        //GET THE FIRST AND LAST NAME OF THE USER 
+        $id = auth()->id();
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+        $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+
+      
+       return view('officer_pages.backup', compact('fname','lname'));
+    }
+
+
+    public function startbackup()
+    {   
+
+        Artisan::call('backup:run');
+
+        return back()->with('success', 'Backup the resources successfully');
+    }
+
+    public function collatefiles()
+    {   
+
+        //GET THE FIRST AND LAST NAME OF THE USER 
+        $id = auth()->id();
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+        $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+
+        $list = DB::table('collation_lists')->get();
+      
+       return view('officer_pages.collate_files', compact('fname','lname','list'));
+    }
+
+    public function result_collatefiles($id1)
+    {   
+     
+
+        //GET THE FIRST AND LAST NAME OF THE USER 
+        $id = auth()->id();
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+        $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+
+         //GET THE COLLATED FILES
+         $SUC = DB::table('collations')
+         ->where('collation_lists_id', $id1)
+         ->where('institution_types_id','1')->get();
+
+         $NONSUC= DB::table('collations')
+         ->where('collation_lists_id', $id1)
+         ->where('institution_types_id','2')->get();
+       
+         
+      
+       return view('officer_pages.collated', compact('fname','lname','id1','SUC','NONSUC'));
+
+    }
+
+    public function analytics($id1)
+    {
+          //GET THE FIRST AND LAST NAME OF THE USER 
+          $id = auth()->id();
+          $employee = DB::table('users')->find($id)->employee_profiles_id;
+          $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+          $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+
+          //CHARTS
+          //TOTAL POPULATION
+          $TotalPop = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as TotalPop"))->where('collation_lists_id',$id1)
+          ->first()->TotalPop;
+
+          $TotalPopMaleEnroll = DB::table('collations')
+          ->select(DB::raw("SUM(TME) as TotalPopMaleEnroll"))->where('collation_lists_id',$id1)
+          ->first()->TotalPopMaleEnroll;
+
+          $TotalPopMaleGrad = DB::table('collations')
+          ->select(DB::raw("SUM(TMG) as TotalPopMaleGrad"))->where('collation_lists_id',$id1)
+          ->first()->TotalPopMaleGrad;
+
+          $TotalPopFemaleEnroll = DB::table('collations')
+          ->select(DB::raw("SUM(TFE) as TotalPopFemaleEnroll"))->where('collation_lists_id',$id1)
+          ->first()->TotalPopFemaleEnroll;
+
+          $TotalPopFemaleGrad = DB::table('collations')
+          ->select(DB::raw("SUM(TFG) as TotalPopFemaleGrad"))->where('collation_lists_id',$id1)
+          ->first()->TotalPopFemaleGrad;
+
+          //TOTAL SUC POPULATION WITH MALE AND FEMALE
+          $TotalSUCPop = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as TotalSUCPop"))
+          ->where('institution_types_id','1')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalSUCPop;
+
+          $TotalSUCPopMaleEnroll = DB::table('collations')
+          ->select(DB::raw("SUM(TME) as TotalSUCPopMaleEnroll"))
+          ->where('institution_types_id','1')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalSUCPopMaleEnroll;
+
+          $TotalSUCPopMaleGrad = DB::table('collations')
+          ->select(DB::raw("SUM(TMG) as TotalSUCPopMaleGrad"))
+          ->where('institution_types_id','1')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalSUCPopMaleGrad;
+
+          $TotalSUCPopFemaleEnroll = DB::table('collations')
+          ->select(DB::raw("SUM(TFE) as TotalSUCPopFemaleEnroll"))
+          ->where('institution_types_id','1')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalSUCPopFemaleEnroll;
+
+          $TotalSUCPopFemaleGrad = DB::table('collations')
+          ->select(DB::raw("SUM(TFG) as TotalSUCPopFemaleGrad"))
+          ->where('institution_types_id','1')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalSUCPopFemaleGrad;
+
+          //TOTAL NONSUC POPULATION WITH MALE AND FEMALE
+          $TotalNONSUCPop = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as TotalNONSUCPop"))
+          ->where('institution_types_id','2')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalNONSUCPop;
+
+          $TotalNONSUCPopMaleEnroll = DB::table('collations')
+          ->select(DB::raw("SUM(TME) as TotalNONSUCPopMaleEnroll"))
+          ->where('institution_types_id','2')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalNONSUCPopMaleEnroll;
+
+          $TotalNONSUCPopMaleGrad = DB::table('collations')
+          ->select(DB::raw("SUM(TMG) as TotalNONSUCPopMaleGrad"))
+          ->where('institution_types_id','2')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalNONSUCPopMaleGrad;
+
+          $TotalNONSUCPopFemaleEnroll = DB::table('collations')
+          ->select(DB::raw("SUM(TFE) as TotalNONSUCPopFemaleEnroll"))
+          ->where('institution_types_id','2')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalNONSUCPopFemaleEnroll;
+
+          $TotalNONSUCPopFemaleGrad = DB::table('collations')
+          ->select(DB::raw("SUM(TFG) as TotalNONSUCPopFemaleGrad"))
+          ->where('institution_types_id','2')
+          ->where('collation_lists_id',$id1)
+          ->first()->TotalNONSUCPopFemaleGrad;
+       
+
+          if($TotalPop == null)
+          {
+            $TotalPop = '0';
+            $TotalPopMaleEnroll = '0';
+            $TotalPopMaleGrad = '0';
+            $TotalPopFemaleEnroll = '0';
+            $TotalPopFemaleGrad = '0';
+          }
+          elseif($TotalSUCPop == null)
+          {
+            $TotalSUCPop = '0';
+            $TotalSUCPopMaleEnroll = '0';
+            $TotalSUCPopMaleGrad = '0';
+            $TotalSUCPopFemaleEnroll = '0';
+            $TotalSUCPopFemaleGrad = '0';
+          }
+          elseif($TotalNONSUCPop == null)
+          {
+            $TotalNONSUCPop = '0';
+            $TotalNONSUCPopMaleEnroll = '0';
+            $TotalNONSUCPopMaleGrad = '0';
+            $TotalNONSUCPopFemaleEnroll = '0';
+            $TotalNONSUCPopFemaleGrad = '0';
+          }
+
+          //TOP 5 PROGRAMS
+
+          $Programs = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('total','desc')->where('collation_lists_id',$id1)
+          ->limit(5)->get();
+
+        //   $P1 = DB::table('collations')
+        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+        //   ->groupBy('program_name')
+        //   ->orderby('Total','desc')->first()->Total;
+
+        //   $P2 = DB::table('collations')
+        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+        //   ->groupBy('program_name')
+        //   ->orderby('Total','desc')->skip(1)->first()->Total;
+
+        //   $P3 = DB::table('collations')
+        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+        //   ->groupBy('program_name')
+        //   ->orderby('Total','desc')->skip(2)->first()->Total;
+
+        //   $P4 = DB::table('collations')
+        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+        //   ->groupBy('program_name')
+        //   ->orderby('Total','desc')->skip(3)->first()->Total;
+
+        //   $P5 = DB::table('collations')
+        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+        //   ->groupBy('program_name')
+        //   ->orderby('Total','desc')->skip(4)->first()->Total;
+
+
+        //   $program = new Programs;
+        //   $program->labels(['Top 1', 
+        //   'Top 2',
+        //   'Top 3',
+        //   'Top 4',
+        //   'Top 5',
+            
+        
+        //  ]);
+  
+        //   $program->dataset('NON SUC', 'horizontalBar', 
+        //       [
+        //          $Programs1,
+        //          $Programs2,
+        //          $Programs3,
+        //          $Programs4,
+        //          $Programs5,
+               
+        //       ])
+                
+        //     ->fill(false)
+        //       ->color($LineprogColor1)
+        //       ->backgroundcolor($FillprogColor1);
+  
+        //   $program->displayLegend(false);
+              
+
+          //TOP 5 DISCIPLINE GROUPS
+
+        $DG = DB::table('collations')
+        ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        ->select(DB::raw("SUM(TE+TG) as total"),'discipline_groups.major_discipline')
+        ->groupBy('discipline_groups.major_discipline')
+        ->orderby('total','desc')->where('collation_lists_id',$id1)
+        ->limit(5)->get();
+
+
+    //     $count = DB::table('collations')
+    //     ->groupBy('discipline_groups_id')
+    //     ->where('collation_lists_id',$id1)->get();
+
+    //    $count1 =0;
+    //    foreach($count as $c)
+    //    {
+    //      $count1 = $count1 + 1;
+
+    //    } 
+
+        // $DG1 = DB::table('collations')
+        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        // ->select(DB::raw("SUM(TE+TG) as Total"))
+        // ->groupBy('discipline_groups.major_discipline')
+        //  //->where('institution_types_id','2')
+        // ->orderby('Total','desc')->first()->Total;
+
+        // $DG2 = DB::table('collations')
+        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        // ->select(DB::raw("SUM(TE+TG) as Total"))
+        // ->groupBy('discipline_groups.major_discipline')
+        // ->orderby('Total','desc')->skip(1)->first()->Total;
+
+        // $DG3 = DB::table('collations')
+        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        // ->select(DB::raw("SUM(TE+TG) as Total"))
+        // ->groupBy('discipline_groups.major_discipline')
+        // ->orderby('Total','desc')->skip(2)->first()->Total;
+
+        // $DG4 = DB::table('collations') 
+        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        // ->select(DB::raw("SUM(TE+TG) as Total"))
+        // ->groupBy('discipline_groups.major_discipline')
+        // ->orderby('Total','desc')->skip(3)->first()->Total;
+
+        // $DG5 = DB::table('collations')
+        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
+        // ->select(DB::raw("SUM(TE+TG) as Total"))
+        // ->groupBy('discipline_groups.major_discipline')
+        // ->orderby('Total','desc')->skip(4)->first()->Total;
+
+        // $Discipline = new DG;
+        // $Discipline->labels(['Top 1', 
+        // 'Top 2',
+        // 'Top 3',
+        // 'Top 4',
+        // 'Top 5',
+        // ]);
+
+        // $Discipline->dataset('NON SUC', 'horizontalBar', 
+        //     [$DG1,
+        //     $DG2,  
+        //     $DG3, 
+        //     $DG4, 
+        //     $DG5,
+        //     ])
+        //     ->color($LinedgColor1)
+        //     ->backgroundcolor($FilldgColor1);
+
+        // $Discipline->displayLegend(false);
+
+
+          //TOP 5 MOST ENROLLEES SCHOOLS
+          //TOP 5 MOST GRADUATES SCHOOLS
+          //TOP 5 MOST POPULATION SCHOOLS
+
+
+
+          return view('officer_pages.analytics', compact('fname','lname','id1',
+          'TotalPop', 'TotalPopMaleEnroll', 'TotalPopMaleGrad',
+          'TotalPopFemaleEnroll','TotalPopFemaleGrad',
+          
+          'TotalSUCPop','TotalSUCPopMaleEnroll','TotalSUCPopMaleGrad',
+          'TotalSUCPopFemaleEnroll', 'TotalSUCPopFemaleGrad',
+
+          'TotalNONSUCPop', 'TotalNONSUCPopMaleEnroll','TotalNONSUCPopMaleGrad',
+          'TotalNONSUCPopFemaleEnroll','TotalNONSUCPopFemaleGrad',
+        
+          'DG','Programs','count1'));
+
+          
+
+    }
 
 
 }

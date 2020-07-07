@@ -52,5 +52,11 @@ class StatusesTblSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        DB::table('statuses')->insert([
+            'status' => 'Done',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 }

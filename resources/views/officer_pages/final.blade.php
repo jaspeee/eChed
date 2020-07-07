@@ -12,32 +12,6 @@
   </div>
   <div class="content"> 
 
-    @if (count($errors) > 0)
-    <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
-      <p>There were some problems with your File input.</p>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    @endif
-
-      @if(session('success'))
-      <div class="alert alert-success">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        {{ session('success') }}
-      </div> 
-
-      @elseif(session('danger'))
-      <div class="alert alert-danger">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        {{ session('danger') }}
-      </div> 
-      @endif
-
 
     <div class="row">
       <div class="col-md-12"> 
@@ -79,6 +53,7 @@
                 <table class="table" id="institutionstbl">
                     <thead style="background-color: #003471; font-size: 10px;color:white;">
                       <tr>
+                        <th><b>Reference ID</b></th>
                         <th><b>Form</b></th>
                         <th><b>Verified by</b></th>
                         <th><b>Date Verified</b></th>
@@ -93,6 +68,7 @@
                     <tbody>  
                           @foreach($files as $file)
                           <tr>
+                             <td>{{$file->completes_id}}</td>
                              <td>{{$file->verifier_submission}}</td>
                              <td>{{$file->first_name}} &nbsp {{$file->last_Name}}</td>
                              <td>{{$file->created_at}}</td>
@@ -142,12 +118,12 @@
 
                             @elseif($file->status == 'Approve')
 
-                                <td style="padding:0;">
-                                  <a href="/storage/complete/{{$file->verifier_submission}}" download><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                <td style="padding:0;"> 
+                                  <a href="/officer/audit/{{$file->completes_id}}" style="text-decoration-line: none;" ><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
                                     <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
                                     {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
-                                  </button></a>
-                                </td>
+                                  </button></a> 
+                                </td> 
                                 
                                 <td style="padding:0;">
                                 
@@ -166,10 +142,10 @@
 
                             @else
                               <td style="padding:0;">
-                                <a href="/storage/complete/{{$file->verifier_submission}}" download><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
-                                  <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
-                                  {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
-                                </button></a>
+                                 <a href="/officer/audit/{{$file->completes_id}}" style="text-decoration-line: none;" ><button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                    <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
+                                    {{-- <i class="fa fa-download" aria-hidden="true" style="color:#696969;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="download"></i> --}}
+                                  </button></a> 
                               </td> 
                               <td style="padding:0;">
                                 <form method="POST"  action="/officer/final/approve/{{$file->completes_id}}">
@@ -271,11 +247,7 @@
 @section('scripts')
 <script  type="text/javascript">
 
-$(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();   
-});
- 
-  $(document).ready(function() {
+$(document).ready(function() {
     // $('#subtbl').DataTable({
     //   lengthChange: false 
      
@@ -290,6 +262,12 @@ $(document).ready(function(){
 $('#tracksearchbar').keyup(function(){
       oTable.search($(this).val()).draw() ;
 })
+
+
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+ 
 
 
 $('#disapproveModal').on('show.bs.modal', function(event) {

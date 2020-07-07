@@ -47,8 +47,13 @@ class EnrollmentExport implements FromCollection,  ShouldAutoSize, WithHeadings
         ];
     }
 
+  
+
     public function collection()
-    {
+    {   
+        $collationID = DB::table('institution_ids')
+        ->orderby('institution_ids_id','desc')->limit(1)->first()->collation;
+
         return DB::table('collations')
         ->join('institutions','institutions.institutions_id', '=', 'collations.institutions_id')
         ->join('institution_types', 'institution_types.institution_types_id', '=', 'collations.institution_types_id')
@@ -80,7 +85,9 @@ class EnrollmentExport implements FromCollection,  ShouldAutoSize, WithHeadings
             'collations.TMG',
             'collations.TFG',
             'collations.TG',
-            'institution_types.type')->get();
+            'institution_types.type')
+            ->where('collation_lists_id', $collationID)
+            ->get();
 
     }
 }

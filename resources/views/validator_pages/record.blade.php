@@ -36,18 +36,26 @@
               <table class="table" id="recordtbl">
                 <thead style="background-color: #003471; font-size: 10px;color:white;">
                   <tr>
+                    <th><b>Reference ID</b></th>
                     <th><b>Forms</b></th>
                     <th><b>Year</b></th>
+                    <th><b></b></th>
             
                   </tr>
                 </thead>
                 <tbody>
-                      @foreach($forms as $form)
-                      <tr>
-                          <td>{{$form->verifier_submission}}</td>
+                      @foreach($forms as $form) 
+                      <tr>  
+                          <td>{{$form->archives_id}}</td>
+                          <td>{{$form->file}}</td>
                           {{-- <td>{{$form->created_at}} </td> --}}
                           <td>{{ Carbon\Carbon::parse($form->created_at)->format('Y') }}</td>
-                          
+                          <td>
+                          <a href="/validator/record/{{$form->archives_id}}" style="text-decoration-line: none;" download>
+                          <button type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                          <i class="now-ui-icons arrows-1_cloud-download-93" style="font-size: 15px;color: gray" data-toggle="tooltip" data-placement="top" title="download"></i>
+                          </button></a>
+                          </td>
                       </tr>
                       @endforeach
                  

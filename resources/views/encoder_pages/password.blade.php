@@ -11,7 +11,7 @@
   <div class="panel-header panel-header-sm">
   </div>
   <div class="content">
-    @if (count($errors) > 0) 
+    <!-- @if (count($errors) > 0) 
     <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
       <p>There were some problems with your File input.</p>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -35,7 +35,7 @@
         </button>
         {{ session('danger') }}
       </div> 
-      @endif
+      @endif -->
       
     <div class="row">
       <div class="col-md-8">

@@ -68,19 +68,29 @@
           </a>
           <div class="collapse show" id="reports">
             <ul class="nav">
-              <li class="@if ($activePage == 'reports') active @endif">
+            <li class="@if ($activePage == 'collate') active @endif">
+                <a href="/officer/collatefiles">
+                  <p style="padding-left:45px;">Collate Files</p>
+                </a>
+              </li>
+              <!-- <li class="@if ($activePage == 'reports') active @endif">
                 <a href="/officer/reports">
                   <p style="padding-left:45px;">Approved Forms</p>
                 </a>
               </li>
               <li class="@if ($activePage == 'collation') active @endif">
                 <a href="/officer/collation">
-                  <p style="padding-left:45px;">Collation</p>
+                  <p style="padding-left:45px;">Collated Files</p>
                 </a>
-              </li>
-              <li class="@if ($activePage == 'analytics') active @endif">
+              </li> -->
+              <!-- <li class="@if ($activePage == 'analytics') active @endif">
                 <a href="/officer/analytics">
                   <p style="padding-left:45px;">Analytics</p>
+                </a>
+              </li> -->
+              <li class="@if ($activePage == 'audits') active @endif">
+                <a href="/officer/auditlogs">
+                  <p style="padding-left:45px;">Audit Logs</p>
                 </a>
               </li>
             </ul>
@@ -123,6 +133,14 @@
               </li>
             </ul>
           </div>
+        </li>
+
+          
+        <li class = " @if ($activePage == 'backup') active @endif">
+          <a href="/officer/backup">
+            <i class="now-ui-icons design_app"></i>
+            <p>Backup Resources</p>
+          </a>
         </li>
 
         <li class = " @if ($activePage == 'references') active @endif">

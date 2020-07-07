@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\DB;
 use App\Concern;
 use App\Audit_log;
 use Hash;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\URL; 
+use RealRashid\SweetAlert\Facades\Alert;
+
 
 
 class AccountController extends Controller
@@ -57,7 +59,7 @@ class AccountController extends Controller
         $audit = new Audit_log();
         $audit->user_id =  auth()->id();
         $audit->user_types_id = $usertype;
-        $audit->event = 'Update';
+        $audit->event = 'reset password';
         $audit->auditable_type = 'App\User';
         $audit->auditable_id = $id;
         $audit->old_values = '{password:'.$oldpass.'}';

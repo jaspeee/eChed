@@ -4,91 +4,122 @@
     'lname' => $lname,
     'pass' => '/officer/password',
     'class' => 'sidebar-mini',
-    'activePage' => 'analytics',
+    'activePage' => 'collate',
   ])
 
 @section('content')
   <div class="panel-header panel-header-sm">
-  </div> 
- 
-<div class="content"> 
+  </div>
+  <div class="content"> 
 
-
-  <div class="container">
-
-    <div class="row">
-      <div class="col-lg-4 col-md-6">
-  
+  <div class="row"> 
+      <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            
-            <h5 class="card-title">
-              <i class="now-ui-icons users_single-02"></i>  Total Population <br>
-            </h5>
+            {{-- <h4 class="card-title"> Simple Table</h4> --}}
           </div>
           <div class="card-body">
-            <center>
-            <h1>{{$TotalStudents}} </h1>
-          
-  
-            <table class="table">
-              <thead style="background-color: #003471; font-size: 10px;color:white;">
-                <tr>
+            <div class="container" style="padding:40px;">
+
+            <p style="font-size:18px;">
                   
-                  <th style="text-align: center;"><b>Enrollment</b></th>
-                  <th style="text-align: center;"><b>Graduates</b></th>
+            <a href="/officer/collatefiles">
+                <button type="button" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
+                <i class="now-ui-icons arrows-1_minimal-left" data-toggle="tooltip" data-placement="right" title="Back" ></i>
+                </button>
+            </a>
+            <b>Data Analytics</b></p>
+            <p style="font-size:14px;">
+            This page is the result of analyzing the collated data.
+            Navigate below and see different areas of data for your needs.
+            If you have any trouble contact the administration for support.
+            </p>
+
+           </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">
+                    <i class="now-ui-icons users_single-02"></i>  Total Population <br>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <center>
+                    <h1> {{$TotalPop}} </h1>
+
+                    <table class="table">
+                <thead style="background-color: #003471; font-size: 11px;color:white;">
+                <tr>
+                    <th></th>
+                    <th style="text-align: center;"><b>Enrollees</b></th>
+                    <th style="text-align: center;"><b>Graduates</b></th>
                 
                 </tr>
-              </thead>
-              <tbody> 
-                    <tr>
-                      
-                       <td style="text-align: center;"><h5>{{$TotalEnrollment}}</h5></td>
-                       <td style="text-align: center;"><h5>{{$TotalGraduates}}</h5></td>
-                      
+                </thead>
+                <tbody style="font-size: 12px"> 
+                    <tr>  
+                    <td><h5>Male</h5></td>
+                    <td style="text-align: center;"><h5>{{$TotalPopMaleEnroll}}</h5></td>
+                    <td style="text-align: center;"><h5>{{$TotalPopMaleGrad}}</h5></td>
                     </tr>
-              </tbody>
+                    <tr>  
+                    <td><h5>Female</h5></td>
+                    <td style="text-align: center;"><h5>{{$TotalPopFemaleEnroll}}</h5></td>
+                    <td style="text-align: center;"><h5>{{$TotalPopFemaleGrad}}</h5></td>
+                    </tr>
+                </tbody>
             </table>
-          </center>
-          </div>
+                </center>
+                </div>
+            </div> 
+        </div>
+  
+        <div class="col-lg-4 col-md-6">
+        <div class="card">
+            <div class="card-header">
+            
+            <h5 class="card-title">
+                <i class="now-ui-icons users_single-02"></i> SUC Population <br>
+            </h5>
+            </div>
+            <div class="card-body">
+            <center>
+            <h1> {{$TotalSUCPop}} </h1>
+            
+    
+            <table class="table">
+                <thead style="background-color: #003471; font-size: 11px;color:white;">
+                <tr>
+                    <th></th>
+                    <th style="text-align: center;"><b>Enrollees</b></th>
+                    <th style="text-align: center;"><b>Graduates</b></th>
+                
+                </tr>
+                </thead>
+                <tbody style="font-size: 12px"> 
+                    <tr>  
+                    <td><h5>Male</h5></td>
+                    <td style="text-align: center;"><h5>{{$TotalSUCPopMaleEnroll}}</h5></td>
+                    <td style="text-align: center;"><h5>{{$TotalSUCPopMaleGrad}}</h5></td>
+                    </tr>
+                    <tr>  
+                    <td><h5>Female</h5></td>
+                    <td style="text-align: center;"><h5>{{$TotalSUCPopFemaleEnroll}}</h5></td>
+                    <td style="text-align: center;"><h5>{{$TotalSUCPopFemaleGrad}}</h5></td>
+                    </tr>
+                </tbody>
+            </table>
+            </center>
+            </div>
         </div> 
     </div>
-  
-    <div class="col-lg-4 col-md-6">
-      <div class="card">
-        <div class="card-header">
-          
-          <h5 class="card-title">
-            <i class="now-ui-icons users_single-02"></i> SUC Population <br>
-          </h5>
-        </div>
-        <div class="card-body">
-          <center>
-          <h1>{{$SUC_Population}} </h1>
-        
-  
-          <table class="table">
-            <thead style="background-color: #003471; font-size: 10px;color:white;">
-              <tr>
-                
-                <th style="text-align: center;"><b>Enrollment</b></th>
-                <th style="text-align: center;"><b>Graduates</b></th>
-              
-              </tr>
-            </thead>
-            <tbody> 
-                  <tr>
-                    
-                     <td style="text-align: center;"><h5>{{$SUC_TE}}</h5></td>
-                     <td style="text-align: center;"><h5>{{$SUC_TG}}</h5></td>
-                    
-                  </tr>
-            </tbody>
-          </table>
-        </center>
-        </div>
-      </div> 
-  </div>
   
   
   <div class="col-lg-4 col-md-6">
@@ -101,24 +132,28 @@
       </div>
       <div class="card-body">
         <center>
-        <h1>{{$NONSUC_Population}} </h1>
+        <h1>{{$TotalNONSUCPop}} </h1>
       
   
         <table class="table">
-          <thead style="background-color: #003471; font-size: 10px;color:white;">
+          <thead style="background-color: #003471; font-size: 11px;color:white;">
             <tr>
-              
-              <th style="text-align: center;"><b>Enrollment</b></th>
-              <th style="text-align: center;"><b>Graduates</b></th>
+              <th></th>
+              <th><b>Enrollees</b></th>
+              <th><b>Graduates</b></th>
             
             </tr>
           </thead>
-          <tbody> 
-                <tr>
-                  
-                   <td style="text-align: center;"><h5>{{$NONSUC_TE}}</h5></td>
-                   <td style="text-align: center;"><h5>{{$NONSUC_TG}}</h5></td>
-                  
+          <tbody style="font-size: 12px"> 
+                <tr>  
+                   <td><h5>Male</h5></td>
+                   <td style="text-align: center;"><h5>{{$TotalNONSUCPopMaleEnroll}}</h5></td>
+                   <td style="text-align: center;"><h5>{{$TotalNONSUCPopMaleGrad}}</h5></td>
+                </tr>
+                <tr>  
+                   <td><h5>Female</h5></td>
+                   <td style="text-align: center;"><h5>{{$TotalNONSUCPopFemaleEnroll}}</h5></td>
+                   <td style="text-align: center;"><h5>{{$TotalNONSUCPopFemaleGrad}}</h5></td>
                 </tr>
           </tbody>
         </table>
@@ -128,60 +163,6 @@
   </div>
   
   </div>
-
-  
-    <div class="row">
-      <div class="col-md-6">
-        &nbsp;
-
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="card-category">  <i class="now-ui-icons business_chart-bar-32"></i> Total Male</h5>
-              </div>
-              <div class="card-body" style="height:150px;">
-                {!! $male->container() !!}
-              </div>
-          </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="card-category">  <i class="now-ui-icons business_chart-bar-32"></i> Total Female</h5>
-              </div>
-              <div class="card-body" style="height:150px;">
-                {!! $female->container() !!}
-              </div>
-            
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6" style="padding-top:2%;">
-        <div class="card">
-          <div class="card-header ">
-            <center><h5>Total Male and Female</h5></center>
-          </div>
-          <div class="card-body" style="height:355px;">
-            {!! $gender->container() !!}
-          </div>
-        </div> 
-      </div>
-
-
-    </div>
-  
-
-
-
-
-
-  
 
   <div class="row"> 
     <div class="col-md-6">
@@ -196,9 +177,12 @@
         <div class="card-body">
        
           <div class="chart-area" style="width: 450px; height: 230px">
-              {!! $Discipline->container() !!}
+             
           </div>
-
+          <p style="font-size:14px;">
+           This result is base on the total enrollees and graduates of a certain 
+           disciplinary group.
+         </p>
         
           <table class="table">
             <thead style="background-color: #003471; font-size: 10px;color:white;">
@@ -209,19 +193,13 @@
                
               </tr>
             </thead>
-            <tbody> 
-                  @foreach($DG as $dg)
-
-                
+            <tbody>  
+                @foreach($DG as $dg)
                   <tr>
-                    
                      <td>{{$dg->major_discipline}}</td>
-                     <td>{{$dg->Total}}</td>
-                    
+                     <td>{{$dg->total}}</td>
                   </tr>
-                  @endforeach
-
-
+                @endforeach
             </tbody>
           </table>
 
@@ -243,8 +221,13 @@
         <div class="card-body">
        
           <div class="chart-area" style="width: 450px; height: 230px">
-              {!! $program->container() !!}
+              
           </div>
+
+          <p style="font-size:14px;">
+           This result is base on the total enrollees and graduates of a certain program.
+          
+         </p>
 
           <table class="table">
             <thead style="background-color: #003471; font-size: 10px;color:white;">
@@ -258,14 +241,10 @@
             <tbody> 
                   @foreach($Programs as $p)
                   <tr>
-                     
                      <td>{{$p->program_name}}</td>
-                     <td>{{$p->Total}}</td>
-                    
+                     <td>{{$p->total}}</td>
                   </tr>
                   @endforeach
-             
-
             </tbody>
           </table>
 
@@ -276,183 +255,7 @@
 
 </div>
 
-<div class="row">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-header">
-        
-        <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> NON - SUC</h5>
-        <h5 class="card-title">
-        Top 10 Colleges with Highest Number of Enrollees<br>
-        </h5>
-      </div>
-      <div class="card-body">
-     
-        <div class="chart-area" style="height:150px;">
-            {!! $ce->container() !!}
-        </div>
 
-        <?php $i = 1; ?>
-        <table class="table">
-          <thead style="background-color: #003471; font-size: 10px;color:white;">
-            <tr>
-              <th></th>
-              <th><b>Institution</b></th>
-              <th><b>Total</b></th>
-            
-            </tr>
-          </thead>
-          <tbody> 
-            
-                @foreach($College_E as $e)
-                <tr>
-                   <td>Top 
-
-                    {{$i}}
-                    <?php $i++; ?>
-                    </td>
-
-                   <td>{{$e->institution_name}}</td>
-                   <td>{{$e->Total}}</td>
-                  
-                </tr>
-                @endforeach
-           
-
-          </tbody>
-        </table>
-
-
-      </div>
-    </div> 
-  </div>          
-</div>
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-header">
-        
-        <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> NON - SUC</h5>
-        <h5 class="card-title">
-        Top 5 Highest Courses Enrolled<br>
-        </h5>
-      </div>
-      <div class="card-body">
-     
-        <div class="chart-area" style="height:150px;">
-            {!! $courses->container() !!}
-        </div>
-
-        <?php $i = 1; ?>
-        <table class="table">
-          <thead style="background-color: #003471; font-size: 10px;color:white;">
-            <tr>
-              <th></th>
-              <th><b>Institution</b></th>
-              <th><b>Total</b></th>
-            
-            </tr>
-          </thead>
-          <tbody> 
-            
-                @foreach($Courses_E as $c)
-                <tr>
-                   <td> Top
-
-                    {{$i}}
-                    <?php $i++; ?>
-
-                   </td>
-                   <td>{{$c->program_name}}</td>
-                   <td>{{$c->Total}}</td>
-                  
-                </tr>
-                @endforeach
-           
-
-          </tbody>
-        </table>
-
-
-      </div>
-    </div> 
-  </div>  
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-header">
-        
-        <h5 class="card-category"> <i class="now-ui-icons business_chart-pie-36"></i> NON - SUC</h5>
-        <h5 class="card-title">
-        Top 5 Colleges with Highest Number of Graduates<br>
-        </h5>
-      </div>
-      <div class="card-body">
-     
-        <div class="chart-area" style="height:150px;">
-            {!! $college->container() !!}
-        </div>
-
-        <?php $i = 1; ?>
-        <table class="table">
-          <thead style="background-color: #003471; font-size: 10px;color:white;">
-            <tr>
-              <th></th>
-              <th><b>Institution</b></th>
-              <th><b>Total</b></th>
-            
-            </tr>
-          </thead>
-          <tbody> 
-            
-                @foreach($College_G as $cc)
-                <tr>
-                   <td> Top
-
-                    {{$i}}
-                    <?php $i++; ?>
-
-                   </td>
-                   <td>{{$cc->institution_name}}</td>
-                   <td>{{$cc->Total}}</td>
-                  
-                </tr>
-                @endforeach
-           
-
-          </tbody>
-        </table>
-
-
-      </div>
-    </div> 
-  </div>          
-</div>
-
- 
-
-
-</div>
-
-</div>
+                 
+  </div>
 @endsection
-
-@section('scripts')
-
-{{-- {!! $chart->script() !!}
-{!! $TotalMF->script() !!}
-{!! $TotalGradMF->script() !!}
-{!! $TotalNonSucEG->script() !!}
-{!! $TotalNonSucMF->script() !!}
-{!! $TotalNonSucGradMF->script() !!} --}}
-{!! $Discipline->script() !!}
-{!! $ce->script() !!}
-{!! $courses->script() !!}
-{!! $college->script() !!}
-{!! $program->script() !!}
-{!! $gender->script() !!}
-{!! $male->script() !!}
-{!! $female->script() !!}
-
-
-@endsection 

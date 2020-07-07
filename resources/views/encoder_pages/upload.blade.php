@@ -23,7 +23,7 @@
     @endif
 
       @if(session('success'))
-      <div class="alert alert-success">
+      <div class="alert alert-success" id="suc">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -56,40 +56,37 @@
                 <div class="notice" style="color:red;margin-top:-15px;font-size: 13px;">Notice : Make sure to upload Excel files (.xlsx) only</div>
               </p>
               
-                <form method="post" action="" class="form-horizontal" enctype="multipart/form-data">
+                <form method="post" action="" id="form" class="form-horizontal" enctype="multipart/form-data">
               @csrf 
                 <input type="file" name="file[]" id="file" multiple>
                 
                 
                 <div id="selectedFiles" style="padding-top:2%;padding-bottom:%"></div>
 
-                <input type="submit" onclick="return confirmation();" class="btn btn-info" value="Upload">
+                <input type="submit" onclick="return confirmation();" class="btn btn-success" value="Upload">
+               <br><br>
+               <div class="progress" style="position:relative; width:100%; height:30px;">
+                  <div class="bar" style="background-color: #2da62d; width:0%; border-radius: 3px;"></div >
+                  <div class="percent" style="position:absolute; display:inline-block; top:3px; left:48%;">0%</div >
 
+                </div>
                 
-            </form> 
+            </form>  
 
-          
-            {{-- <a href="/encoder/try/try/try">
-            <button >tryy</button></a> --}}
-
-          </div>
-        </div>
-      </div>
-      
+        
                  
   </div>
 @endsection
 
 @section('scripts')
-<script  type="text/javascript">
+<script type="text/javascript">
+
+
 // // Add the following code if you want the name of the file appear on select
 // $(".custom-file-input").on("change", function() {
 //   var fileName = $(this).val().split("\\").pop();
 //   $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 // });
-
-
-
 
 var selDiv = "";
 		
@@ -129,6 +126,8 @@ $("body").on("click",".btn-danger",function(){
     $(this).parents(".control-group").remove();
 });
  
+
+
 });
 
 
@@ -139,6 +138,54 @@ function confirmation(){
         return false;
     }   
 }
+
+function validate(formData, jqForm, options) {
+        var form = jqForm[0];
+        if (!form.file.value) {
+            alert('File not found');
+            return false;
+        }
+    }
+ 
+    (function() {
+ 
+    var bar = $('.bar');
+    var percent = $('.percent');
+    var status = $('#status');
+    
+  
+      
+    $('form').ajaxForm({
+        beforeSubmit: validate,
+        beforeSend: function() {
+            status.empty();
+            var percentVal = '0%';
+            var posterValue = $('input[name=file]').fieldValue();
+            bar.width(percentVal)
+            percent.html(percentVal);
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete + '%';
+            bar.width(percentVal)
+            percent.html(percentVal);
+        },
+        success: function() {
+            var percentVal = 'Saving';
+            bar.width(percentVal)
+            percent.html(percentVal);
+        },
+        complete: function(xhr) {
+            status.html(xhr.responseText);
+            alert('Uploaded Successfully');
+            window.location.href = "/encoder/upload";
+        }
+    });
+     
+    })();
+
+
+
+
 
 </script>
 @endsection

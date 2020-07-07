@@ -14,6 +14,8 @@ Use Carbon\Carbon;
 use App\Jobs\EncoderUpload;
 use App\Jobs\EncoderChangePass;
 use Illuminate\Support\Facades\URL;
+use RealRashid\SweetAlert\Facades\Alert;
+
 
 class EncoderController extends Controller
 {   
@@ -29,7 +31,8 @@ class EncoderController extends Controller
     {   
  
         
-        
+       
+
         //GET THE FIRST AND LAST NAME OF THE USER 
         $id = auth()->id();
         $employee = DB::table('users')->find($id)->employee_profiles_id;
@@ -99,7 +102,10 @@ class EncoderController extends Controller
         $deadline = DB::table('deadlines')
         ->join('users', 'deadlines.user_id', '=','users.id')
         ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
-        ->select('deadlines.*', 'employee_profiles.first_name', 'employee_profiles.last_Name')->paginate(1);
+        ->select('deadlines.*','employee_profiles.first_name', 'employee_profiles.last_Name')
+        ->orderby('id','desc')->limit(1)->get();
+
+        
 
         $date = Carbon::now();
         $dates = $date->toFormattedDateString();         
@@ -152,7 +158,9 @@ class EncoderController extends Controller
         ->join('employee_profiles','users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
         ->join('statuses','validates.statuses_id', '=','statuses.statuses_id')
         ->select('validates.*','employee_profiles.first_name','employee_profiles.last_Name','statuses.status')
-        ->where('employee_profiles.institutions_id', $institution)->get();
+        ->where('employee_profiles.institutions_id', $institution)
+        ->whereNotIn('statuses.status', ['Active','Done'])
+        ->get();
 
         //GET THE FIRST AND LAST NAME OF THE USER 
         $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
@@ -229,7 +237,7 @@ class EncoderController extends Controller
                     $audit = new Audit_log();
                     $audit->user_id =   $id;
                     $audit->user_types_id = '1';
-                    $audit->event = 'Upload';
+                    $audit->event = 'uploaded';
                     $audit->auditable_type = 'App\Validate';
                     $audit->auditable_id = $audit_ID;
                     $audit->old_values = '';
@@ -252,7 +260,9 @@ class EncoderController extends Controller
 
             } 
 
-            return back()->with('success', 'Files has been successfully submitted to validator');
+         
+           response()->json(['success'=>'You have successfully upload file.']);
+           //return back()->with('success', 'Files has been successfully submitted to validator');
         }
 
     }
@@ -261,39 +271,40 @@ class EncoderController extends Controller
     {
         
         $id = auth()->id();
-         $current_password = User::find($id)->password;
+        $current_password = User::find($id)->password;
          
          if(Hash::check($request['old_password'], $current_password))
          {   
             
-            //  $user = User::find($id);
-            //  $user->password = Hash::make($request['password']);
-            //  $user->save(); 
-             
+            $user = User::find($id);
+            $user->password = Hash::make($request['password']);
+            $user->save(); 
+
+            // $password = Hash::make($request['password']);
+            // DB::update('update users set password = ? where id = ?', [$password ,$this->id]);
             
-            EncoderChangePass::dispatch($id,$request['password']);
-
-            $oldpass =  User::find($id)->password;
-            $npass = Hash::make($request['password']);
+            //EncoderChangePass::dispatch($id,$request['password']);
+ 
+            // $oldpass =  User::find($id)->password;
+            // $npass = Hash::make($request['password']);
           
-
-            $audit = new Audit_log();
-            $audit->user_id = $id;
-            $audit->user_types_id = '1';
-            $audit->event = 'Update';
-            $audit->auditable_type = 'App\User';
-            $audit->auditable_id =  auth()->id();
-            $audit->old_values =  '{password:'.$oldpass.'}';
-            $audit->new_values = '{password:'.$npass.'}';
-            $audit->url = URL::current();
-            $audit->ip_address = \Request::ip();
-            $audit->user_agent = $request->header('User-Agent');
-            $audit->save();  
+            // $audit = new Audit_log();
+            // $audit->user_id = $id;
+            // $audit->user_types_id = '1';
+            // $audit->event = 'Update';
+            // $audit->auditable_type = 'App\User';
+            // $audit->auditable_id =  auth()->id();
+            // $audit->old_values =  '{password:'.$oldpass.'}';
+            // $audit->new_values = '{password:'.$npass.'}';
+            // $audit->url = URL::current();
+            // $audit->ip_address = \Request::ip();
+            // $audit->user_agent = $request->header('User-Agent');
+            // $audit->save();  
 
              
-         } 
+         }  
          else{ 
-            return back()->with('danger', 'Current password was incorrect');
+            return back()->with('warning', 'Current password was incorrect');
          }
          return back()->with('success', 'Change password successfully');
     }
