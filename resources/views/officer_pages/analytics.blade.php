@@ -177,11 +177,10 @@
         <div class="card-body">
        
           <div class="chart-area" style="width: 450px; height: 230px">
-             
+          {!! $Discipline->container() !!}
           </div>
           <p style="font-size:14px;">
-           This result is base on the total enrollees and graduates of a certain 
-           disciplinary group.
+           This result is base on the total programs of a certain discipline group
          </p>
         
           <table class="table">
@@ -221,14 +220,14 @@
         <div class="card-body">
        
           <div class="chart-area" style="width: 450px; height: 230px">
-              
+          {!! $program->container() !!}
           </div>
 
           <p style="font-size:14px;">
            This result is base on the total enrollees and graduates of a certain program.
           
          </p>
-
+ 
           <table class="table">
             <thead style="background-color: #003471; font-size: 10px;color:white;">
               <tr>
@@ -248,14 +247,53 @@
             </tbody>
           </table>
 
-
         </div>
       </div> 
     </div> 
-
 </div>
 
+<div class="row"> 
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+           <!-- <h4 class="card-title">Top 1 Insitution</h4>  -->
+          </div>
+          <div class="card-body">
+            <div class="container" style="padding:20px;">
 
+           <div class="row">
+              <div class="col-md-6">
+                <div class="chart-area" style="width: 450px; height: 230px">
+                {!! $TopSchoolPie->container() !!}
+                </div>
+              </div>
+              <div class="col-md-6">
+              <h5><i class="now-ui-icons business_bank" ></i> &nbsp; Top 1 Institution</h5>
+              <p style="font-size:14px;">
+              This result is base on the most total of enrollees and graduates of a certain institution.
+              </p> 
+
+           <br>
+            <h3 style="text-align:center;"> @foreach($TopSchool as $ts)
+                    {{$ts->institution_name}}
+                @endforeach</h3>
+
+              </div>
+           </div>
+
+
+           </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
                  
   </div>
 @endsection
+
+@section('scripts')
+{!! $program->script() !!}
+{!! $Discipline->script() !!}
+{!! $TopSchoolPie->script() !!}
+@endsection 

@@ -99,7 +99,44 @@ class ReportsController extends Controller
    
            }
 
+        
+           $data = DB::table('collations')->get();
+           $prog = DB::table('programs')->get();
+   
+           $prog_name='';
+           $discpline_id='';
+           $idd = '';
+   
+           foreach($data as $d)
+           {   
+               $prog_name = $d->program_name;
+               $idd = $d->collations_id;
+               
+               //return  $prog_name . ''. $idd;
+            
+               foreach($prog as $p)
+               { 
+                   if( $prog_name == $p->program_name)
+                   {
+                       $discpline_id = $p->discipline_groups_id;
 
+                        break;
+                       //return $discpline_id;
+                   }
+                   else
+                   {
+                        $discpline_id = '22';
+                      
+                   }
+                  
+               }
+               
+               DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+               DB::update('update collations set discipline_groups_id = ? where collations_id = ?', [$discpline_id,$idd]);
+            //    $discpline_id='22';
+              
+           }
+           DB::statement('SET FOREIGN_KEY_CHECKS=1;');  
         return back()->with('success', 'Added new collation successfully');
 
     

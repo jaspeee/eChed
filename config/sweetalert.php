@@ -93,7 +93,7 @@ return [
     |
     */
 
-    'show_confirm_button' => env('SWEET_ALERT_CONFIRM_BUTTON', true),
+    'show_confirm_button' => env('SWEET_ALERT_CONFIRM_BUTTON', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -106,7 +106,7 @@ return [
     |
     */
 
-    'show_close_button' => env('SWEET_ALERT_CLOSE_BUTTON', false),
+    'show_close_button' => env('SWEET_ALERT_CLOSE_BUTTON', true),
 
     /*
     |--------------------------------------------------------------------------

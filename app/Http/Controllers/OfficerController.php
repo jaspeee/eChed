@@ -57,6 +57,9 @@ class OfficerController extends Controller
      
     public function Page_dashboard()
     {   
+        // Alert::success('Success Title', 'Success Message');
+        
+        
          //GET THE FIRST AND LAST NAME OF THE USER 
          $id = auth()->id();
          $employee = DB::table('users')->find($id)->employee_profiles_id;
@@ -1751,134 +1754,177 @@ class OfficerController extends Controller
           ->orderby('total','desc')->where('collation_lists_id',$id1)
           ->limit(5)->get();
 
-        //   $P1 = DB::table('collations')
-        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
-        //   ->groupBy('program_name')
-        //   ->orderby('Total','desc')->first()->Total;
+          $P1 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')
+          ->where('collation_lists_id',$id1)
+          ->first()->Total;
 
-        //   $P2 = DB::table('collations')
-        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
-        //   ->groupBy('program_name')
-        //   ->orderby('Total','desc')->skip(1)->first()->Total;
+          $P2 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')
+          ->where('collation_lists_id',$id1)
+          ->skip(1)->first()->Total;
 
-        //   $P3 = DB::table('collations')
-        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
-        //   ->groupBy('program_name')
-        //   ->orderby('Total','desc')->skip(2)->first()->Total;
+          $P3 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')
+          ->where('collation_lists_id',$id1)
+          ->skip(2)->first()->Total;
 
-        //   $P4 = DB::table('collations')
-        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
-        //   ->groupBy('program_name')
-        //   ->orderby('Total','desc')->skip(3)->first()->Total;
+          $P4 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')
+          ->where('collation_lists_id',$id1)
+          ->skip(3)->first()->Total;
 
-        //   $P5 = DB::table('collations')
-        //   ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
-        //   ->groupBy('program_name')
-        //   ->orderby('Total','desc')->skip(4)->first()->Total;
+          $P5 = DB::table('collations')
+          ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
+          ->groupBy('program_name')
+          ->orderby('Total','desc')
+          ->where('collation_lists_id',$id1)
+          ->skip(4)->first()->Total;
 
 
-        //   $program = new Programs;
-        //   $program->labels(['Top 1', 
-        //   'Top 2',
-        //   'Top 3',
-        //   'Top 4',
-        //   'Top 5',
+          $program = new Programs;
+          $program->labels(['Top 1', 
+          'Top 2',
+          'Top 3',
+          'Top 4',
+          'Top 5',
             
         
-        //  ]);
+         ]);
   
-        //   $program->dataset('NON SUC', 'horizontalBar', 
-        //       [
-        //          $Programs1,
-        //          $Programs2,
-        //          $Programs3,
-        //          $Programs4,
-        //          $Programs5,
+          $program->dataset('Programs', 'horizontalBar', 
+              [
+                 $P1,
+                 $P2,
+                 $P3,
+                 $P4,
+                 $P5,
                
-        //       ])
+              ])
                 
-        //     ->fill(false)
-        //       ->color($LineprogColor1)
-        //       ->backgroundcolor($FillprogColor1);
+            //->fill(false)
+              ->color('gray')
+              ->backgroundcolor('gray');
   
-        //   $program->displayLegend(false);
+          $program->displayLegend(false);
               
 
           //TOP 5 DISCIPLINE GROUPS
 
         $DG = DB::table('collations')
+        ->select('discipline_groups.major_discipline')
+        ->selectRaw('COUNT(collations.discipline_groups_id) as total')
         ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
-        ->select(DB::raw("SUM(TE+TG) as total"),'discipline_groups.major_discipline')
-        ->groupBy('discipline_groups.major_discipline')
-        ->orderby('total','desc')->where('collation_lists_id',$id1)
+        ->groupBy('collations.discipline_groups_id')
+        ->orderby('total','desc')
+        ->where('collation_lists_id',$id1)
         ->limit(5)->get();
 
-
-    //     $count = DB::table('collations')
-    //     ->groupBy('discipline_groups_id')
-    //     ->where('collation_lists_id',$id1)->get();
-
-    //    $count1 =0;
-    //    foreach($count as $c)
-    //    {
-    //      $count1 = $count1 + 1;
-
-    //    } 
-
+        //$DG = DB::select('SELECT COUNT(discipline_groups_id) as total from collations group by discipline_groups_id where collation_lists_id=id1');
+       // return $DG;
         // $DG1 = DB::table('collations')
         // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
         // ->select(DB::raw("SUM(TE+TG) as Total"))
         // ->groupBy('discipline_groups.major_discipline')
-        //  //->where('institution_types_id','2')
-        // ->orderby('Total','desc')->first()->Total;
+        // ->orderby('Total','desc')
+        // ->where('collation_lists_id',$id1)
+        // ->first()->Total;
 
-        // $DG2 = DB::table('collations')
-        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
-        // ->select(DB::raw("SUM(TE+TG) as Total"))
-        // ->groupBy('discipline_groups.major_discipline')
-        // ->orderby('Total','desc')->skip(1)->first()->Total;
+        $DG1 = DB::table('collations')
+        ->select(DB::raw("COUNT(discipline_groups_id) as Total"))
+        ->groupBy('discipline_groups_id')
+        ->orderby('Total','desc')
+        ->where('collation_lists_id',$id1)
+        ->first()->Total;
 
-        // $DG3 = DB::table('collations')
-        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
-        // ->select(DB::raw("SUM(TE+TG) as Total"))
-        // ->groupBy('discipline_groups.major_discipline')
-        // ->orderby('Total','desc')->skip(2)->first()->Total;
+        $DG2 = DB::table('collations')
+        ->select(DB::raw("COUNT(discipline_groups_id) as Total"))
+        ->groupBy('discipline_groups_id')
+        ->orderby('Total','desc')
+        ->where('collation_lists_id',$id1)
+        ->skip(1)->first()->Total;
+        
 
-        // $DG4 = DB::table('collations') 
-        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
-        // ->select(DB::raw("SUM(TE+TG) as Total"))
-        // ->groupBy('discipline_groups.major_discipline')
-        // ->orderby('Total','desc')->skip(3)->first()->Total;
+        $DG3 = DB::table('collations')
+        ->select(DB::raw("COUNT(discipline_groups_id) as Total"))
+        ->groupBy('discipline_groups_id')
+        ->orderby('Total','desc')
+        ->where('collation_lists_id',$id1)
+        ->skip(2)->first()->Total;
 
-        // $DG5 = DB::table('collations')
-        // ->join('discipline_groups', 'discipline_groups.discipline_groups_id', '=','collations.discipline_groups_id')
-        // ->select(DB::raw("SUM(TE+TG) as Total"))
-        // ->groupBy('discipline_groups.major_discipline')
-        // ->orderby('Total','desc')->skip(4)->first()->Total;
+        $DG4 = DB::table('collations')
+        ->select(DB::raw("COUNT(discipline_groups_id) as Total"))
+        ->groupBy('discipline_groups_id')
+        ->orderby('Total','desc')
+        ->where('collation_lists_id',$id1)
+        ->skip(3)->first()->Total;
 
-        // $Discipline = new DG;
-        // $Discipline->labels(['Top 1', 
-        // 'Top 2',
-        // 'Top 3',
-        // 'Top 4',
-        // 'Top 5',
-        // ]);
-
-        // $Discipline->dataset('NON SUC', 'horizontalBar', 
-        //     [$DG1,
-        //     $DG2,  
-        //     $DG3, 
-        //     $DG4, 
-        //     $DG5,
-        //     ])
-        //     ->color($LinedgColor1)
-        //     ->backgroundcolor($FilldgColor1);
-
-        // $Discipline->displayLegend(false);
+        $DG5 = DB::table('collations')
+        ->select(DB::raw("COUNT(discipline_groups_id) as Total"))
+        ->groupBy('discipline_groups_id')
+        ->orderby('Total','desc')
+        ->where('collation_lists_id',$id1)
+        ->skip(4)->first()->Total;
 
 
-          //TOP 5 MOST ENROLLEES SCHOOLS
-          //TOP 5 MOST GRADUATES SCHOOLS
+
+        $Discipline = new DG;
+        $Discipline->labels(['Top 1', 
+        'Top 2',
+        'Top 3',
+        'Top 4',
+        'Top 5',
+        ]);
+
+        $Discipline->dataset('Discipline Groups', 'horizontalBar', 
+            [$DG1,
+            $DG2,  
+            $DG3, 
+            $DG4, 
+            $DG5,
+            ])
+            ->color('gray')
+            ->backgroundcolor('gray');
+
+        $Discipline->displayLegend(false);
+
+          //TOP 1 WITH MOST ENROLLEES SCHOOLS AND GRADUATES 
+          $TopSchool = DB::table('collations')
+          ->select('institutions.institution_name')
+          ->selectRaw(DB::raw("SUM(collations.TE+collations.TG) as total"))
+          ->join('institutions', 'institutions.institutions_id', '=','collations.institutions_id')
+          ->groupBy('collations.institutions_id')
+          ->orderby('total','desc')->where('collation_lists_id',$id1)
+          ->limit(1)->get();
+
+          $TopSchoolEnroll = DB::table('collations')
+          ->select(DB::raw("SUM(TE) as total"))
+          ->groupBy('institutions_id')
+          ->orderby('total','desc')->where('collation_lists_id',$id1)
+          ->first()->total;
+
+          $TopSchoolGrad = DB::table('collations')
+          ->select(DB::raw("SUM(TG) as total"))
+          ->groupBy('institutions_id')
+          ->orderby('total','desc')->where('collation_lists_id',$id1)
+          ->first()->total;
+          
+          $TopSchoolPie = new Gender;
+          $TopSchoolPie->labels(['Enrollees', 'Graduates',]);
+          $TopSchoolPie->dataset('Total', 'doughnut', [ $TopSchoolEnroll,$TopSchoolGrad])
+                 ->color('gray','red')
+                 ->backgroundcolor('gray','red');
+          $TopSchoolPie->displayLegend(true);
+
+
           //TOP 5 MOST POPULATION SCHOOLS
 
 
@@ -1893,7 +1939,7 @@ class OfficerController extends Controller
           'TotalNONSUCPop', 'TotalNONSUCPopMaleEnroll','TotalNONSUCPopMaleGrad',
           'TotalNONSUCPopFemaleEnroll','TotalNONSUCPopFemaleGrad',
         
-          'DG','Programs','count1'));
+          'DG','Programs','program','Discipline','TopSchoolPie','TopSchool'));
 
           
 

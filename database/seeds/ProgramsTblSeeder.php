@@ -2043,7 +2043,7 @@ class ProgramsTblSeeder extends Seeder
        // PROGRAM NAMES WITHOUT DISCIPLINARY GROUP
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate as Automotive Craftsman',
             'created_at' => now(),
@@ -2051,7 +2051,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate as Technical Draftsman',
             'created_at' => now(),
@@ -2059,7 +2059,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Accounting & Bookkeeping',
             'created_at' => now(),
@@ -2067,7 +2067,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Automotive Technician',
             'created_at' => now(),
@@ -2075,7 +2075,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Bookkeeping',
             'created_at' => now(),
@@ -2083,7 +2083,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Computer Hardware Servicing',
             'created_at' => now(),
@@ -2091,7 +2091,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Contact Center Services',
             'created_at' => now(),
@@ -2099,7 +2099,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Development Journalism',
             'created_at' => now(),
@@ -2107,7 +2107,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Medical Transcriptionist',
             'created_at' => now(),
@@ -2115,7 +2115,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Nursing Aide',
             'created_at' => now(),
@@ -2123,7 +2123,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Programming',
             'created_at' => now(),
@@ -2131,7 +2131,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate in Security Services',
             'created_at' => now(),
@@ -2139,7 +2139,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '1',
             'program_name' => 'Certificate of Agricultural Science',
             'created_at' => now(),
@@ -2147,7 +2147,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Associate  in Publication and Educational Support Communication',
             'created_at' => now(),
@@ -2155,7 +2155,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Associate in Agribusiness Management',
             'created_at' => now(),
@@ -2163,7 +2163,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Associate in Computer Technology',
             'created_at' => now(),
@@ -2171,7 +2171,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Associate in Information Technology',
             'created_at' => now(),
@@ -2179,7 +2179,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Associate in Mathematics with Business and Finance',
             'created_at' => now(),
@@ -2187,7 +2187,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Associate in Mathematics with Research Statistics',
             'created_at' => now(),
@@ -2195,7 +2195,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma as Agricultural Technician',
             'created_at' => now(),
@@ -2203,7 +2203,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma for Environmental Protection Technician',
             'created_at' => now(),
@@ -2211,7 +2211,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma for Science Laboratory Technician',
             'created_at' => now(),
@@ -2219,7 +2219,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma in Agribusiness Management',
             'created_at' => now(),
@@ -2227,7 +2227,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma in Agricultural Technology',
             'created_at' => now(),
@@ -2235,7 +2235,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma in Community Health Care',
             'created_at' => now(),
@@ -2243,7 +2243,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma in Development Communication',
             'created_at' => now(),
@@ -2251,7 +2251,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma in Fisheries Technology',
             'created_at' => now(),
@@ -2259,7 +2259,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma in Information Technology',
             'created_at' => now(),
@@ -2267,7 +2267,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma in Mathematics with Business and Finance',
             'created_at' => now(),
@@ -2275,7 +2275,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma in Mathematics with Research Statistics',
             'created_at' => now(),
@@ -2283,7 +2283,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma of Industrial Technology',
             'created_at' => now(),
@@ -2291,7 +2291,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '2',
             'program_name' => 'Diploma of Technology',
             'created_at' => now(),
@@ -2299,7 +2299,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '3',
             'program_name' => 'Bachelor of Science in Computer Science',
             'created_at' => now(),
@@ -2307,7 +2307,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '3',
             'program_name' => 'Bachelor of Science in Disaster Resiliency and Management',
             'created_at' => now(),
@@ -2315,7 +2315,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '4',
             'program_name' => 'Certificate in Preschool Education',
             'created_at' => now(),
@@ -2323,7 +2323,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '4',
             'program_name' => 'Certificate in Teacher Education',
             'created_at' => now(),
@@ -2331,7 +2331,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '4',
             'program_name' => 'Diploma in Exercise and Sports Science',
             'created_at' => now(),
@@ -2339,7 +2339,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '4',
             'program_name' => 'Diploma in Urban and Regional Planning',
             'created_at' => now(),
@@ -2347,7 +2347,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '4',
             'program_name' => 'Graduate Diploma in Econometrics',
             'created_at' => now(),
@@ -2355,7 +2355,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '4',
             'program_name' => 'Graduate Diploma in Economics',
             'created_at' => now(),
@@ -2363,7 +2363,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '4',
             'program_name' => 'Graduate Diploma in Special Education',
             'created_at' => now(),
@@ -2371,7 +2371,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '4',
             'program_name' => 'Teacher Certificate Program For Non-Education Professionals',
             'created_at' => now(),
@@ -2379,7 +2379,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '4',
             'program_name' => 'Teacher Curriculum Program for Non-Educ. Prof.',
             'created_at' => now(),
@@ -2387,7 +2387,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Industrial Technology',
             'created_at' => now(),
@@ -2395,7 +2395,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Agriculture',
             'created_at' => now(),
@@ -2403,7 +2403,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Applied Mathematics',
             'created_at' => now(),
@@ -2411,7 +2411,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Aquaculture',
             'created_at' => now(),
@@ -2419,7 +2419,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Biology',
             'created_at' => now(),
@@ -2427,7 +2427,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Development Communication',
             'created_at' => now(),
@@ -2435,7 +2435,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Devt. Communication Mgt.',
             'created_at' => now(),
@@ -2443,7 +2443,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Econometrics',
             'created_at' => now(),
@@ -2451,7 +2451,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Economics',
             'created_at' => now(),
@@ -2459,7 +2459,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Engineering',
             'created_at' => now(),
@@ -2467,7 +2467,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Enviromental Resources & Management',
             'created_at' => now(),
@@ -2475,7 +2475,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Environmental & Resource Mgt.',
             'created_at' => now(),
@@ -2483,7 +2483,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Environmental Resource Management',
             'created_at' => now(),
@@ -2491,7 +2491,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Fisheries',
             'created_at' => now(),
@@ -2499,7 +2499,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Food Science',
             'created_at' => now(),
@@ -2507,7 +2507,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Information Science',
             'created_at' => now(),
@@ -2515,7 +2515,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Library Information Science',
             'created_at' => now(),
@@ -2523,7 +2523,7 @@ class ProgramsTblSeeder extends Seeder
        ]);
        
        DB::table('programs')->insert([
-            'discipline_groups_id' => null,
+            'discipline_groups_id' => '22',
             'program_levels_id' => '6',
             'program_name' => 'Master of Science in Marine Biodiversity',
             'created_at' => now(),
