@@ -135,14 +135,20 @@
           </div>
         </li>
 
-          
+        <li class = " @if ($activePage == 'archive') active @endif">
+          <a href="/officer/archives">
+            <i class="now-ui-icons design_app"></i>
+            <p>Archives</p>
+          </a>
+        </li>
+        
         <li class = " @if ($activePage == 'backup') active @endif">
           <a href="/officer/backup">
             <i class="now-ui-icons design_app"></i>
             <p>Backup Resources</p>
           </a>
         </li>
-
+          
         <li class = " @if ($activePage == 'references') active @endif">
           <a href="/officer/references">
             <i class="now-ui-icons design_bullet-list-67"></i>

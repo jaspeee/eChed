@@ -110,6 +110,7 @@ Route::get('/officer/collatefiles', 'OfficerController@collatefiles');
 Route::get('/officer/collatefiles/result/{id}', 'OfficerController@result_collatefiles');
 Route::get('/officer/analytics/{id}', 'OfficerController@analytics');
 Route::patch('/officer/status/{status}/{id}', 'OfficerController@status');
+Route::get('/officer/archives', 'OfficerController@archives');
 
 Route::patch('/officer/request/{id}/{type}', 'OfficerController@Account_request');  
 

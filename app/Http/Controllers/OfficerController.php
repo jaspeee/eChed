@@ -1628,6 +1628,21 @@ class OfficerController extends Controller
 
     }
 
+    public function archives()
+    {   
+     
+
+        //GET THE FIRST AND LAST NAME OF THE USER 
+        $id = auth()->id();
+        $employee = DB::table('users')->find($id)->employee_profiles_id;
+        $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
+        $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+
+      
+       return view('officer_pages.archives', compact('fname','lname'));
+
+    }
+
     public function analytics($id1)
     {
           //GET THE FIRST AND LAST NAME OF THE USER 
