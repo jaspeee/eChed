@@ -148,7 +148,24 @@
 
   @yield('script')
   <script src=https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.2/echarts-en.min.js charset=utf-8></script>
+ 
 
+<script  type="text/javascript">
+
+$(document).ready(function() {
+   
+  Swal.fire({
+  position: 'center',
+  icon: 'success',
+  title: 'Your work has been saved',
+  showConfirmButton: false,
+  timer: 1500
+    
+ })
+ 
+ }); 
+
+</script>
 
 
 </html>

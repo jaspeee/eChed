@@ -56,6 +56,8 @@
                 <div class="notice" style="color:red;margin-top:-15px;font-size: 13px;">Notice : Make sure to upload Excel files (.xlsx) only</div>
               </p>
               
+              <hr>
+              <br>
                 <form method="post" action="" id="form" class="form-horizontal" enctype="multipart/form-data">
               @csrf 
                 <input type="file" name="file[]" id="file" multiple>

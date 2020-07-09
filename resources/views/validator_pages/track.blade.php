@@ -22,7 +22,9 @@
             <div class="container" style="padding:40px;">
 
               <p style="font-size:18px;"><b>Submitted Forms to the CHED Verifiers</b></p>
+              <hr>
               <br>
+              
               <form class="form-inline " >
                   <div class="form-group">
                     <label >

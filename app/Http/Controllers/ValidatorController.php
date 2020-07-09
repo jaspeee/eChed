@@ -213,6 +213,7 @@ class ValidatorController extends Controller
         $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
         $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
 
+        
         return view('validator_pages.validation', compact('submissions','fname','lname'));
     }
 
@@ -355,12 +356,12 @@ class ValidatorController extends Controller
             $audit->user_agent = $request->header('User-Agent');
             $audit->save();  
 
-
+            
             return  back()->with('success', 'Approves the file successfully');
         }
         
        
-    }
+    } 
 
     public function Validation_disapproves(Request $request, $id)
     {   

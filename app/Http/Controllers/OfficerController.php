@@ -511,7 +511,7 @@ class OfficerController extends Controller
          else{
              return back();
          }
-         return back();
+         return  back()->with('success', 'Added a new account successfully');
     }
     
     public function Deadline_add(Request $request)

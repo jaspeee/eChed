@@ -25,16 +25,33 @@
 
            <center>
            <a href="/officer/startbackup">
-           <button type="button" class="btn btn-success" >Start Backup</button>
+           <button  onclick="return confirmation();" type="button" class="btn btn-success" >Start Backup</button>
            </a>
            </center>
 
            </div>
 
-          </div>
+          </div> 
         </div>
       </div>
       
                  
   </div>
+@endsection
+
+@section('scripts')
+<script  type="text/javascript">
+
+function confirmation(){
+    if(confirm('Are you sure that you want to backup the system?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
+
+
+</script> 
+    
+    
 @endsection

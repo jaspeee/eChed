@@ -23,6 +23,7 @@
             <div class="container" style="padding:40px;">
 
               <p style="font-size:18px;"><b>Audit Logs</b></p>
+              <br>
              
               <div class="list-group">
                   

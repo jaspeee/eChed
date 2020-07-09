@@ -30,6 +30,8 @@
                     </div>
                   </div>
                 </div> --}}
+      
+                <hr>
                 <br>
                 <form class="form-inline " >
                   <div class="form-group">

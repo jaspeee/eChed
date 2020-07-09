@@ -118,6 +118,7 @@
 @section('scripts')
 <script  type="text/javascript">
 
+
 function confirmation(){
     if(confirm('Are you sure you want to change password ?')){
         submit();
@@ -125,6 +126,9 @@ function confirmation(){
         return false;
     }   
 }
+
+
+
 
 </script>
 @endsection

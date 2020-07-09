@@ -31,7 +31,8 @@
               @endif
  
               <p style="font-size:13px;">Download Form : Please access the forms below and fill them out.</p>
- 
+              <div class="notice" style="color:red;margin-top:-15px;font-size: 13px;">Notice : Make sure to use the forms below only and don't modify the file name, it will cause an inaccurate reading of the data.</div>
+                <br>
                 <div class="list-group">
                   
                     @foreach($forms as $form)

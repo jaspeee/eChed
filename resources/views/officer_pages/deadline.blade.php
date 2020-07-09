@@ -23,6 +23,13 @@
             <div class="container" style="padding:40px;">
 
               <p style="font-size:18px;"><b>Set the Deadline for Submission</b></p>
+              <p style="font-size:13px;color:red;">
+                  Notice : Once the deadline has been set, it will automatically establish the 
+                  new school year submission and dismiss the past data
+                  . Kindly review carefully before confirming.
+                </p>
+              <hr>
+              <br>
 
               <form method="post" action="/officer/deadline/add" style="padding:4%;">
                 {{method_field('patch')}}
