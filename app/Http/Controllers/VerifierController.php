@@ -459,7 +459,8 @@ class VerifierController extends Controller
             $id1 = auth()->id();
             //VerifierApprove::dispatch($id, $id1, $filename, $form_id);
  
-          
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
             //STORE DATA TO COMPLETE TABLE
             $comp = new Complete();
             $comp->user_id = auth()->id();
@@ -500,6 +501,7 @@ class VerifierController extends Controller
             $audit->user_agent = $request->header('User-Agent');
             $audit->save();  
 
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');  
             return back()->with('success', 'Approves the file successfully');
 
         }
