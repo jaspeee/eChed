@@ -72,7 +72,7 @@
                               <td><span class="badge badge-pill badge-danger mr-1" >{{$acc->status}}</span></td>
                             @endif
                             
-                            <form method="POST" action="/officer/accounts/{{$acc->status}}/{{$acc->id}}">
+                            <form method="POST" action="/officer/status/{{$acc->status}}/{{$acc->id}}">
                               {{method_field('patch')}} 
                               @csrf
                                   @if($acc->status == 'Active')
@@ -80,7 +80,7 @@
                                   @else
                                   <td><button type="submit"  class="btn btn-success">Active</button></a></td>
                                   @endif 
-                          </form> 
+                          </form>  
 
                           <td style="padding:0;">
                             <button type="button"   class="btn btn-warning" data-toggle="modal" data-target="#changePass" data-id="{{$acc->id}}">

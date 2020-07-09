@@ -180,7 +180,7 @@ class ValidatorController extends Controller
         $date = Carbon::now();
         $dates = $date->toFormattedDateString();         
  
-        //GET THE REQUEST
+        //GET THE REQUEST 
         $request = DB::table('concerns')
         ->join('users', 'concerns.user_id', '=','users.id')
         ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')

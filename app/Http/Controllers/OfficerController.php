@@ -334,7 +334,7 @@ class OfficerController extends Controller
 
             $user = User::find($id);
             $user ->statuses_id = '1';
-            $user ->save(); 
+            $user ->save();  
 
             $audit = new Audit_log();
             $audit->user_id =  auth()->id();
@@ -490,7 +490,7 @@ class OfficerController extends Controller
 
 
         return  back()->with('success', 'Added a new account successfully');
-    }
+    } 
 
     public function Password_change(Request $request) 
     {
@@ -1519,7 +1519,7 @@ class OfficerController extends Controller
             ->where('concerns_id',$id)
             ->delete();
             return redirect('/validator/accounts');
-        }
+        } 
         else
         {   
             DB::table('concerns')   
@@ -1943,6 +1943,27 @@ class OfficerController extends Controller
 
           
 
+    }
+
+    public function status($status, $id)
+    {   
+
+        if($status == 'Active')
+        {
+            DB::table('users') 
+            ->where('id',$id) 
+            ->update(['statuses_id' => '2']);
+    
+        }
+        else
+        {
+            DB::table('users') 
+            ->where('id',$id) 
+            ->update(['statuses_id' => '1']);
+        }
+        
+        return back()->with('success', 'Activate the account successfully');
+        
     }
 
 

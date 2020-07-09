@@ -86,11 +86,11 @@
       
               <ul class="list-group list-group-flush">
                 @foreach($request as $req) 
-                <li class="list-group-item" > 
+                <li class="list-group-item" >  
 
-                  <form id="update" action="/officer/request/{{$req->concerns_id}}/{{$req->statuses_id}}" method="POST">
+                  <form id="update" action="/officer/request/{{$req->concerns_id}}/6" method="POST">
                     {{method_field('patch')}}
-                   @csrf
+                   @csrf 
  
                    <button type="submit" 
                     style="background-color: transparent;border: none;cursor:pointer;">
