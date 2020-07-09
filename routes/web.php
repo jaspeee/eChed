@@ -111,6 +111,7 @@ Route::get('/officer/collatefiles/result/{id}', 'OfficerController@result_collat
 Route::get('/officer/analytics/{id}', 'OfficerController@analytics');
 Route::patch('/officer/status/{status}/{id}', 'OfficerController@status');
 Route::get('/officer/archives', 'OfficerController@archives');
+Route::get('/officer/archives/{id}', 'OfficerController@downloadArchive');
 
 Route::patch('/officer/request/{id}/{type}', 'OfficerController@Account_request');  
 

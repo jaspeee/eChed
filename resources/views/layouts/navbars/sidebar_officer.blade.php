@@ -137,14 +137,14 @@
 
         <li class = " @if ($activePage == 'archive') active @endif">
           <a href="/officer/archives">
-            <i class="now-ui-icons design_app"></i>
+            <i class="now-ui-icons files_box"></i>
             <p>Archives</p>
           </a>
         </li>
-        
+
         <li class = " @if ($activePage == 'backup') active @endif">
           <a href="/officer/backup">
-            <i class="now-ui-icons design_app"></i>
+            <i class="now-ui-icons arrows-1_cloud-upload-94"></i>
             <p>Backup Resources</p>
           </a>
         </li>

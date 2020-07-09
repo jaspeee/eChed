@@ -1638,9 +1638,23 @@ class OfficerController extends Controller
         $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
         $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
 
-      
-       return view('officer_pages.archives', compact('fname','lname'));
+        
+        $records =   $audits = DB::table('archives')
+        ->join('institutions', 'institutions.institutions_id', '=', 'archives.institutions_id')
+        ->select('archives.*','institutions.institution_name')->get();
 
+
+       return view('officer_pages.archives', compact('fname','lname','records'));
+
+    }
+
+    public function downloadArchive($id)
+    {
+        $form = DB::table('archives')->where('archives_id',$id)->first()->file;
+       
+        return Storage::download('public/archives/'.$form);
+      
+      
     }
 
     public function analytics($id1)
