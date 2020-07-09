@@ -467,12 +467,14 @@ class VerifierController extends Controller
             $comp->verifier_submission = $filename;
             $comp->forms_id = $form_id;
             $comp->institutions_id = $institution;
+            $comp->statuses_id = '3';
+            $comp->comment = '';
             $comp->save();
-
+ 
            // COPY FILE TO ANOTHER STORAGE FOLDER 
             if(Storage::move('public/verify/'.$filename, 'public/complete/' .$filename))
             {
-                return back()->with('success', 'Approves the file successfully');
+               
             }
 
                //UPDATE THE VCOUNT IN COUNTS TABLE
