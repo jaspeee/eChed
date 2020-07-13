@@ -176,7 +176,12 @@
         </div>
         <div class="card-body">
        
-          <div class="chart-area" style="width: 450px; height: 230px">
+        @if($outcome1 == "cant do disciplines")
+          <p style="font-size:14px;color:red;text-align:center;">
+            Not enough data to do discipline rankings
+          </p>
+        @else
+        <div class="chart-area" style="width: 450px; height: 230px">
           {!! $Discipline->container() !!}
           </div>
           <p style="font-size:14px;">
@@ -202,6 +207,8 @@
             </tbody>
           </table>
 
+        @endif
+          
 
         </div>
       </div> 
@@ -218,8 +225,13 @@
           </h5>
         </div>
         <div class="card-body">
-       
-          <div class="chart-area" style="width: 450px; height: 230px">
+
+        @if($outcome == "cant do programs")
+        <p style="font-size:14px;color:red;text-align:center;">
+          Not enough data to do program rankings
+         </p>
+        @else
+        <div class="chart-area" style="width: 450px; height: 230px">
           {!! $program->container() !!}
           </div>
 
@@ -246,6 +258,7 @@
                   @endforeach
             </tbody>
           </table>
+        @endif
 
         </div>
       </div> 

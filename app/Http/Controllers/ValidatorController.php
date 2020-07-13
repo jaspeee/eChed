@@ -273,7 +273,8 @@ class ValidatorController extends Controller
          ->join('statuses', 'users.statuses_id', '=', 'statuses.statuses_id')
          ->select('users.*','employee_profiles.first_name', 'employee_profiles.last_Name', 
             'employee_profiles.position', 'employee_profiles.division','statuses.status')
-         ->where('employee_profiles.institutions_id', $institution)->get();
+         ->where('employee_profiles.institutions_id', $institution)
+         ->where('user_types_id','1')->get(); 
 
   
         return view('validator_pages.accounts', compact('account','fname','lname'));

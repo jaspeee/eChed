@@ -86,7 +86,7 @@ Route::get('/officer/deadline', 'OfficerController@Page_deadline');
 Route::get('/officer/final/{ins_id}', 'OfficerController@Page_final');
 Route::get('/officer/accounts', 'OfficerController@Page_account');
 Route::get('/officer/accounts/verifier', 'OfficerController@Page_account_verifier');
-Route::get('/officer/accounts/validator', 'OfficerController@Page_account_validator');
+Route::get('/officer/accounts/validator', 'OfficerController@Page_account_validator'); 
 Route::patch('/officer/accounts/{status}/{id}', 'OfficerController@Account_verifier_status');
 Route::post('/officer/accounts/add', 'OfficerController@Account_verifier_add');
 Route::post('/officer/accounts/validator/add', 'OfficerController@Account_validator_add');

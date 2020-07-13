@@ -25,7 +25,7 @@
               <p style="font-size:13px;">Add Accounts : Please click this button to prompt the adding of accounts 
                   
                 <button type="button" data-toggle="modal" data-target="#verifierModal" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
-                  <i class="now-ui-icons ui-2_settings-90" data-toggle="tooltip" data-placement="top" title="Add Officer"></i>
+                  <i class="now-ui-icons ui-2_settings-90" data-toggle="tooltip" data-placement="top" title="Add validator"></i>
                 </button>
               </p>
               <hr>
