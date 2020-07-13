@@ -2062,5 +2062,16 @@ class OfficerController extends Controller
         
     }
 
+    public function remove_collate($id)
+    {   
+
+        DB::table('collation_lists')   
+        ->where('collation_lists_id',$id)
+        ->delete();
+      
+        return back()->with('success', 'Activate the account successfully');
+        
+    }
+
 
 }

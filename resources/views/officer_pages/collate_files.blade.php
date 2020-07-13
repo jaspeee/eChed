@@ -54,6 +54,7 @@
                       <th><b>End date</b></th>
                       <th></th>
                       <th></th>
+                      <th></th>
                    
                     </tr>
                   </thead>
@@ -76,7 +77,18 @@
                               <i class="now-ui-icons  business_chart-bar-32" style="font-size: 20px;color: gray" data-toggle="tooltip" data-placement="top" title="Analytics"></i>
                               </button>
                               </a>
-                              </td>              
+                              </td> 
+                              <td style="padding:0;">
+
+                              <form method="POST"  action="/officer/collatefiles/remove/{{$lists->collation_lists_id}}">
+                                  {{method_field('patch')}} 
+                                  @csrf
+                                <button  onclick="return confirmation();" type="submit" style="background-color: transparent;border: none;cursor:pointer;">
+                                  <i class="now-ui-icons ui-1_simple-remove" style="font-size: 15px;color: red" data-toggle="tooltip" data-placement="top" title="Remove"></i>
+                                </button>
+                                </form>
+
+                              </td>               
                         </tr>
                         @endforeach
                  </tbody>    
@@ -160,9 +172,15 @@ $('#addcollate').on('show.bs.modal', function(event) {
   var button = $(event.relatedTarget);
   var modal = $(this);
 
- 
-
 });
+
+function confirmation(){
+    if(confirm('Are you sure that you want to remove this collation file?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
 
 </script>
 @endsection

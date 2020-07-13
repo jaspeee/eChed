@@ -114,6 +114,7 @@ Route::get('/officer/archives', 'OfficerController@archives');
 Route::get('/officer/archives/{id}', 'OfficerController@downloadArchive');
 
 Route::patch('/officer/request/{id}/{type}', 'OfficerController@Account_request');  
+Route::patch('/officer/collatefiles/remove/{id}', 'OfficerController@remove_collate');  
 
 
 //REPORTS
