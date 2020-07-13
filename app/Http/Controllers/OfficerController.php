@@ -95,8 +95,8 @@ class OfficerController extends Controller
         ];
         $fillColors = [
         
-            "rgba(0, 52, 113, 0.7)",
-            "rgba(255, 206, 0, 0.7)",
+            "rgba(0, 52, 113, 0.5)",
+            "rgba(255, 206, 0, 0.5)",
            
 
         ];
@@ -106,8 +106,8 @@ class OfficerController extends Controller
            
         ];
         $fillColors1 = [
-            "rgba(16, 121, 16, 0.7)",
-            "rgba(220, 0, 5, 0.7)",
+            "rgba(16, 121, 16, 0.5)",
+            "rgba(220, 0, 5, 0.5)",
         ];
 
         //INSTITUTION CHART
@@ -1775,6 +1775,56 @@ class OfficerController extends Controller
             $TotalNONSUCPopFemaleGrad = '0';
           }
 
+
+        $LineprogColor1 = [
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            "rgba(255, 206, 0, 1.0)",
+            
+        ];
+        $FillprogColor1 = [
+            "rgba(255, 206, 0, 0.8)",
+            "rgba(255, 206, 0, 0.7)",
+            "rgba(255, 206, 0, 0.5)",
+            "rgba(255, 206, 0, 0.4)",
+            "rgba(255, 206, 0, 0.3)",
+            
+        ];
+
+        $LinedgColor1 = [
+            "rgba(192, 57, 43, 1.0)",
+            "rgba(192, 57, 43, 1.0)",
+            "rgba(192, 57, 43, 1.0)",
+            "rgba(192, 57, 43, 1.0)",
+            "rgba(192, 57, 43, 1.0)",
+           
+            
+        ];
+        $FilldgColor1 = [
+            "rgba(192, 57, 43, 0.8)",
+            "rgba(192, 57, 43, 0.7)",
+            "rgba(192, 57, 43, 0.5)",
+            "rgba(192, 57, 43, 0.4)",
+            "rgba(192, 57, 43, 0.3)",
+         
+        ];
+
+        $LineEnColor1 = [
+            "rgba(30, 132, 73, 1.0)",  
+            "rgba(30, 132, 73, 1.0)",  
+        
+        ];
+        $FillGradColor1 = [
+            "rgba(30, 132, 73, 0.8)",  
+            "rgba(30, 132, 73, 0.4)",  
+           
+            
+        ];
+
+
+
           //TOP 5 PROGRAMS
 
           $Programs = DB::table('collations')
@@ -1804,7 +1854,7 @@ class OfficerController extends Controller
             ->orderby('Total','desc')
             ->where('collation_lists_id',$id1)
             ->skip(1)->first()->Total;
-  
+   
             $P3 = DB::table('collations')
             ->select(DB::raw("SUM(TE+TG) as Total"),'program_name')
             ->groupBy('program_name')
@@ -1845,11 +1895,11 @@ class OfficerController extends Controller
                    $P4,
                    $P5,
                  
-                ])
+                ]) 
                   
               //->fill(false)
-                ->color('gray')
-                ->backgroundcolor('gray');
+                ->color( $LineprogColor1)
+                ->backgroundcolor($FillprogColor1);
     
             $program->displayLegend(false);
 
@@ -1880,8 +1930,8 @@ class OfficerController extends Controller
                 ])
                   
               //->fill(false)
-                ->color('gray')
-                ->backgroundcolor('gray');
+                ->color($LineprogColor1)
+                ->backgroundcolor($FillprogColor1);
     
             $program->displayLegend(false);
             $outcome = "cant do programs";
@@ -1959,8 +2009,8 @@ class OfficerController extends Controller
                 $DG4, 
                 $DG5,
                 ])
-                ->color('gray')
-                ->backgroundcolor('gray');
+                ->color( $LinedgColor1)
+                ->backgroundcolor($FilldgColor1);
     
             $Discipline->displayLegend(false);
             
@@ -2017,8 +2067,8 @@ class OfficerController extends Controller
           $TopSchoolPie = new Gender;
           $TopSchoolPie->labels(['Enrollees', 'Graduates',]);
           $TopSchoolPie->dataset('Total', 'doughnut', [ $TopSchoolEnroll,$TopSchoolGrad])
-                 ->color('gray','red')
-                 ->backgroundcolor('gray','red');
+                 ->color($LineEnColor1)
+                 ->backgroundcolor($FillGradColor1);
           $TopSchoolPie->displayLegend(true);
 
 
@@ -2068,10 +2118,16 @@ class OfficerController extends Controller
         DB::table('collation_lists')   
         ->where('collation_lists_id',$id)
         ->delete();
+
+        DB::table('collations')   
+        ->where('collation_lists_id',$id)
+        ->delete();
       
         return back()->with('success', 'Activate the account successfully');
         
     }
+
+
 
 
 }

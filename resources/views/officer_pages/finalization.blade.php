@@ -22,9 +22,10 @@
 
               <p style="font-size:18px;"><b>List of Institutions</b></p>
 
-              <p style="font-size:13px;">
-                Notice : Once an action has been confirmed, action cannot be undone. Kindly review carefully before confirming.
+              <p style="font-size:13px;color:red;">
+                    Notice : To expand a specific institution, click the arrow on the right-most part of the row.
               </p>
+
               <hr>
               
               <br>

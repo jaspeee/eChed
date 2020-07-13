@@ -67,19 +67,19 @@ class ValidatorController extends Controller
            
         ];
         $fillColors = [
-            "rgba(255, 206, 0, 0.7)",
-            "rgba(16, 121, 16, 0.7)",
-            "rgba(220, 0, 5, 0.7)",
+            "rgba(255, 206, 0, 0.5)",
+            "rgba(16, 121, 16, 0.5)",
+            "rgba(220, 0, 5, 0.5)",
         ];
 
         $borderColors1 = [
             "rgba(16, 121, 16, 1.0)",
-            "rgba(220, 0, 5, 1.0)",
+            "rgba(220, 0, 5, 1.0)", 
            
         ];
         $fillColors1 = [
-            "rgba(16, 121, 16, 0.7)",
-            "rgba(220, 0, 5, 0.7)",
+            "rgba(16, 121, 16, 0.5)",
+            "rgba(220, 0, 5, 0.5)",
         ];
 
 

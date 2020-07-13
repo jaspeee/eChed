@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="form-group">
-                  <input type="submit" class="btn btn-info" value="Set Deadline">
+                  <input onclick="return confirmation();" type="submit" class="btn btn-success btn-round" value="Set Deadline">
                 </div>
 
               </form>
@@ -60,4 +60,22 @@
       
                  
   </div>
+@endsection
+
+@section('scripts')
+<script  type="text/javascript">
+
+
+function confirmation(){
+    if(confirm('Are you sure that you want to set new deadline?')){
+        submit();
+    }else{
+        return false;
+    }   
+}
+
+
+</script> 
+    
+    
 @endsection

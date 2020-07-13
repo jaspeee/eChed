@@ -22,10 +22,13 @@
             <div class="container" style="padding:40px;">
 
               <p style="font-size:18px;"><b>Backup</b></p>
-
+              <p style="font-size:13px;color:red;">
+                  Notice : After the action has been done, it will automatically send an email regarding about the backup .
+                </p>
+                <hr>  
            <center>
            <a href="/officer/startbackup">
-           <button  onclick="return confirmation();" type="button" class="btn btn-success" >Start Backup</button>
+           <button  onclick="return confirmation();" type="button" class="btn btn-success btn-round">Start Backup</button>
            </a>
            </center>
 
@@ -47,7 +50,7 @@ function confirmation(){
         submit();
     }else{
         return false;
-    }   
+    }    
 }
 
 

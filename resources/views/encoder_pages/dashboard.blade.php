@@ -132,7 +132,7 @@
             <h5 class="card-category"> <i class="now-ui-icons business_chart-bar-32"></i>  Encoder </h5>
             <h4 class="card-title"> Submission Status</h4>
           </div>
-          <div class="card-body" >
+          <div class="card-body">
             <div class="chart-area" style="height:190px;">
             {!! $chart->container() !!} 
             </div>

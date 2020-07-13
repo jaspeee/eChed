@@ -65,7 +65,7 @@
                 
                 <div id="selectedFiles" style="padding-top:2%;padding-bottom:%"></div>
 
-                <input type="submit" onclick="return confirmation();" class="btn btn-success" value="Upload">
+                <input type="submit" onclick="return confirmation();" class="btn btn-success btn-round" value="Upload">
                <br><br>
                <div class="progress" style="position:relative; width:100%; height:30px;">
                   <div class="bar" style="background-color: #2da62d; width:0%; border-radius: 3px;"></div >

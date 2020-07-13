@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="card-footer ">
-              <button type="submit" onclick="return confirmation();" class="btn btn-primary btn-round ">{{__('Change Password')}}</button>
+              <button type="submit" onclick="return confirmation();" class="btn btn-success btn-round">{{__('Change Password')}}</button>
             </div>
           </form>
         </div>

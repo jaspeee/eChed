@@ -9,11 +9,13 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\Suc_CollationImport;
 use App\Imports\NonSuc_CollationImport;
 use App\Exports\EnrollmentExport;
+use App\Exports\AuditLogsExport;
 use App\InstitutionId; 
 use App\Collation; 
 Use Carbon\Carbon;
 use App\Collation_list; 
 use App\Audit_log; 
+use App\AuditList; 
 use RealRashid\SweetAlert\Facades\Alert;
 
 
@@ -275,7 +277,7 @@ class ReportsController extends Controller
 
     public function exports(Request $request, $id)
     {   
-        
+         
          //STORE DATA 
          $ins = new InstitutionId();
          $ins->institution = '0';
@@ -304,6 +306,25 @@ class ReportsController extends Controller
         return Excel::download(new EnrollmentExport, $name);
     }
 
+
+    public function audit_export(Request $request)
+    {   
+
+  
+       //ADD COLLATION 
+       $Audit = new AuditList();
+       $Audit->date_start = request('sdate');
+       $Audit->date_end = request('edate');
+       $Audit->save();
+        
+       $date = Carbon::now();
+       $dates = $date->toDateString();             
+
+       $name = 'AuditLogs_'. $dates.'.xlsx';
+
+       return Excel::download(new AuditLogsExport, $name);
+        
+    }
   
     
 }

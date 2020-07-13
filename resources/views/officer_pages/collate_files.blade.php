@@ -25,15 +25,14 @@
               <p style="font-size:18px;"><b>Collate Files</b></p>
               <p style="font-size:13px;">Collate : Please click this button to collate files
                   
-                
                   <button type="button" data-toggle="modal" data-target="#addcollate" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
                     <i class="now-ui-icons files_box" data-toggle="tooltip" data-placement="top" title="Collate"></i>
                   </button>
-                 
+                   
                 </p> 
                 <hr>
+              <br>    
 
-              <br>     
               <form class="form-inline " >
                   <div class="form-group">
                     <label >
@@ -67,7 +66,7 @@
                               <td>{{$lists->date_end}}</td>
                               <td>
                                 <a href="/officer/collatefiles/result/{{$lists->collation_lists_id}}">
-                                <button type="button" class="btn btn-success">See Results</button>
+                                <button type="button" class="btn btn-success btn-round">See Results</button>
                                 </a>
                               </td>   
                               <td>
@@ -125,8 +124,8 @@
                       </div>
 
                     <div class="form-group">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-primary">Collate</button>
+                      <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-success btn-round">Collate</button>
                     </div>
                 
                   </form>

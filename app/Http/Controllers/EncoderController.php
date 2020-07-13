@@ -61,11 +61,9 @@ class EncoderController extends Controller
            
         ];
         $fillColors = [
-            "rgba(255, 206, 0, 0.7)",
-            "rgba(16, 121, 16, 0.7)",
-            "rgba(220, 0, 5, 0.7)",
-           
-
+            "rgba(255, 206, 0, 0.5)",
+            "rgba(16, 121, 16, 0.5)",
+            "rgba(220, 0, 5, 0.5)",
         ];
 
         $pending = DB::table('validates')
@@ -229,7 +227,7 @@ class EncoderController extends Controller
                         $audit_ID= $audit_ID+1;
                     }
 
-                    EncoderUpload::dispatch($fileNameToStore,$id); 
+                   // EncoderUpload::dispatch($fileNameToStore,$id); 
                      
                     $file->storeAs('public/validate',$fileNameToStore);
                       
@@ -242,20 +240,18 @@ class EncoderController extends Controller
                     $audit->auditable_id = $audit_ID;
                     $audit->old_values = '';
                     $audit->new_values = '{user_id:'.$id.', encoder_submission:'.$fileNameToStore.', statuses_id:3, comment:}';
-
                     $audit->url = URL::current();
                     $audit->ip_address = \Request::ip();
                     $audit->user_agent = $request->header('User-Agent');
                     $audit->save();  
                     
 
-
-                    // $val = new Validate();
-                    // $val->user_id = auth()->id();
-                    // $val->encoder_submission = $fileNameToStore;
-                    // $val->statuses_id = '3';
-                    // $val->comment = '';
-                    // $val->save();  
+                    $val = new Validate();
+                    $val->user_id = auth()->id();
+                    $val->encoder_submission = $fileNameToStore;
+                    $val->statuses_id = '3';
+                    $val->comment = '';
+                    $val->save();  
                 }
 
             } 
@@ -341,23 +337,10 @@ class EncoderController extends Controller
     //    $sample2= $request->header('User-Agent');
     //     return $sample2;
     // }
-
+ 
     public function audit(Request $request, $val)
     {   
 
-        $audit = new Audit_log();
-        $audit->user_id =  auth()->id();
-        $audit->user_types_id = '1';
-        $audit->event = 'Download';
-        $audit->auditable_type = 'App\Form';
-        $audit->auditable_id = '';
-        $audit->old_values = '';
-        $audit->new_values = '{download:'.$val.'}';
-        $audit->url = URL::current();
-        $audit->ip_address = \Request::ip();
-        $audit->user_agent = $request->header('User-Agent');
-        $audit->save();  
-        
         return Storage::download('public/forms/'.$val);
         //return 'wala';
     }

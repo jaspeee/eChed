@@ -98,7 +98,7 @@
               
                   <p id="comments" style="font-style: italic;"></p>
                   {{-- <h5 id="sample"></h5> --}}
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">Close</button>
                 </div>
               
               </div>

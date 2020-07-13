@@ -154,8 +154,8 @@
                       <input type="text" class="form-control" id="division" name="division">
                     </div>
                     <div class="form-group">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-primary">Edit account</button>
+                      <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">Close</button>
+                      <button type="submit"  class="btn btn-success btn-round">Edit account</button>
                     </div>
                 
                   </form>
@@ -200,9 +200,9 @@
                       <input type="text" class="form-control" id="division" name="division">
                     </div>
                     <div class="form-group">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-primary">Add account</button>
-                    </div>
+                      <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">Close</button>
+                      <button type="submit"  class="btn btn-success btn-round">Add account</button>
+                    </div> 
                 
                   </form>
                 </div>
@@ -238,8 +238,8 @@
                     </div>
           
                     <div class="form-group">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-primary">Confirm</button>
+                      <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-success btn-round">Confirm</button>
                     </div>
                 
                   </form> 

@@ -47,22 +47,5 @@ class EncoderUpload implements ShouldQueue
         $val->comment = '';
         $val->save();  
 
-        // $audit_ID = DB::table('validates')->orderBy('validates_id', 'DESC')->first()->validates_id;
-        // $audit_ID= $audit_ID+1;
-
-        // $audit = new Audit_log();
-        // $audit->user_id =   $this->id;
-        // $audit->user_types_id = '1';
-        // $audit->event = 'Upload';
-        // $audit->auditable_type = 'App\Validate';
-        // $audit->auditable_id = $audit_ID;
-        // $audit->old_values = '';
-        // $audit->new_values = '{user_id:"",encoder_submission:"",statuses_id:"",comment:""}';
-        // $audit->url = URL::current();
-        // $audit->ip_address = \Request::ip();
-        // $audit->user_agent = $request->header('User-Agent');
-        // $audit->save();  
-        
-
     }
 }

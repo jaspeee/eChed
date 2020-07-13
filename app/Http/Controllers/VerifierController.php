@@ -151,8 +151,8 @@ class VerifierController extends Controller
         ];
         $fillColors = [
         
-            "rgba(0, 52, 113, 0.7)",
-            "rgba(255, 206, 0, 0.7)",
+            "rgba(0, 52, 113, 0.5)",
+            "rgba(255, 206, 0, 0.5)",
            
 
         ];
@@ -162,8 +162,8 @@ class VerifierController extends Controller
            
         ];
         $fillColors1 = [
-            "rgba(16, 121, 16, 0.7)",
-            "rgba(220, 0, 5, 0.7)",
+            "rgba(16, 121, 16, 0.5)",
+            "rgba(220, 0, 5, 0.5)",
         ];
 
         //INSTITUTION

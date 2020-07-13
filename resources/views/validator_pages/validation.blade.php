@@ -188,8 +188,8 @@
                               <textarea id="textarea" name="textarea" class="form-control" ></textarea>
                             </div>
                             <div class="form-group">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success btn-round">Submit</button>
                             </div>
                             
                           </form>
@@ -214,7 +214,7 @@
                         
                             <p id="comments" style="font-style: italic;"></p>
                             {{-- <h5 id="sample"></h5> --}}
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary btn-round" data-dismiss="modal">Close</button>
                           </div>
                         
                         </div>
