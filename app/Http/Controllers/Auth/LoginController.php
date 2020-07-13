@@ -50,10 +50,11 @@ class LoginController extends Controller
         return redirect('/home');
     }
 
-    protected function credentials(Request $request)
-    {
-        return array_merge($request->only($this->username(), 'password'), ['statuses_id' => 1]);
-    }
+    // protected function credentials(Request $request)
+    // {
+    //     return array_merge($request->only($this->username(), 'password'), ['statuses_id' => 1]);
+        
+    // }
  
 
     /**
