@@ -87,7 +87,7 @@
   </script>
 </head>
 
-<body class="{{ $class ?? '' }}">
+<body class="{{ $class ?? '' }}" >
   <noscript>
     <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=111649226022273&ev=PageView&noscript=1" />
   </noscript>
@@ -150,22 +150,37 @@
   <script src=https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.2/echarts-en.min.js charset=utf-8></script>
  
 
-<!-- <script  type="text/javascript">
+<script  type="text/javascript">
 
-$(document).ready(function() {
+// $(document).ready(function() {
    
-  Swal.fire({
-  position: 'center',
-  icon: 'success',
-  title: 'Your work has been saved',
-  showConfirmButton: false,
-  timer: 1500
+//   Swal.fire({
+//   position: 'center',
+//   icon: 'success',
+//   title: 'Your work has been saved',
+//   showConfirmButton: false,
+//   timer: 1500
     
- })
+//  })
  
- }); 
+//  }); 
 
-</script> -->
+//var myclose = false;
+
+// function ConfirmClose()
+// {
+//     if (event.clientY < 0)
+//     {
+//         event.returnValue = 'You have closed the browser. Do you want to logout from your application?';
+//         setTimeout('myclose=false',10);
+//         myclose=true;
+//     }
+// }
+
+// window.onbeforeunload = function(event) {
+//   event.returnValue = "Write something clever here..";
+// };
+</script>
 
 
 </html>

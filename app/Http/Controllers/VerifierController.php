@@ -595,17 +595,27 @@ class VerifierController extends Controller
          {   
 
             //VerifierChangePass::dispatch($id, $request['password']);
+            if($request['password'] == $request['cpass'])
+            {
+                $user = User::find($id);
+                $user->password = Hash::make($request['password']);
+                $user->save();  
 
-             $user = User::find($id);
-             $user->password = Hash::make($request['password']);
-             $user->save();  
+                return back()->with('success', 'Change password successfully');
+            }
+            else
+            {
+                return back()->with('warning', 'Password Mismatch');
+            }
+            
      
              
          }
+
          else{
             return back()->with('warning', 'Current password was incorrect');
          }
-         return back()->with('success', 'Change password successfully');
+        
     }
 
     public function Page_references()

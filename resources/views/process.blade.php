@@ -48,8 +48,8 @@
         <div class="col-md-12" style="padding:10%;">
             <center>  
             <h1 style="color:red;opacity:0.8;">{{$type}}</h1>
-            <h5 style="text-align: justify;">Your request has been sent. It will take a while and the personnel
-                will just give you notice about the result of your request.
+            <h5 style="text-align: justify;">Your request has been sent. It may take a while and the personnel
+                will give you notice about the result of your request.
             </h5>
 
             <br>

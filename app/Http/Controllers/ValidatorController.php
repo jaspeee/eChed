@@ -547,16 +547,24 @@ class ValidatorController extends Controller
             
             //ValidatorChangePass::dispatch($id,$request['password']);
 
-            $user = User::find($id);
-            $user->password = Hash::make($request['password']);
-            $user->save();  
               
+            if($request['password'] == $request['cpass'])
+            { 
+                $user = User::find($id);
+                $user->password = Hash::make($request['password']);
+                $user->save();  
+                return back()->with('success', 'Change password successfully');
+            }
+            else
+            {
+                return back()->with('warning', 'Password Mismatch');
+            }
              
          }
-         else{ 
+         else{  
              return back()->with('warning', 'Current password was incorrect');
          }
-         return back()->with('success', 'Change password successfully');
+        
     }
 
 

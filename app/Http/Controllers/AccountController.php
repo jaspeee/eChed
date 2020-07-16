@@ -48,29 +48,39 @@ class AccountController extends Controller
     public function Accounts_changePass(Request $request, $id)
     {   
 
-        $newpass = Hash::make($request['npass']);
+        if($request['npass'] == $request['cpass'])
+        {
+            $newpass = Hash::make($request['npass']);
         
-        DB::update('update users set password = ? where id = ?', [$newpass,$id]);
+            DB::update('update users set password = ? where id = ?', [$newpass,$id]);
 
 
-        $usertype = DB::table('users')->where('id',auth()->id())->first()->user_types_id;
-        $oldpass = DB::table('users')->where('id',$id)->first()->password;
+            $usertype = DB::table('users')->where('id',auth()->id())->first()->user_types_id;
+            $oldpass = DB::table('users')->where('id',$id)->first()->password;
 
-        $audit = new Audit_log();
-        $audit->user_id =  auth()->id();
-        $audit->user_types_id = $usertype;
-        $audit->event = 'reset password';
-        $audit->auditable_type = 'App\User';
-        $audit->auditable_id = $id;
-        $audit->old_values = '{password:'.$oldpass.'}';
-        $audit->new_values = '{password:'.$newpass.'}';
-        $audit->url = URL::current();
-        $audit->ip_address = \Request::ip();
-        $audit->user_agent = $request->header('User-Agent');
-        $audit->save();  
+            $audit = new Audit_log();
+            $audit->user_id =  auth()->id();
+            $audit->user_types_id = $usertype;
+            $audit->event = 'reset password';
+            $audit->auditable_type = 'App\User';
+            $audit->auditable_id = $id;
+            $audit->old_values = '{password:'.$oldpass.'}';
+            $audit->new_values = '{password:'.$newpass.'}';
+            $audit->url = URL::current();
+            $audit->ip_address = \Request::ip();
+            $audit->user_agent = $request->header('User-Agent');
+            $audit->save();  
+            
+            return back()->with('success', 'Change password successfully'); 
+        } 
+        else
+        {
+            return back()->with('warning', 'Mismatch password'); 
+        }
         
-
-         return back()->with('success', 'Change password successfully'); 
+        
+ 
+        
     }
 
     public function Page_inactive_req(Request $request)

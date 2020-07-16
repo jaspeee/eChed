@@ -292,13 +292,25 @@ class EncoderController extends Controller
         
         $id = auth()->id();
         $current_password = User::find($id)->password;
-         
+        
+
          if(Hash::check($request['old_password'], $current_password))
-         {   
-            
-            $user = User::find($id);
-            $user->password = Hash::make($request['password']);
-            $user->save(); 
+         {    
+
+            if($request['password'] == $request['cpass'])
+            {
+                $user = User::find($id);
+                $user->password = Hash::make($request['password']);
+                $user->save(); 
+
+                return back()->with('success', 'Change password successfully');
+            }
+            else
+            {
+                return back()->with('warning', 'Password mismatch');
+            }
+             
+          
 
             // $password = Hash::make($request['password']);
             // DB::update('update users set password = ? where id = ?', [$password ,$this->id]);
@@ -326,7 +338,7 @@ class EncoderController extends Controller
          else{ 
             return back()->with('warning', 'Current password was incorrect');
          }
-         return back()->with('success', 'Change password successfully');
+        
     }
 
     public function Page_references()

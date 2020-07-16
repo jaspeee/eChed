@@ -159,7 +159,7 @@ class OfficerController extends Controller
         return view('officer_pages.dashboard', compact('deadline','fname',
         'lname','dates','HEI','request',
         'submissions','ins_chart','total','stat_chart'));
-
+ 
     } 
 
     public function Page_finalization()
@@ -502,16 +502,25 @@ class OfficerController extends Controller
          if(Hash::check($request['old_password'], $current_password))
          {   
             
-             $user = User::find($id);
-             $user->password = Hash::make($request['password']);
-             $user->save();  
+            if($request['password'] == $request['cpass'])
+            {
+                $user = User::find($id);
+                $user->password = Hash::make($request['password']);
+                $user->save();  
+                
+                return  back()->with('success', 'Added a new account successfully');
+            }
+            else
+            {
+                return back()->with('warning', 'Password Mismatch');
+            }
+            
              
-  
          }
          else{
-             return back();
+            return back()->with('warning', 'Current password was incorrect');
          }
-         return  back()->with('success', 'Added a new account successfully');
+        
     }
     
     public function Deadline_add(Request $request)
@@ -2099,6 +2108,8 @@ class OfficerController extends Controller
             DB::table('users') 
             ->where('id',$id) 
             ->update(['statuses_id' => '2']);
+
+            return back()->with('success', 'Deactivate the account successfully');
     
         }
         else
@@ -2106,9 +2117,11 @@ class OfficerController extends Controller
             DB::table('users') 
             ->where('id',$id) 
             ->update(['statuses_id' => '1']);
+
+            return back()->with('success', 'Activate the account successfully');
         }
         
-        return back()->with('success', 'Activate the account successfully');
+       
         
     }
 
