@@ -13,7 +13,7 @@
   </div>
   <div class="content"> 
     
-    @if (count($errors) > 0)
+    <!-- @if (count($errors) > 0)
     <div class="alert alert-danger" style="line-height: 2px; padding-top:3%; padding-bottom:1%;">
       <p>There were some problems with your File input.</p>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -37,7 +37,7 @@
         </button>
         {{ session('danger') }}
       </div> 
-      @endif
+      @endif -->
       
     <div class="row">
       <div class="col-md-12">
@@ -67,11 +67,11 @@
 
                 <input type="submit" onclick="return confirmation();" class="btn btn-success btn-round" value="Upload">
                <br><br>
-               <div class="progress" style="position:relative; width:100%; height:30px;">
+               <!-- <div class="progress" style="position:relative; width:100%; height:30px;">
                   <div class="bar" style="background-color: #2da62d; width:0%; border-radius: 3px;"></div >
                   <div class="percent" style="position:absolute; display:inline-block; top:3px; left:48%;">0%</div >
 
-                </div>
+                </div>  -->
                 
             </form>  
 
@@ -141,49 +141,49 @@ function confirmation(){
     }   
 }
 
-function validate(formData, jqForm, options) {
-        var form = jqForm[0];
-        if (!form.file.value) {
-            alert('File not found');
-            return false;
-        }
-    }
+// function validate(formData, jqForm, options) {
+//         var form = jqForm[0];
+//         if (!form.file.value) {
+//             alert('File not found');
+//             return false;
+//         }
+//     }
  
-    (function() {
+//     (function() {
  
-    var bar = $('.bar');
-    var percent = $('.percent');
-    var status = $('#status');
+//     var bar = $('.bar');
+//     var percent = $('.percent');
+//     var status = $('#status');
     
   
       
-    $('form').ajaxForm({
-        beforeSubmit: validate,
-        beforeSend: function() {
-            status.empty();
-            var percentVal = '0%';
-            var posterValue = $('input[name=file]').fieldValue();
-            bar.width(percentVal)
-            percent.html(percentVal);
-        },
-        uploadProgress: function(event, position, total, percentComplete) {
-            var percentVal = percentComplete + '%';
-            bar.width(percentVal)
-            percent.html(percentVal);
-        },
-        success: function() {
-            var percentVal = 'Saving';
-            bar.width(percentVal)
-            percent.html(percentVal);
-        },
-        complete: function(xhr) {
-            status.html(xhr.responseText);
-            alert('Uploaded Successfully');
-            window.location.href = "/encoder/upload";
-        }
-    });
+//     $('form').ajaxForm({
+//         beforeSubmit: validate,
+//         beforeSend: function() {
+//             status.empty();
+//             var percentVal = '0%';
+//             var posterValue = $('input[name=file]').fieldValue();
+//             bar.width(percentVal)
+//             percent.html(percentVal);
+//         },
+//         uploadProgress: function(event, position, total, percentComplete) {
+//             var percentVal = percentComplete + '%';
+//             bar.width(percentVal)
+//             percent.html(percentVal);
+//         },
+//         success: function() {
+//             var percentVal = 'Saving';
+//             bar.width(percentVal)
+//             percent.html(percentVal);
+//         },
+//         complete: function(xhr) {
+//             status.html(xhr.responseText);
+//             alert('Uploaded Successfully');
+//             window.location.href = "/encoder/upload";
+//         }
+//     });
      
-    })();
+//     })();
 
 
 

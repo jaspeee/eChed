@@ -15,6 +15,7 @@ use App\Jobs\EncoderUpload;
 use App\Jobs\EncoderChangePass;
 use Illuminate\Support\Facades\URL;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Str;
 
 
 class EncoderController extends Controller
@@ -191,12 +192,6 @@ class EncoderController extends Controller
         $abbrv = DB::table('institutions')->where('institutions_id', $institution)->first()->abbreviation;
 
 
-        $this->validate($request, [
-
-            'file' => 'required',
-            'file.*' => 'mimes:xlsx,xls' 
-
-        ]);
     
         //UPLOAD THE FILE
         if($request->hasFile('file'))
@@ -209,12 +204,41 @@ class EncoderController extends Controller
         
                  $filenameWithExt = $file->getClientOriginalName();
                  $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME).'_'.$abbrv.'_'.$date;
+                 $filename1 = pathinfo($filenameWithExt, PATHINFO_FILENAME);
                  $extension = $file->getClientOriginalExtension();
                  $fileNameToStore = $filename.'.'.$extension;
                  
-                 if (Storage::exists('public/validate/'.$fileNameToStore)) 
+                $forms = DB::table('forms')->get();
+
+                $result="";
+                foreach($forms as $f)
+                {
+                    $data = $f->form;
+                    $data1 = Str::before($data,'.');
+                  
+                    if($data1 == $filename1)
+                    {   
+                        $result = "yes";
+                        break;
+                    }
+                    else
+                    {   
+                        $result = "no";
+                    }    
+                }
+
+                if($result == "no")
+                {
+                    return back()->with('warning', 'Please check the file name and avoid renaming it');
+                }
+                elseif($extension != 'xlsx')
+                {   
+                    return back()->with('warning', 'Not correct file format');
+                    
+                }
+                 elseif (Storage::exists('public/validate/'.$fileNameToStore)) 
                 {    
-                    return back()->with('danger', 'Files are already submitted to validator');
+                    return back()->with('warning', 'Files are already submitted to validator');
                 }
                 else
                 {   
@@ -256,9 +280,9 @@ class EncoderController extends Controller
 
             } 
 
-         
-           response()->json(['success'=>'You have successfully upload file.']);
-           //return back()->with('success', 'Files has been successfully submitted to validator');
+          
+           //response()->json(['success'=>'You have successfully upload file.']);
+         return back()->with('success', 'Files has been successfully submitted to validator');
         }
 
     }
