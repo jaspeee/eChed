@@ -240,6 +240,14 @@ class EncoderController extends Controller
                 {    
                     return back()->with('warning', 'Files are already submitted to validator');
                 }
+                 elseif (Storage::exists('public/verify/'.$fileNameToStore)) 
+                {    
+                    return back()->with('warning', 'Files are already submitted');
+                }
+                 elseif (Storage::exists('public/complete/'.$fileNameToStore)) 
+                {    
+                    return back()->with('warning', 'Files are already submitted');
+                }
                 else
                 {   
                     
