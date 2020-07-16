@@ -29,20 +29,38 @@ class AccountController extends Controller
     public function Page_forgot_req(Request $request)
     {   
 
-        $user = DB::table('users')
+        $user1 = DB::table('users')
         ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
         ->where('employee_profiles.first_name',$request->fname)
         ->where('employee_profiles.last_Name',$request->lname)
-        ->where('users.username',$request->username)->first()->id;
+        ->where('users.username',$request->username)->get();
 
-        $con = new Concern();
-        $con->user_id = $user;
-        $con->statuses_id = '6';
-        $con->save();   
+        if(!$user1->isEmpty())
+        {
+            $user = DB::table('users')
+            ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+            ->where('employee_profiles.first_name',$request->fname)
+            ->where('employee_profiles.last_Name',$request->lname)
+            ->where('users.username',$request->username)->first()->id;
+    
+        
+    
+            $con = new Concern();
+            $con->user_id = $user;
+            $con->statuses_id = '6';
+            $con->save();   
+    
+            $type = 'Reset Password';
+    
+            return view('process', compact('type'));
 
-        $type = 'Reset Password';
-
-        return view('process', compact('type'));
+           
+        }
+        else
+        {
+            return back()->with('warning', 'No credentials found'); 
+        }
+       
     }
     
     public function Accounts_changePass(Request $request, $id)
@@ -85,20 +103,33 @@ class AccountController extends Controller
 
     public function Page_inactive_req(Request $request)
     {   
-
-        $user = DB::table('users')
+        $user1 = DB::table('users')
         ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
         ->where('employee_profiles.first_name',$request->fname)
         ->where('employee_profiles.last_Name',$request->lname)
-        ->where('users.username',$request->username)->first()->id;
+        ->where('users.username',$request->username)->get();
 
-        $con = new Concern();
-        $con->user_id = $user;
-        $con->statuses_id = '7';
-        $con->save();   
+        if(!$user1->isEmpty())
+        {
+            $user = DB::table('users')
+            ->join('employee_profiles', 'users.employee_profiles_id', '=','employee_profiles.employee_profiles_id')
+            ->where('employee_profiles.first_name',$request->fname)
+            ->where('employee_profiles.last_Name',$request->lname)
+            ->where('users.username',$request->username)->first()->id;
+    
+            $con = new Concern();
+            $con->user_id = $user;
+            $con->statuses_id = '7';
+            $con->save();   
 
-        $type = 'Reactivate Account';
-        return view('process', compact('type')); 
+            $type = 'Reactivate Account';
+            return view('process', compact('type')); 
+        }
+        else
+        {
+            return back()->with('warning', 'No credentials found'); 
+        }
+        
     }
 
  

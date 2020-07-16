@@ -105,6 +105,7 @@
   <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
   <script src="{{ asset('assets') }}/demo/demo.js"></script>
   @stack('js')
+  @include('sweetalert::alert')
 </body>
 
 </html>

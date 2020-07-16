@@ -127,14 +127,16 @@
 
 @section('scripts')
 <script  type="text/javascript">
+
 $(document).ready(function() {
     // $('#subtbl').DataTable({
     //   lengthChange: false
      
     // });
     oTable = $('#subtbl').DataTable({
-  sDom: 'lrtip',lengthChange: false
-  
+    sDom: 'lrtip',
+    lengthChange: false
+   
 
 }); 
 } );

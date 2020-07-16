@@ -494,7 +494,7 @@ class OfficerController extends Controller
 
     public function Password_change(Request $request) 
     {
-        
+         
 
         $id = auth()->id();
          $current_password = User::find($id)->password;
@@ -508,14 +508,14 @@ class OfficerController extends Controller
                 $user->password = Hash::make($request['password']);
                 $user->save();  
                 
-                return  back()->with('success', 'Added a new account successfully');
+                return  back()->with('success', 'Change password successfully');
             }
             else
             {
                 return back()->with('warning', 'Password Mismatch');
             }
             
-             
+              
          }
          else{
             return back()->with('warning', 'Current password was incorrect');
