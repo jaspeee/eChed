@@ -78,12 +78,12 @@ WithBatchInserts, WithChunkReading, ShouldQueue
 
     public function batchSize(): int
     {
-        return 1000;
+        return 5;
     }
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 5;
     }
-  
+    
 }
