@@ -48,8 +48,8 @@
         <div class="col-md-12" style="padding:10%;">
       
             <h1 style="color:red;opacity:0.8;">Forgot Password</h1>
-            <h5>Please fill up the following fields before proceed to password reset. This request will be send
-            to an appropriate personnel which depends on your account type.
+            <h5>Please fill up the following fields before proceeding to password reset. This request will be sent
+            to an authorized personnel depending on your account type.
             </h5>
  
 

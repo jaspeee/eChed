@@ -16,7 +16,7 @@ use App\Jobs\EncoderChangePass;
 use Illuminate\Support\Facades\URL;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Session;
 
 class EncoderController extends Controller
 {   
@@ -30,15 +30,18 @@ class EncoderController extends Controller
     
     public function Page_dashboard()
     {   
- 
-        
-       
-
         //GET THE FIRST AND LAST NAME OF THE USER 
         $id = auth()->id();
         $employee = DB::table('users')->find($id)->employee_profiles_id;
         $fname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->first_name;
         $lname = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->last_Name;
+
+
+    //     Session::put('fname', $fname);
+    //     Session::put('lname', $lname);
+
+    //    $fname = Session::get('fname');
+    //    $lname = Session::get('lname');
 
         //GET THE LIST OF SUBMISSIONS
         $institution = DB::table('employee_profiles')->where('employee_profiles_id',$employee)->first()->institutions_id;

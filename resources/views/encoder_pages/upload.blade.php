@@ -51,8 +51,8 @@
 
             <div class="container" style="padding:40px;"> 
                 <p style="font-size:18px;"><b>Upload Forms to Validate</b></p>
-                <p style="font-size:13px;">Upload Form : Click on " Choose Files " to choose file to upload and click the button upload
-                <div class="notice" style="color:red;margin-top:-15px;font-size: 13px;">Notice : Make sure to upload Excel files (.xlsx) only and don't modify the file name, it will cause an inaccurate reading of the data.</div>
+                <p style="font-size:13px;">Upload Form : Click on "Browse" button to upload files. Click "Upload" button when file selection is completed.
+                <div class="notice" style="color:red;margin-top:-15px;font-size: 13px;">Notice : Make sure to upload Excel files (.xlsx) only. Do not modify the file name, it will cause an inaccurate reading of the data.</div>
 
               </p>
               

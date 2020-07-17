@@ -30,8 +30,8 @@
               <p style="font-size:18px;"><b>Data Collection Forms For Non-State Universities and Colleges</b></p>
               @endif
  
-              <p style="font-size:13px;">Download Form : Please access the forms below and fill them out.</p>
-              <div class="notice" style="color:red;margin-top:-15px;font-size: 13px;">Notice : Make sure to use the forms below only and don't modify the file name, it will cause an inaccurate reading of the data.</div>
+              <p style="font-size:13px;">Download Form : Please download the forms below and fill them out.</p>
+              <div class="notice" style="color:red;margin-top:-15px;font-size: 13px;">Notice : Make sure to only use the download forms below. Do not modify the file name, it will cause an inaccurate reading of the data.</div>
                 <br>
                 <div class="list-group">
                   

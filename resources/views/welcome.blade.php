@@ -61,7 +61,8 @@
 
            
            <p style="font-size: 10px;color:white; opacity:0.4;text-align: center;">© 2020. e-Ched XI. All Rights Reserved. IHEMIS</p>
-         
+          
+       
 
         </div>
         </div> 

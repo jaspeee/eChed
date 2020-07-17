@@ -11,9 +11,12 @@
 |
 */
 
-Route::get('/', function () { 
-    return view('welcome'); 
-});
+Route::get('/', 'AccountController@login');
+
+// Route::get('/', function () { 
+	
+//     return view('welcome'); 
+// });
 
 //Clear configurations:
 Route::get('/config-clear', function() {
@@ -149,3 +152,4 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('{page}', ['as' => 'page.index', 'uses' => 'PageController@index']);
 }); 
 
+ 

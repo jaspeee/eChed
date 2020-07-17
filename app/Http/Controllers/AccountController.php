@@ -9,11 +9,43 @@ use App\Audit_log;
 use Hash;
 use Illuminate\Support\Facades\URL; 
 use RealRashid\SweetAlert\Facades\Alert;
-
+use Illuminate\Support\Facades\Auth;
 
 
 class AccountController extends Controller
-{
+{   
+   
+
+    public function login()
+    {   
+        $this->middleware('auth');
+        
+        if(Auth::user())
+        {
+            $type = DB::table('users')->where('id',auth()->id())->first()->user_types_id;
+            if($type == 1)
+            {
+                return redirect('/encoder/dashboard');
+            }
+            elseif($type == 2)
+            {
+                return redirect('/validator/dashboard');
+            }
+            elseif($type == 3)
+            {
+                return redirect('/verifier/dashboard');
+            }
+            else{
+                return redirect('/officer/dashboard');
+            }
+        }
+        else
+        {
+            return view('welcome'); 
+        }
+
+       
+    }
     public function Page_acc()
     {
        
