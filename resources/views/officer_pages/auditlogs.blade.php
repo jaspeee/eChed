@@ -26,7 +26,7 @@
               <p style="font-size:13px;">Export : Please click this button to export the audit logs
                   
                   <button type="button" data-toggle="modal" data-target="#addaudit" style="width:20px;height:20px;" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret">
-                    <i class="now-ui-icons files_box" data-toggle="tooltip" data-placement="top" title="Collate"></i>
+                    <i class="now-ui-icons files_box" data-toggle="tooltip" data-placement="top" title="Export"></i>
                   </button>
                   
                 </p> 
@@ -156,9 +156,14 @@ function myFunction() {
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
             li[i].style.display = "";
         } else {
-            li[i].style.display = "none";
+            li[i].style.display = "none"; 
         }
     }
 }
+
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+ 
 </script>
 @endsection

@@ -510,7 +510,7 @@ class OfficerController extends Controller
                 
                 return  back()->with('success', 'Change password successfully');
             }
-            else
+            else 
             {
                 return back()->with('warning', 'Password Mismatch');
             }
@@ -1766,6 +1766,19 @@ class OfficerController extends Controller
             $TotalPopMaleGrad = '0';
             $TotalPopFemaleEnroll = '0';
             $TotalPopFemaleGrad = '0';
+
+            $TotalSUCPop = '0';
+            $TotalSUCPopMaleEnroll = '0';
+            $TotalSUCPopMaleGrad = '0';
+            $TotalSUCPopFemaleEnroll = '0';
+            $TotalSUCPopFemaleGrad = '0';
+
+            $TotalNONSUCPop = '0';
+            $TotalNONSUCPopMaleEnroll = '0';
+            $TotalNONSUCPopMaleGrad = '0';
+            $TotalNONSUCPopFemaleEnroll = '0';
+            $TotalNONSUCPopFemaleGrad = '0';
+
           }
           elseif($TotalSUCPop == null)
           {
@@ -1962,7 +1975,7 @@ class OfficerController extends Controller
         $count1=0;
         foreach($DG as $dg)
         {
-            $count1 = $count1 + 1;
+            $count1 = $count1 + 1; 
         }
         
         if($count1 >= '5')
@@ -2061,21 +2074,32 @@ class OfficerController extends Controller
           ->orderby('total','desc')->where('collation_lists_id',$id1)
           ->limit(1)->get();
 
-          $TopSchoolEnroll = DB::table('collations')
-          ->select(DB::raw("SUM(TE) as total"))
-          ->groupBy('institutions_id')
-          ->orderby('total','desc')->where('collation_lists_id',$id1)
-          ->first()->total;
 
-          $TopSchoolGrad = DB::table('collations')
-          ->select(DB::raw("SUM(TG) as total"))
-          ->groupBy('institutions_id')
-          ->orderby('total','desc')->where('collation_lists_id',$id1)
-          ->first()->total;
+            if(!$TopSchool->isEmpty())
+            {
+                $TopSchoolEnroll = DB::table('collations')
+                ->select(DB::raw("SUM(TE) as total"))
+                ->groupBy('institutions_id')
+                ->orderby('total','desc')->where('collation_lists_id',$id1)
+                ->first()->total;
+    
+                $TopSchoolGrad = DB::table('collations')
+                ->select(DB::raw("SUM(TG) as total"))
+                ->groupBy('institutions_id')
+                ->orderby('total','desc')->where('collation_lists_id',$id1)
+                ->first()->total;
+            }
+            else
+            {
+               // $TopSchool = "";
+                $TopSchoolEnroll = "0";
+                $TopSchoolGrad = "0";
+            }
+      
           
           $TopSchoolPie = new Gender;
           $TopSchoolPie->labels(['Enrollees', 'Graduates',]);
-          $TopSchoolPie->dataset('Total', 'doughnut', [ $TopSchoolEnroll,$TopSchoolGrad])
+          $TopSchoolPie->dataset('Total', 'doughnut', [$TopSchoolEnroll,$TopSchoolGrad])
                  ->color($LineEnColor1)
                  ->backgroundcolor($FillGradColor1);
           $TopSchoolPie->displayLegend(true);

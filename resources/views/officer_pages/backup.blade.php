@@ -23,7 +23,7 @@
 
               <p style="font-size:18px;"><b>Backup</b></p>
               <p style="font-size:13px;color:red;">
-                  Notice : After the action has been done, it will automatically send an email regarding about the backup .
+                  Notice : After the action has been done, it will automatically send an email that the backup process is completed .
                 </p>
                 <hr>  
            <center>

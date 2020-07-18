@@ -156,7 +156,7 @@
                    <td style="text-align: center;"><h5>{{$TotalNONSUCPopFemaleGrad}}</h5></td>
                 </tr>
           </tbody>
-        </table>
+        </table> 
       </center>
       </div>
     </div> 
@@ -287,9 +287,11 @@
               </p> 
 
            <br>
-            <h3 style="text-align:center;"> @foreach($TopSchool as $ts)
+            <h3 style="text-align:center;"> 
+                    @foreach($TopSchool as $ts)
                     {{$ts->institution_name}}
-                @endforeach</h3>
+                    @endforeach
+            </h3>
 
               </div>
            </div>
