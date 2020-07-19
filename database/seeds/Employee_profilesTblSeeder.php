@@ -12,40 +12,40 @@ class Employee_profilesTblSeeder extends Seeder
     public function run()
     {
         DB::table('employee_profiles')->insert([
-            'first_name' => 'sample1',
-            'last_Name' => 'sample1',
-            'position' => 'sample1',
-            'division' => 'sample1',
+            'first_name' => 'Nikola',
+            'last_Name' => 'Zamora',
+            'position' => 'encoder',
+            'division' => 'records',
             'institutions_id' => '2',
             'created_at' => now(),
             'updated_at' => now()
        ]);
 
         DB::table('employee_profiles')->insert([
-            'first_name' => 'sample2',
-            'last_Name' => 'sample2',
-            'position' => 'sample2',
-            'division' => 'sample2',
+            'first_name' => 'Stefania',
+            'last_Name' => 'Sheldon',
+            'position' => 'validator',
+            'division' => 'records',
             'institutions_id' => '2',
             'created_at' => now(),
             'updated_at' => now()
        ]);
 
         DB::table('employee_profiles')->insert([
-            'first_name' => 'sample3',
-            'last_Name' => 'sample3',
-            'position' => 'sample3',
-            'division' => 'sample3',
+            'first_name' => 'Wallace',
+            'last_Name' => 'Calvert',
+            'position' => 'verifier',
+            'division' => 'records',
             'institutions_id' => '1',
             'created_at' => now(),
             'updated_at' => now()
        ]);
 
         DB::table('employee_profiles')->insert([
-            'first_name' => 'sample4',
-            'last_Name' => 'sample4',
-            'position' => 'sample4',
-            'division' => 'sample4',
+            'first_name' => 'Daryl ',
+            'last_Name' => 'Contreras',
+            'position' => 'officer',
+            'division' => 'records',
             'institutions_id' => '1',
             'created_at' => now(),
             'updated_at' => now()

@@ -2160,7 +2160,7 @@ class OfficerController extends Controller
         ->where('collation_lists_id',$id)
         ->delete();
       
-        return back()->with('success', 'Activate the account successfully');
+        return back()->with('success', 'Remove collations successfully');
         
     }
 
